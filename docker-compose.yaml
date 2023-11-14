@@ -1,7 +1,22 @@
-# volumes:
+volumes:
+  postgres-data:
+    external: true
+
 services:
+  postgres:
+      image: postgres:14.5-bullseye
+      volumes:
+          - postgres-data:/var/lib/postgresql/data
+      environment:
+          POSTGRES_PASSWORD: mistmusic
+          POSTGRES_USER: mistmusic
+          POSTGRES_DB: mistdb
+      ports:
+          - 15432:5432
+
   fastapi:
     environment:
+      DATABASE_URL: postgresql://mistmusic:mistmusic@postgres/mistdb
       CORS_HOST: http://localhost:3000
     build:
       context: api
@@ -10,6 +25,8 @@ services:
       - 8000:8000
     volumes:
       - ./api:/app
+
+
 
   ghi:
     image: node:lts-bullseye
