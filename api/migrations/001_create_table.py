@@ -1,7 +1,7 @@
 steps = [
     [
     """
-    CREATE TABLE user (
+    CREATE TABLE users (
         user_id SERIAL PRIMARY KEY NOT NULL,
         username VARCHAR(20) UNIQUE NOT NULL,
         email_address VARCHAR(100) UNIQUE NOT NULL,
@@ -16,7 +16,28 @@ steps = [
     """,
 
     """
-    DROP TABLE user;
+    DROP TABLE users;
+    """
+    ]
+]
+steps = [
+    [
+    """"
+    CREATE TABLE songs (
+        song_id SERIAL PRIMARY KEY,
+        name VARCHAR(50) NOT NULL,
+        artist VARCHAR(50),
+        album VARCHAR(100),
+        genre VARCHAR(50),
+        release_date DATE,
+        length INTERVAL,
+        bpm VARCHAR(4),
+        rating INTEGER,
+    )
+    """,
+
+    """
+    DROP TABLE users;
     """
     ]
 ]
