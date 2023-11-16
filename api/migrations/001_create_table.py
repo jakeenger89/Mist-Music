@@ -39,5 +39,37 @@ steps = [
     """
     DROP TABLE users;
     """
+    ],
+
+    [
+    """
+    CREATE TABLE liked_songs (
+    user_id INTEGER REFERENCES users(user_id),
+    song_id INTEGER REFERENCES songs(song_id),
+    PRIMARY KEY (user_id, song_id)
+    );
+    """,
+
+    """
+    DROP TABLE liked_songs;
+    """
+    ],
+
+    [
+    """
+    CREATE TABLE merchandise (
+        item_id SERIAL PRIMARY KEY NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        image_url VARCHAR(1000) NOT NULL,
+        price MONEY NOT NULL,
+        size VARCHAR(30),
+        description VARCHAR(1000),
+        quantity SMALLINT
+    );
+
+    """,
+    """
+    DROP TABLE merchandise;
+    """
     ]
 ]
