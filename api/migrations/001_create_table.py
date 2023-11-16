@@ -39,5 +39,19 @@ steps = [
     """
     DROP TABLE users;
     """
+    ],
+
+    [
+    """
+    CREATE TABLE liked_songs (
+    user_id INTEGER REFERENCES users(user_id),
+    song_id INTEGER REFERENCES songs(song_id),
+    PRIMARY KEY (user_id, song_id)
+    );
+    """,
+
+    """
+    DROP TABLE liked_songs;
+    """
     ]
 ]
