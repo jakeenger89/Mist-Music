@@ -18,11 +18,10 @@ steps = [
     """
     DROP TABLE users;
     """
-    ]
-]
-steps = [
+    ],
+
     [
-    """"
+    """
     CREATE TABLE songs (
         song_id SERIAL PRIMARY KEY,
         name VARCHAR(50) NOT NULL,
@@ -32,8 +31,9 @@ steps = [
         release_date DATE,
         length INTERVAL,
         bpm VARCHAR(4),
-        rating INTEGER,
-    )
+        rating INTEGER
+    );
+
     """,
 
     """
