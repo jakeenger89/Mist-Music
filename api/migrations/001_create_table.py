@@ -53,5 +53,23 @@ steps = [
     """
     DROP TABLE liked_songs;
     """
+    ],
+
+    [
+    """
+    CREATE TABLE merchandise (
+        item_id SERIAL PRIMARY KEY NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        image_url VARCHAR(1000) NOT NULL,
+        price MONEY NOT NULL,
+        size VARCHAR(30),
+        description VARCHAR(1000),
+        quantity SMALLINT
+    );
+
+    """,
+    """
+    DROP TABLE merchandise;
+    """
     ]
 ]
