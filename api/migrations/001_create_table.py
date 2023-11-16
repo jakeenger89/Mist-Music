@@ -37,7 +37,7 @@ steps = [
     """,
 
     """
-    DROP TABLE users;
+    DROP TABLE songs;
     """
     ],
 
@@ -70,6 +70,24 @@ steps = [
     """,
     """
     DROP TABLE merchandise;
+    """
+    ],
+
+    [
+    """
+    CREATE TABLE albums (
+        album_id SERIAL PRIMARY KEY NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        artist VARCHAR(50) NOT NULL,
+        genre VARCHAR(50) NOT NULL,
+        release_date DATE NOT NULL,
+        cover_image_url VARCHAR(1000) NOT NULL
+    );
+
+    """,
+
+    """
+    DROP TABLE albums;
     """
     ]
 ]
