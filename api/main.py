@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
+from routers import users
 from routers import songs
 
 app = FastAPI()
+app.include_router(users.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,4 +31,4 @@ def launch_details():
     }
 
 
-app.include_router(songs.router, prefix="/songs", tags=["songs"])
+app.include_router(songs.router, prefix="", tags=["songs"])

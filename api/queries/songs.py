@@ -1,5 +1,6 @@
-from typing import Literal
+from typing import Literal, List
 from pydantic import BaseModel
+from queries.pool import pool
 
 
 class SongIn(BaseModel):
@@ -23,7 +24,7 @@ class SongIn(BaseModel):
 
 #we put id and liked by user in song out becaues it wont be initialized until the songs been made/searched for
 class SongOut(BaseModel):
-    id: int
+    song_id: int
     name: str
     artist: str
     album: str
@@ -51,7 +52,7 @@ class SongWithStatsOut(SongOut):
 
 #this will include SongsWithStatsOut when looking for a song
 class SongsOut(BaseModel):
-    songs: list[SongWithStatsOut]
+    songs: List[SongWithStatsOut]
 
 
 #this ties a unique user id to a unique song id
@@ -61,21 +62,34 @@ class Like(BaseModel):
 
 
 class SongQueries:
-    def get_songs(self):
+    def get_songs(self, song_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
                     Select info here
-                    """
+                    WHERE id = %s
+                    """,
+                    [song_id],
                 )
                 songs = []
                 rows = cur.fetchall()
                 for row in rows:
-                    song = shoom
+                    song = SongWithStatsOut(
+                        song_id=row[0],
+                        name=row[1],
+                        artist=row[2],
+                        album=row[3],
+                        genre=row[4],
+                        release_date=row[5],
+                        length=row[6],
+                        bpm=row[7],
+                        rating=row[8],
+                        liked_by_user=None,
+                        play_count=row[9],
+                    )
                     songs.append(song)
-                return songs
-
+                return SongsOut(songs=songs)
 
 
     def like_song(self, song_id, user_id):
