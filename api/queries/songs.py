@@ -71,7 +71,7 @@ class SongQueries:
                 songs = []
                 rows = cur.fetchall()
                 for row in rows:
-                    song =
+                    song = shoom
                     songs.append(song)
                 return songs
 
