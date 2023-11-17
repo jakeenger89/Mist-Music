@@ -1,5 +1,7 @@
-from typing import Literal
+from typing import Optional, Literal, List
 from pydantic import BaseModel
+from queries.pool import pool
+from fastapi import HTTPException
 
 class SongIn(BaseModel):
     name: str
@@ -19,10 +21,8 @@ class SongIn(BaseModel):
     bpm: str
     rating: str
 
-
-#we put id and liked by user in song out becaues it wont be initialized until the songs been made/searched for
 class SongOut(BaseModel):
-    id: int
+    song_id: int
     name: str
     artist: str
     album: str
@@ -39,25 +39,18 @@ class SongOut(BaseModel):
     length: str
     bpm: str
     rating: str
-    liked_by_user: bool | None
+    liked_by_user: Optional[bool] = None  # Make it optional
 
-
-#additional statistics for songs
 class SongWithStatsOut(SongOut):
-    play_count: int | None
-    download_count: int | None
+    play_count: Optional[int] = None
+    download_count: Optional[int] = None
 
-
-#this will include SongsWithStatsOut when looking for a song
 class SongsOut(BaseModel):
-    songs: list[SongWithStatsOut]
+    songs: List[SongWithStatsOut]
 
-
-#this ties a unique user id to a unique song id
 class Like(BaseModel):
     user_id: int
     song_id: int
-
 
 class SongQueries:
     def get_songs(self):
@@ -65,14 +58,14 @@ class SongQueries:
             with pool.connection() as conn:
                 with conn.cursor() as cur:
                     cur.execute("""
-                        SELECT id, name, artist, album, genre, release_date, length, bpm, rating
+                        SELECT song_id, name, artist, album, genre, release_date, length, bpm, rating
                         FROM songs
                     """)
                     songs = []
                     rows = cur.fetchall()
                     for row in rows:
                         song = {
-                            'id': row[0],
+                            'song_id': row[0],
                             'name': row[1],
                             'artist': row[2],
                             'album': row[3],
@@ -81,12 +74,13 @@ class SongQueries:
                             'length': row[6],
                             'bpm': row[7],
                             'rating': row[8],
+                            'liked_by_user': False  # You might need to determine this based on user data
                         }
                         songs.append(song)
-                    return songs
+                    return {"songs": songs}
         except Exception as e:
             print(f"Error in get_songs: {e}")
-            raise
+            raise HTTPException(status_code=500, detail="Error")
 
 
 
