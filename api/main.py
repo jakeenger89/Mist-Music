@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
-from routers import users
-from routers import songs
-
+from routers import songs, merch
 
 app = FastAPI()
 app.include_router(users.router)
@@ -32,4 +30,5 @@ def launch_details():
     }
 
 
-app.include_router(songs.router, prefix="", tags=["songs"])
+app.include_router(songs.router, prefix="/songs", tags=["songs"])
+app.include_router(merch.router, tags=["merch"])
