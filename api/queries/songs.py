@@ -1,3 +1,28 @@
+from pydantic import BaseModel
+
+
+class SongIn(BaseModel):
+    name: str
+    artist: str
+    album: str
+    genre: str
+    release_date: str
+    length: str
+    bpm: str
+    rating: str
+
+
+class SongOut(BaseModel):
+    id: str
+    name: str
+    artist: str
+    album: str
+    genre: str
+    length: str
+    bpm: str
+    rating: str
+    liked_by_user: bool
+    release_date: bool
 
 
 class SongQueries:
@@ -12,7 +37,7 @@ class SongQueries:
                 songs = []
                 rows = cur.fetchall()
                 for row in rows:
-                    song =
+                    song = shoom
                     songs.append(song)
                 return songs
 

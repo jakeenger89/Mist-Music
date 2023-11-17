@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Response
 from pydantic import BaseModel
 import uuid
-from queries import SongQueries
+from queries.songs import SongQueries
 from typing import Literal
 
 router = APIRouter()
