@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, Response
 from queries.songs import SongIn, SongsOut, SongQueries, Like
+from typing import Literal
+from fastapi import APIRouter, Depends, Response
+from queries.songs import SongIn, SongOut, SongQueries, Like
 from typing import Literal
 
 router = APIRouter()
 #get a specific song
-@router.get("/songs/{song_id}", response_model=SongsOut)
+@router.get("/api/songs/{song_id}", response_model=SongOut)
 def get_song(
     song_id: int,
     response: Response,
@@ -18,13 +20,13 @@ def get_song(
 
 
 #all songs
-@router.get("/api/songs", response_model=SongsOut)
+@router.get("/api/songs", response_model=SongOut)
 def get_songs(queries: SongQueries = Depends()):
-    return {"songs": queries.get_songs()}
+    return queries.get_songs()
 
 
 #create a song
-@router.post("/api/songs", response_model=SongsOut)
+@router.post("/api/songs", response_model=SongOut)
 def create_song(
     song: SongIn,
     queries: SongQueries = Depends(),
