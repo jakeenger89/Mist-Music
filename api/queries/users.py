@@ -35,3 +35,4 @@ class UserQueries:
                 for row in rows:
                     user = users.append(user)
                 return users
+    # def get_all_users(self):
