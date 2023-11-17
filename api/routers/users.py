@@ -1,27 +1,8 @@
 from fastapi import APIRouter, Depends, Response
-from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime
-from queries import UserQueries
+from queries.users import UserQueries, UserIn, UserOut
+
 
 router = APIRouter()
-
-
-class UserIn(BaseModel):
-    username: str
-    email_address: str
-    password: str
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    profile_picture_url: Optional[str] = None
-    banner_url: Optional[str] = None
-    signup_date: Optional[datetime] = None
-
-
-class UserOut(UserIn):
-    user_id: int
-    signup_date: datetime
-
 
 
 @router.get("api/users", response_model = UserOut)

@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 from queries.pool import pool
 
+
 class UserIn(BaseModel):
     username: str
     email_address: str
