@@ -1,28 +1,62 @@
-from pydantic import BaseModel
+from typing import Literal
 
 
 class SongIn(BaseModel):
     name: str
     artist: str
     album: str
-    genre: str
+    genre: Literal[
+        "Rock",
+        "Pop",
+        "Hip Hop",
+        "Jazz",
+        "Country",
+        "Electronic",
+        "Classical",
+    ]
     release_date: str
     length: str
     bpm: str
     rating: str
 
 
+#we put id and liked by user in song out becaues it wont be initialized until the songs been made/searched for
 class SongOut(BaseModel):
-    id: str
+    id: int
     name: str
     artist: str
     album: str
-    genre: str
+    genre: Literal[
+        "Rock",
+        "Pop",
+        "Hip Hop",
+        "Jazz",
+        "Country",
+        "Electronic",
+        "Classical",
+    ]
+    release_date: str
     length: str
     bpm: str
     rating: str
-    liked_by_user: bool
-    release_date: bool
+    liked_by_user: bool | None
+
+
+#additional statistics for songs
+class SongWithStatsOut(SongOut):
+    play_count: int | None
+    download_count: int | None
+
+
+#this will include SongsWithStatsOut when looking for a song
+class SongsOut(BaseModel):
+    songs: list[SongWithStatsOut]
+
+
+#this ties a unique user id to a unique song id
+class Like(BaseModel):
+    user_id: int
+    song_id: int
 
 
 class SongQueries:
