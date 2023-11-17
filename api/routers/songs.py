@@ -1,70 +1,8 @@
 from fastapi import APIRouter, Depends, Response
-from pydantic import BaseModel
-import uuid
-from queries import SongQueries
+from queries.songs import SongIn, SongOut, SongQueries, Like
 from typing import Literal
 
 router = APIRouter()
-
-
-class SongIn(BaseModel):
-    name: str
-    artist: str
-    album: str
-    genre: Literal[
-        "Rock",
-        "Pop",
-        "Hip Hop",
-        "Jazz",
-        "Country",
-        "Electronic",
-        "Classical",
-    ]
-    release_date: str
-    length: str
-    bpm: str
-    rating: str
-
-
-#we put id and liked by user in song out becaues it wont be initialized until the songs been made/searched for
-class SongOut(BaseModel):
-    id: int
-    name: str
-    artist: str
-    album: str
-    genre: Literal[
-        "Rock",
-        "Pop",
-        "Hip Hop",
-        "Jazz",
-        "Country",
-        "Electronic",
-        "Classical",
-    ]
-    release_date: str
-    length: str
-    bpm: str
-    rating: str
-    liked_by_user: bool | None
-
-
-#additional statistics for songs
-class SongWithStatsOut(SongOut):
-    play_count: int | None
-    download_count: int | None
-
-
-#this will include SongsWithStatsOut when looking for a song
-class SongsOut(BaseModel):
-    songs: list[SongWithStatsOut]
-
-
-#this ties a unique user id to a unique song id
-class Like(BaseModel):
-    user_id: int
-    song_id: int
-
-
 #get a specific song
 @router.get("/api/songs/{song_id}", response_model=SongOut)
 def get_song(
@@ -80,7 +18,7 @@ def get_song(
 
 
 #all songs
-@router.get("/api/songs", response_model=SongsOut)
+@router.get("/api/songs", response_model=SongOut)
 def get_songs(queries: SongQueries = Depends()):
     return {"songs": queries.get_songs()}
 
