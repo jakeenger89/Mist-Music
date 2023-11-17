@@ -1,5 +1,5 @@
 from typing import Literal
-
+from pydantic import BaseModel
 
 class SongIn(BaseModel):
     name: str
@@ -61,19 +61,32 @@ class Like(BaseModel):
 
 class SongQueries:
     def get_songs(self):
-        with pool.connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    """
-                    Select info here
-                    """
-                )
-                songs = []
-                rows = cur.fetchall()
-                for row in rows:
-                    song = shoom
-                    songs.append(song)
-                return songs
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        SELECT id, name, artist, album, genre, release_date, length, bpm, rating
+                        FROM songs
+                    """)
+                    songs = []
+                    rows = cur.fetchall()
+                    for row in rows:
+                        song = {
+                            'id': row[0],
+                            'name': row[1],
+                            'artist': row[2],
+                            'album': row[3],
+                            'genre': row[4],
+                            'release_date': row[5],
+                            'length': row[6],
+                            'bpm': row[7],
+                            'rating': row[8],
+                        }
+                        songs.append(song)
+                    return songs
+        except Exception as e:
+            print(f"Error in get_songs: {e}")
+            raise
 
 
 
