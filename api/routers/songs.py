@@ -2,9 +2,10 @@ from queries.songs import SongIn, SongsOut, SongQueries, Like
 from typing import Literal
 from fastapi import APIRouter, Depends, Response
 
+
 router = APIRouter()
 #get a specific song
-@router.get("/api/songs/{song_id}", response_model=SongsOut)
+@router.get("/songs/{song_id}", response_model=SongsOut)
 def get_song(
     song_id: int,
     response: Response,
@@ -18,13 +19,13 @@ def get_song(
 
 
 #all songs
-@router.get("/api/songs", response_model=SongsOut)
+@router.get("/songs", response_model=SongsOut)
 def get_songs(queries: SongQueries = Depends()):
     return queries.get_songs()
 
 
 #create a song
-@router.post("/api/songs", response_model=SongsOut)
+@router.post("/songs", response_model=SongsOut)
 def create_song(
     song: SongIn,
     queries: SongQueries = Depends(),
@@ -33,21 +34,21 @@ def create_song(
 
 
 #delete a song
-@router.get("/api/{songs_id}", response_model=bool)
+@router.delete("/songs/{songs_id}", response_model=bool)
 def delete_song(song_id: int, queries: SongQueries = Depends()):
     queries.delete_song(song_id)
     return True
 
 
 #like a song
-@router.post("/api/songs/{song_id}/like", response_model=bool)
+@router.post("/songs/{song_id}/like", response_model=bool)
 def like_song(song_id: int, like: Like, queries: SongQueries = Depends()):
     queries.like_song(song_id, like.user_id)
     return True
 
 
 # Unlike a song
-@router.delete("/api/songs/{song_id}/unlike", response_model=bool)
+@router.delete("/songs/{song_id}/unlike", response_model=bool)
 def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends()):
     queries.unlike_song(song_id, like.user_id)
     return True
