@@ -1,8 +1,7 @@
-
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-
+from queries.pool import pool
 
 class UserIn(BaseModel):
     username: str
@@ -18,3 +17,20 @@ class UserIn(BaseModel):
 class UserOut(UserIn):
     user_id: int
     signup_date: datetime
+
+
+
+class UserQueries:
+    def get_users(self):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    Select info here
+                    """
+                )
+                users = []
+                rows = cur.fetchall()
+                for row in rows:
+                    user = users.append(user)
+                return users

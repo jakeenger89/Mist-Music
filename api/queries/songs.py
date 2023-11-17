@@ -12,6 +12,5 @@ class SongQueries:
                 songs = []
                 rows = cur.fetchall()
                 for row in rows:
-                    song =
-                    songs.append(song)
+                    song = songs.append(song)
                 return songs
