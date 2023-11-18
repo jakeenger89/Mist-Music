@@ -4,7 +4,6 @@ import os
 from routers import songs, merch
 
 app = FastAPI()
-app.include_router(users.router)
 
 app.add_middleware(
     CORSMiddleware,

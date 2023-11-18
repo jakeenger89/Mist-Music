@@ -59,6 +59,21 @@ class Like(BaseModel):
 
 
 class SongQueries:
+    def get_song(self, song_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT s.id AS song_id, s.name, s.artist,
+                    s.album, s.genre, s.release_date, s.length,
+                    s.bpm, s.rating, s.like_by_use
+                    FROM songs s
+                    INNER JOIN users u ON(s.id = u.id)
+                    WHERE s.id = %s
+                    """,
+                    [song_id],
+                )
+
     def get_songs(self):
         try:
             with pool.connection() as conn:
