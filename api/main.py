@@ -29,5 +29,5 @@ def launch_details():
     }
 
 
-app.include_router(songs.router, prefix="/songs", tags=["songs"])
+app.include_router(songs.router, prefix="", tags=["songs"])
 app.include_router(merch.router, tags=["merch"])

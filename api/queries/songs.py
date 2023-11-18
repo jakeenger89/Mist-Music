@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from queries.pool import pool
 from fastapi import HTTPException
 
+
 class SongIn(BaseModel):
     name: str
     artist: str
@@ -20,6 +21,7 @@ class SongIn(BaseModel):
     length: str
     bpm: str
     rating: str
+
 
 class SongOut(BaseModel):
     song_id: int
@@ -41,16 +43,20 @@ class SongOut(BaseModel):
     rating: str
     liked_by_user: Optional[bool] = None  # Make it optional
 
+
 class SongWithStatsOut(SongOut):
     play_count: Optional[int] = None
     download_count: Optional[int] = None
 
+
 class SongsOut(BaseModel):
     songs: List[SongWithStatsOut]
+
 
 class Like(BaseModel):
     user_id: int
     song_id: int
+
 
 class SongQueries:
     def get_songs(self):
@@ -81,8 +87,6 @@ class SongQueries:
         except Exception as e:
             print(f"Error in get_songs: {e}")
             raise HTTPException(status_code=500, detail="Error")
-
-
 
     def like_song(self, song_id, user_id):
         with pool.connection() as conn:
@@ -119,3 +123,14 @@ class SongQueries:
                     # Handle errors (e.g., if the like doesn't exist)
                     print(e)
                     return False
+
+    def delete_song(self, song_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    DELETE FROM songs
+                    WHERE song_id = %s
+                    """,
+                    [song_id]
+                )
