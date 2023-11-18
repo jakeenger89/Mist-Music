@@ -23,6 +23,32 @@ class MerchOut(BaseModel):
 
 
 class MerchQueries:
+    def create_merch(self, merch: MerchIn) -> MerchOut:
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                result = db.execute(
+                    """
+                    INSERT INTO merchandise(
+                        name,
+                        image_url,
+                        price,
+                        size,
+                        description,
+                        quantity
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    """,
+                    [
+                        merch.name,
+                        merch.image_url,
+                        merch.price,
+                        merch.size,
+                        merch.description,
+                        merch.quantity
+                    ]
+                )
+                id = result.fetchone()[0]
+
     def get_all_merch(self) -> List[MerchOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
