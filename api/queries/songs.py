@@ -45,8 +45,10 @@ class SongWithStatsOut(SongOut):
     play_count: Optional[int] = None
     download_count: Optional[int] = None
 
+
 class SongsOut(BaseModel):
     songs: List[SongWithStatsOut]
+
 
 class Like(BaseModel):
     user_id: int
@@ -81,8 +83,6 @@ class SongQueries:
         except Exception as e:
             print(f"Error in get_songs: {e}")
             raise HTTPException(status_code=500, detail="Error")
-
-
 
     def like_song(self, song_id, user_id):
         with pool.connection() as conn:
@@ -132,4 +132,15 @@ class SongQueries:
                 except Exception as e:
                     # Handle errors (e.g., if the like doesn't exist)
                     print(e)
-                    return []
+                    return False
+
+    def delete_song(self, song_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    DELETE FROM songs
+                    WHERE song_id = %s
+                    """,
+                    [song_id]
+                )
