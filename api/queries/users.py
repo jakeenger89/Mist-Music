@@ -29,14 +29,14 @@ class UserRepository:
                     db.execute(
                         """
                         SELECT id,
-                             , username
-                             , email
-                             , password
-                             , profile_picture
-                             , signup_date,
-                             , first_name
-                             , last_name
-                             , banner_url
+                            , username
+                            , email
+                            , password
+                            , profile_picture
+                            , signup_date,
+                            , first_name
+                            , last_name
+                            , banner_url
                         FROM users
                         ORDER BY username
                         """
