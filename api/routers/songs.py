@@ -1,5 +1,5 @@
 from queries.songs import SongIn, SongsOut, SongQueries, Like
-from typing import Literal
+from typing import List
 from fastapi import APIRouter, Depends, Response
 
 router = APIRouter()
@@ -39,15 +39,12 @@ def delete_song(song_id: int, queries: SongQueries = Depends()):
     return True
 
 
-#like a song
-@router.post("/api/songs/{song_id}/like", response_model=bool)
+@router.post("/api/songs/{song_id}/like", response_model=List[int])
 def like_song(song_id: int, like: Like, queries: SongQueries = Depends()):
-    queries.like_song(song_id, like.user_id)
-    return True
+    user_ids = queries.like_song(song_id, like.user_id)
+    return user_ids
 
-
-# Unlike a song
-@router.delete("/api/songs/{song_id}/unlike", response_model=bool)
+@router.delete("/api/songs/{song_id}/unlike", response_model=List[int])
 def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends()):
-    queries.unlike_song(song_id, like.user_id)
-    return True
+    user_ids = queries.unlike_song(song_id, like.user_id)
+    return user_ids

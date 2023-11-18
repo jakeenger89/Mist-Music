@@ -88,7 +88,7 @@ class SongQueries:
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 try:
-                    #like a song
+                    # Like a song
                     cur.execute(
                         """
                         INSERT INTO song_likes (user_id, song_id)
@@ -96,17 +96,24 @@ class SongQueries:
                         """,
                         [user_id, song_id],
                     )
-                    return True
+                    # Return the list of user IDs that have liked this song
+                    cur.execute(
+                        """
+                        SELECT user_id FROM song_likes WHERE song_id = %s
+                        """,
+                        [song_id],
+                    )
+                    return [row[0] for row in cur.fetchall()]
                 except Exception as e:
                     # Handle errors (e.g., duplicate likes)
                     print(e)
-                    return False
+                    return []
 
     def unlike_song(self, song_id, user_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 try:
-                    # Delete a liked song
+                    # Unlike a song
                     cur.execute(
                         """
                         DELETE FROM song_likes
@@ -114,8 +121,15 @@ class SongQueries:
                         """,
                         [user_id, song_id],
                     )
-                    return True
+                    # Return the updated list of user IDs that have liked this song
+                    cur.execute(
+                        """
+                        SELECT user_id FROM song_likes WHERE song_id = %s
+                        """,
+                        [song_id],
+                    )
+                    return [row[0] for row in cur.fetchall()]
                 except Exception as e:
                     # Handle errors (e.g., if the like doesn't exist)
                     print(e)
-                    return False
+                    return []
