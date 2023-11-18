@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-from typing import Literal
-from pydantic import BaseModel
-=======
 from typing import Optional, Literal, List
 from pydantic import BaseModel
 from queries.pool import pool
 from fastapi import HTTPException
 
->>>>>>> d075bde54203a8f3f4d090ee66c86f0065000fee
 
 class SongIn(BaseModel):
     name: str
