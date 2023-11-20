@@ -54,7 +54,7 @@ class SongsOut(BaseModel):
 
 
 class Like(BaseModel):
-    user_id: int
+    account_id: int
     song_id: int
 
 
@@ -103,17 +103,17 @@ class SongQueries:
             print(f"Error in get_songs: {e}")
             raise HTTPException(status_code=500, detail="Error")
 
-    def like_song(self, song_id, user_id):
+    def like_song(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 try:
                     #like a song
                     cur.execute(
                         """
-                        INSERT INTO song_likes (user_id, song_id)
+                        INSERT INTO song_likes (account_id, song_id)
                         VALUES (%s, %s)
                         """,
-                        [user_id, song_id],
+                        [account_id, song_id],
                     )
                     return True
                 except Exception as e:
@@ -121,7 +121,7 @@ class SongQueries:
                     print(e)
                     return False
 
-    def unlike_song(self, song_id, user_id):
+    def unlike_song(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 try:
@@ -129,9 +129,9 @@ class SongQueries:
                     cur.execute(
                         """
                         DELETE FROM song_likes
-                        WHERE user_id = %s AND song_id = %s
+                        WHERE account_id = %s AND song_id = %s
                         """,
-                        [user_id, song_id],
+                        [account_id, song_id],
                     )
                     return True
                 except Exception as e:

@@ -1,8 +1,8 @@
 steps = [
     [
     """
-    CREATE TABLE users (
-        user_id SERIAL PRIMARY KEY NOT NULL,
+    CREATE TABLE account (
+        account_id SERIAL PRIMARY KEY NOT NULL,
         username VARCHAR(20) UNIQUE NOT NULL,
         email_address VARCHAR(100) UNIQUE NOT NULL,
         password VARCHAR(100) NOT NULL,
@@ -16,7 +16,7 @@ steps = [
     """,
 
     """
-    DROP TABLE users;
+    DROP TABLE account;
     """
     ],
 
@@ -44,9 +44,9 @@ steps = [
     [
     """
     CREATE TABLE liked_songs (
-    user_id INTEGER REFERENCES users(user_id),
+    account_id INTEGER REFERENCES account(account_id),
     song_id INTEGER REFERENCES songs(song_id),
-    PRIMARY KEY (user_id, song_id)
+    PRIMARY KEY (account_id, song_id)
     );
     """,
 
