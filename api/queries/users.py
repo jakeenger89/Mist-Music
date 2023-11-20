@@ -43,15 +43,15 @@ class UserRepository:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        SELECT id,
-                            , username
-                            , email
-                            , password
-                            , profile_picture
-                            , signup_date
-                            , first_name
-                            , last_name
-                            , banner_url
+                        SELECT user_id,
+                            username,
+                            email_address,
+                            password,
+                            profile_picture_url,
+                            signup_date,
+                            first_name,
+                            last_name,
+                            banner_url
                         FROM users
                         ORDER BY username
                         """
@@ -74,7 +74,7 @@ class UserRepository:
         except Exception:
             return {"message": "Could not get all users"}
 
-    def create(self, user_in: UserIn) -> UserOut:
+    def create_user(self, user_in: UserIn) -> UserOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
@@ -82,16 +82,16 @@ class UserRepository:
                     INSERT INTO users
                         (
                             username,
-                            email,
+                            email_address,
                             password,
-                            profile_picture,
+                            profile_picture_url,
                             first_name,
                             last_name,
                             banner_url
                         )
                     VALUES
                         (%s, %s, %s, %s, %s, %s, %s)
-                    RETURNING id
+                    RETURNING user_id, username, email_address, password, profile_picture_url, signup_date, first_name, last_name, banner_url
                     """,
                     [
                         user_in.username,
