@@ -43,12 +43,12 @@ def delete_song(song_id: int, queries: SongQueries = Depends()):
 #like a song
 @router.post("/songs/{song_id}/like", response_model=bool)
 def like_song(song_id: int, like: Like, queries: SongQueries = Depends()):
-    queries.like_song(song_id, like.user_id)
+    queries.like_song(song_id, like.account_id)
     return True
 
 
 # Unlike a song
 @router.delete("/songs/{song_id}/unlike", response_model=bool)
 def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends()):
-    queries.unlike_song(song_id, like.user_id)
+    queries.unlike_song(song_id, like.account_id)
     return True
