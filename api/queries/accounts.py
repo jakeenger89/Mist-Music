@@ -83,16 +83,16 @@ class AccountQueries:
                     INSERT INTO users
                         (
                             username,
-                            email,
+                            email_address,
                             password,
-                            profile_picture,
+                            profile_picture_url,
                             first_name,
                             last_name,
                             banner_url
                         )
                     VALUES
                         (%s, %s, %s, %s, %s, %s, %s)
-                    RETURNING id
+                    RETURNING user_id, username, email_address, password, profile_picture_url, signup_date, first_name, last_name, banner_url
                     """,
                     [
                         account_in.username,
