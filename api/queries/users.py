@@ -116,3 +116,19 @@ class UserRepository:
                     banner_url=record[8],
                 )
                 return user_out
+
+    def delete_user(self, user_id: int) -> bool:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        DELETE FROM users
+                        WHERE user_id = %s
+                        """,
+                        [user_id],
+                    )
+                    # Check if any rows were affected
+                    return db.rowcount > 0
+        except Exception:
+            return False
