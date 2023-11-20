@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
@@ -21,6 +20,22 @@ class UserOut(UserIn):
     signup_date: datetime
 
 
+
+class UserQueries:
+    def get_users(self):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    Select info here
+                    """
+                )
+                users = []
+                rows = cur.fetchall()
+                for row in rows:
+                    user = users.append(user)
+                return users
+    # def get_all_users(self):
 class UserRepository:
     def get_all_users(self) -> List[UserOut]:
         try:
@@ -28,15 +43,15 @@ class UserRepository:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        SELECT id,
-                            , username
-                            , email
-                            , password
-                            , profile_picture
-                            , signup_date,
-                            , first_name
-                            , last_name
-                            , banner_url
+                        SELECT user_id,
+                            username,
+                            email_address,
+                            password,
+                            profile_picture_url,
+                            signup_date,
+                            first_name,
+                            last_name,
+                            banner_url
                         FROM users
                         ORDER BY username
                         """
@@ -59,7 +74,7 @@ class UserRepository:
         except Exception:
             return {"message": "Could not get all users"}
 
-    def create(self, user_in: UserIn) -> UserOut:
+    def create_user(self, user_in: UserIn) -> UserOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
@@ -67,16 +82,16 @@ class UserRepository:
                     INSERT INTO users
                         (
                             username,
-                            email,
+                            email_address,
                             password,
-                            profile_picture,
+                            profile_picture_url,
                             first_name,
                             last_name,
                             banner_url
                         )
                     VALUES
                         (%s, %s, %s, %s, %s, %s, %s)
-                    RETURNING id
+                    RETURNING user_id, username, email_address, password, profile_picture_url, signup_date, first_name, last_name, banner_url
                     """,
                     [
                         user_in.username,
@@ -101,3 +116,19 @@ class UserRepository:
                     banner_url=record[8],
                 )
                 return user_out
+
+    def delete_user(self, user_id: int) -> bool:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        DELETE FROM users
+                        WHERE user_id = %s
+                        """,
+                        [user_id],
+                    )
+                    # Check if any rows were affected
+                    return db.rowcount > 0
+        except Exception:
+            return False
