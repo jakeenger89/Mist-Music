@@ -4,7 +4,7 @@ from datetime import datetime
 from queries.pool import pool
 
 
-class UserIn(BaseModel):
+class AccountIn(BaseModel):
     username: str
     email_address: str
     password: str
@@ -15,14 +15,15 @@ class UserIn(BaseModel):
     signup_date: Optional[datetime] = None
 
 
-class UserOut(UserIn):
-    user_id: int
+class AccountOut(AccountIn):
+    account_id: int
     signup_date: datetime
 
+class AccountOutWithPassword(AccountOut):
+    hashed_password: str
 
-
-class UserQueries:
-    def get_users(self):
+class AccountQueries:
+    def get_accounts(self):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -30,36 +31,36 @@ class UserQueries:
                     Select info here
                     """
                 )
-                users = []
+                accounts = []
                 rows = cur.fetchall()
                 for row in rows:
-                    user = users.append(user)
-                return users
+                    account = accounts.append(account)
+                return accounts
     # def get_all_users(self):
-class UserRepository:
-    def get_all_users(self) -> List[UserOut]:
+class AccountQueries:
+    def get_all_accounts(self) -> List[AccountOut]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        SELECT user_id,
-                            username,
-                            email_address,
-                            password,
-                            profile_picture_url,
-                            signup_date,
-                            first_name,
-                            last_name,
-                            banner_url
+                        SELECT account_id,
+                            , username
+                            , email
+                            , password
+                            , profile_picture
+                            , signup_date
+                            , first_name
+                            , last_name
+                            , banner_url
                         FROM users
                         ORDER BY username
                         """
                     )
                     result = []
                     for record in db:
-                        user_out = UserOut(
-                            user_id=record[0],
+                        account_out = AccountOut(
+                            account_id=record[0],
                             username=record[1],
                             email_address=record[2],
                             password=record[3],
@@ -69,12 +70,12 @@ class UserRepository:
                             last_name=record[7],
                             banner_url=record[8],
                         )
-                        result.append(user_out)
+                        result.append(account_out)
                     return result
         except Exception:
             return {"message": "Could not get all users"}
 
-    def create_user(self, user_in: UserIn) -> UserOut:
+    def create(self, account_in: AccountIn) -> AccountOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
@@ -94,18 +95,18 @@ class UserRepository:
                     RETURNING user_id, username, email_address, password, profile_picture_url, signup_date, first_name, last_name, banner_url
                     """,
                     [
-                        user_in.username,
-                        user_in.email_address,
-                        user_in.password,
-                        user_in.profile_picture_url,
-                        user_in.first_name,
-                        user_in.last_name,
-                        user_in.banner_url,
+                        account_in.username,
+                        account_in.email_address,
+                        account_in.password,
+                        account_in.profile_picture_url,
+                        account_in.first_name,
+                        account_in.last_name,
+                        account_in.banner_url,
                     ],
                 )
                 record = db.fetchone()
-                user_out = UserOut(
-                    user_id=record[0],
+                AccountOut = AccountOut(
+                    account_id=record[0],
                     username=record[1],
                     email_address=record[2],
                     password=record[3],
@@ -115,20 +116,4 @@ class UserRepository:
                     last_name=record[7],
                     banner_url=record[8],
                 )
-                return user_out
-
-    def delete_user(self, user_id: int) -> bool:
-        try:
-            with pool.connection() as conn:
-                with conn.cursor() as db:
-                    db.execute(
-                        """
-                        DELETE FROM users
-                        WHERE user_id = %s
-                        """,
-                        [user_id],
-                    )
-                    # Check if any rows were affected
-                    return db.rowcount > 0
-        except Exception:
-            return False
+                return AccountOut
