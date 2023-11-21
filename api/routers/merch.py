@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends
 from queries.merch import MerchIn, MerchOut, MerchQueries
 from typing import List
 
@@ -12,5 +12,5 @@ def merch_list(q: MerchQueries = Depends()) -> List[MerchOut]:
 
 
 @router.post("/api/merch", response_model=MerchOut)
-def create_merch(merch: MerchIn, q: MerchQueries = Depends()) -> MerchOut:
+def create_merch(merch: MerchIn, q: MerchQueries = Depends()):
     return q.create_merch(merch)
