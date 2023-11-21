@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from .pool import pool
-from typing import List, Union
+from typing import List, Union, Optional
 
 
 class Error(BaseModel):
@@ -28,7 +28,24 @@ class MerchOut(BaseModel):
 
 class MerchQueries:
     def get_one_merch(self, merch_id: int) -> Optional[MerchOut]:
-        pass
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    result = db.execute(
+                        """
+                        SELECT *
+                        FROM merchandise
+                        WHERE item_id = %s
+                        """,
+                        [merch_id]
+                    )
+                    record = result.fetchone()
+                    if record is None:
+                        return None
+                    return self.record_to_merch_out(record)
+        except Exception as e:
+            print(e)
+            return {"message": "Could not get the item"}
 
     def delete_merch(self, merch_id: int) -> bool:
         try:
