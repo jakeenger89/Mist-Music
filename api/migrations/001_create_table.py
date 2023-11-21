@@ -31,7 +31,8 @@ steps = [
         release_date VARCHAR(20),
         length INTEGER,
         bpm VARCHAR(4),
-        rating INTEGER
+        rating INTEGER,
+        account_id INTEGER REFERENCES account(account_id)
     );
 
     """,
