@@ -18,6 +18,7 @@ services:
     environment:
       DATABASE_URL: postgresql://mistmusic:mistmusic@postgres/mistdb
       CORS_HOST: http://localhost:3000
+      SIGNING_KEY: 4c9af740f86e0e2f32be8c786a8a14584b565c07f93c1cd622600479c05f85f9
     build:
       context: api
       dockerfile: Dockerfile.dev
@@ -25,9 +26,6 @@ services:
       - 8000:8000
     volumes:
       - ./api:/app
-
-
-
   ghi:
     image: node:lts-bullseye
     command: /bin/bash run.sh
