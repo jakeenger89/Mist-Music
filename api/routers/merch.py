@@ -23,3 +23,11 @@ def update_merch(
     q: MerchQueries = Depends()
 ) -> Union[MerchOut, Error]:
     return q.update_merch(item_id, merch)
+
+
+@router.delete("/api/merch/{item_id}", response_model=bool)
+def delete_merch(
+    item_id: int,
+    q: MerchQueries = Depends(),
+) -> bool:
+    return q.delete_merch(item_id)
