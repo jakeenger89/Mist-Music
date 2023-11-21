@@ -22,6 +22,7 @@ class SongIn(BaseModel):
     length: int
     bpm: constr(max_length=4)
     rating: str
+    account_id: int
 
 
 class SongOut(BaseModel):
@@ -117,9 +118,9 @@ class SongQueries:
 
                     cur.execute(
                         """
-                        INSERT INTO songs (name, artist, album, genre, release_date, length, bpm)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
-                        RETURNING song_id
+                        INSERT INTO songs (name, artist, album, genre, release_date, length, bpm, rating)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        RETURNING song_id, name, artist, album, genre, release_date, length, bpm, rating
                         """,
                         (
                             song_data.name,
@@ -129,6 +130,7 @@ class SongQueries:
                             song_data.release_date,
                             song_data.length,
                             song_data.bpm,
+                            song_data.account_id
                         ),
                     )
 
