@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends, Response
 
 
 router = APIRouter()
+song_queries = SongQueries()
+
 #get a specific song
 @router.get("/songs/{song_id}", response_model=SongsOut)
 def get_song(
@@ -52,3 +54,4 @@ def like_song(song_id: int, like: Like, queries: SongQueries = Depends()):
 def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends()):
     queries.unlike_song(song_id, like.account_id)
     return True
+
