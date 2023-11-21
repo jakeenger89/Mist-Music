@@ -27,6 +27,9 @@ class MerchOut(BaseModel):
 
 
 class MerchQueries:
+    def get_one_merch(self, merch_id: int) -> Optional[MerchOut]:
+        pass
+
     def delete_merch(self, merch_id: int) -> bool:
         try:
             with pool.connection() as conn:
