@@ -45,7 +45,7 @@ def delete_song(song_id: int, queries: SongQueries = Depends()):
 #get all liked songs from an account
 @router.get("/liked-songs/{account_id}", response_model=SongsOut, operation_id="get_liked_songs_by_account")
 def get_liked_songs_by_account(account_id: int, queries: SongQueries = Depends()):
-    return queries.get_liked_songs_by_account(account_id)
+    return queries.get_songs(account_id)
 
 #like a song
 @router.post("/songs/{song_id}/like", response_model=bool)

@@ -77,7 +77,7 @@ class SongQueries:
                     [song_id],
                 )
 
-    def get_songs(self):
+    def get_songs(self, account_id=None):
         try:
             with pool.connection() as conn:
                 with conn.cursor() as cur:
@@ -91,6 +91,9 @@ class SongQueries:
                         # Handle the case where 'rating' is None
                         rating = row[8] if row[8] is not None else "N/A"
 
+                        # Check if the song is liked by the user and include the 'liked_by_user' attribute
+                        liked_by_user = self.is_song_liked_by_user(row[0], account_id) if account_id else False
+
                         song = {
                             'song_id': row[0],
                             'name': row[1],
@@ -101,13 +104,20 @@ class SongQueries:
                             'length': row[6],
                             'bpm': row[7],
                             'rating': rating,
-                            'liked_by_user': False  # You might need to determine this based on user data
+                            'liked_by_user': liked_by_user
                         }
                         songs.append(song)
+
+                    if account_id:
+                        # If account_id is specified, filter out songs not liked by the account
+                        songs = [song for song in songs if song['liked_by_user']]
+
                     return {"songs": songs}
         except Exception as e:
             print(f"Error in get_songs: {e}")
             raise HTTPException(status_code=500, detail="Error")
+
+
 
     def create_song(self, song_data: SongIn):
         with pool.connection() as conn:
@@ -188,20 +198,34 @@ class SongQueries:
                             'liked_by_user': True  # Indicates that the user has liked this song
                         }
                         liked_songs.append(song)
-                    return SongsOut(songs=liked_songs)  # Adjust the return value to match the response model
+                    return {"songs": liked_songs}
                 except Exception as e:
                     print(f"Error in get_liked_songs_by_account: {e}")
                     raise HTTPException(status_code=500, detail="Error retrieving liked songs")
+
+    # Helper method to check if a song is liked by a user
+    def is_song_liked_by_user(self, song_id, account_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT 1
+                    FROM liked_songs
+                    WHERE account_id = %s AND song_id = %s
+                    """,
+                    [account_id, song_id],
+                )
+                return cur.fetchone() is not None
 
 
     def like_song(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 try:
-                    #like a song
+                    # Like a song
                     cur.execute(
                         """
-                        INSERT INTO song_likes (account_id, song_id)
+                        INSERT INTO liked_songs (account_id, song_id)
                         VALUES (%s, %s)
                         """,
                         [account_id, song_id],
@@ -212,14 +236,15 @@ class SongQueries:
                     print(e)
                     return False
 
+    # Update the unlike_song method to set liked_by_user to False
     def unlike_song(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 try:
-                    # Delete a liked song
+                    # Unlike a song
                     cur.execute(
                         """
-                        DELETE FROM song_likes
+                        DELETE FROM liked_songs
                         WHERE account_id = %s AND song_id = %s
                         """,
                         [account_id, song_id],
