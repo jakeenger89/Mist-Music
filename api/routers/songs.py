@@ -1,7 +1,7 @@
 from queries.songs import SongIn, SongsOut, SongQueries, Like
 from typing import Literal
-from fastapi import APIRouter, Depends, Response
-
+from fastapi import APIRouter, Depends, Response, HTTPException
+from jwtdown_fastapi.authentication import Authenticator
 
 router = APIRouter()
 song_queries = SongQueries()
@@ -35,12 +35,18 @@ def create_song(
     return queries.create_song(song)
 
 
-#delete a song
+#DELETE a song
 @router.delete("/songs/{songs_id}", response_model=bool)
-def delete_song(song_id: int, queries: SongQueries = Depends()):
+def delete_song(
+    song_id: int,
+    authenticator: Authenticator = Depends(),
+    queries: SongQueries = Depends(),
+):
+    account_id = authenticator.get_account_id()
+    if not queries.is_user_allowed_to_delete_song(song_id, account_id):
+        raise HTTPException(status_code=403, detail="You are not allowed to delete")
     queries.delete_song(song_id)
     return True
-
 
 #like a song
 @router.post("/songs/{song_id}/like", response_model=bool)
@@ -54,4 +60,3 @@ def like_song(song_id: int, like: Like, queries: SongQueries = Depends()):
 def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends()):
     queries.unlike_song(song_id, like.account_id)
     return True
-

@@ -156,7 +156,6 @@ class SongQueries:
                     print(f"Error in create_song: {e}")
                     raise HTTPException(status_code=500, detail=f"Could not add the song. Error: {e}")
 
-
     def like_song(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
@@ -203,3 +202,17 @@ class SongQueries:
                     """,
                     [song_id]
                 )
+
+    def is_user_allowed_to_delete_song(self, song_id, account_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT account_id
+                    FROM songs
+                    WHERE song_id = %s
+                    """,
+                    [song_id],
+                )
+                song_owner_account_id = cur.fetchone()[0]
+                return account_id == song_owner_account_id
