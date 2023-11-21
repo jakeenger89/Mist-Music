@@ -7,10 +7,6 @@ class Error(BaseModel):
     message: str
 
 
-class Error(BaseModel):
-    message: str
-
-
 class MerchIn(BaseModel):
     name: str
     image_url: str
@@ -61,7 +57,6 @@ class MerchQueries:
         except Exception as e:
             print(e)
             return {"message": "Could not update item"}
-
 
     def create_merch(self, merch: MerchIn) -> MerchOut:
         with pool.connection() as conn:
