@@ -7,6 +7,10 @@ class Error(BaseModel):
     message: str
 
 
+class Error(BaseModel):
+    message: str
+
+
 class MerchIn(BaseModel):
     name: str
     image_url: str
@@ -27,6 +31,7 @@ class MerchOut(BaseModel):
 
 
 class MerchQueries:
+<<<<<<< HEAD
     def update_merch(self, merch_id: int, merch: MerchIn) -> Union[MerchOut, Error]:
         try:
             with pool.connection() as conn:
@@ -59,6 +64,8 @@ class MerchQueries:
             return {"message": "Could not update item"}
 
 
+=======
+>>>>>>> main
     def create_merch(self, merch: MerchIn) -> MerchOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
