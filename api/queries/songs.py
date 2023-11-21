@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 
 
+
 class SongIn(BaseModel):
     name: str
     artist: str
@@ -155,6 +156,42 @@ class SongQueries:
                 except Exception as e:
                     print(f"Error in create_song: {e}")
                     raise HTTPException(status_code=500, detail=f"Could not add the song. Error: {e}")
+
+    #all liked songs an account has LIKED
+    def get_liked_songs_by_account(self, account_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                try:
+                    cur.execute(
+                        """
+                        SELECT s.song_id, s.name, s.artist, s.album, s.genre, s.release_date,
+                        s.length, s.bpm, s.rating, l.account_id AS liked_by_user
+                        FROM songs s
+                        INNER JOIN liked_songs l ON s.song_id = l.song_id
+                        WHERE l.account_id = %s
+                        """,
+                        [account_id],
+                    )
+                    liked_songs = []
+                    rows = cur.fetchall()
+                    for row in rows:
+                        song = {
+                            'song_id': row[0],
+                            'name': row[1],
+                            'artist': row[2],
+                            'album': row[3],
+                            'genre': row[4],
+                            'release_date': row[5],
+                            'length': row[6],
+                            'bpm': row[7],
+                            'rating': row[8],
+                            'liked_by_user': True  # Indicates that the user has liked this song
+                        }
+                        liked_songs.append(song)
+                    return SongsOut(songs=liked_songs)  # Adjust the return value to match the response model
+                except Exception as e:
+                    print(f"Error in get_liked_songs_by_account: {e}")
+                    raise HTTPException(status_code=500, detail="Error retrieving liked songs")
 
 
     def like_song(self, song_id, account_id):

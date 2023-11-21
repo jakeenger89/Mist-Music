@@ -1,6 +1,7 @@
 from queries.songs import SongIn, SongsOut, SongQueries, Like
 from typing import Literal
 from fastapi import APIRouter, Depends, Response
+from .authenticator import UserAuthenticator
 
 
 router = APIRouter()
@@ -41,6 +42,10 @@ def delete_song(song_id: int, queries: SongQueries = Depends()):
     queries.delete_song(song_id)
     return True
 
+#get all liked songs from an account
+@router.get("/liked-songs/{account_id}", response_model=SongsOut, operation_id="get_liked_songs_by_account")
+def get_liked_songs_by_account(account_id: int, queries: SongQueries = Depends()):
+    return queries.get_liked_songs_by_account(account_id)
 
 #like a song
 @router.post("/songs/{song_id}/like", response_model=bool)
@@ -54,14 +59,3 @@ def like_song(song_id: int, like: Like, queries: SongQueries = Depends()):
 def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends()):
     queries.unlike_song(song_id, like.account_id)
     return True
-
-@router.post("/songs", response_model=SongsOut, operation_id="create_song")
-def create_song(
-    song: SongIn,
-    queries: SongQueries = Depends(),
-):
-    try:
-        song_id = queries.create_song(song)
-        return {"song_id": song_id, **song.dict(), "liked_by_user": None}
-    except HTTPException as e:
-        return e
