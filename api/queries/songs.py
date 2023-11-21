@@ -1,5 +1,5 @@
 from typing import Optional, Literal, List
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 from queries.pool import pool
 from fastapi import HTTPException
 
@@ -18,8 +18,8 @@ class SongIn(BaseModel):
         "Classical",
     ]
     release_date: str
-    length: str
-    bpm: str
+    length: int
+    bpm: constr(max_length=4)
     rating: str
 
 
@@ -38,7 +38,7 @@ class SongOut(BaseModel):
         "Classical",
     ]
     release_date: str
-    length: str
+    length: int
     bpm: str
     rating: str
     liked_by_user: Optional[bool] = None  # Make it optional
@@ -102,6 +102,39 @@ class SongQueries:
         except Exception as e:
             print(f"Error in get_songs: {e}")
             raise HTTPException(status_code=500, detail="Error")
+
+    def create_song(self, song_data: SongIn):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                try:
+                    # Explicitly convert length to integer
+                    song_data.length = int(song_data.length)
+                    song_data.bpm = str(song_data.bpm)[:4]
+
+                    cur.execute(
+                        """
+                        INSERT INTO songs (name, artist, album, genre, release_date, length, bpm)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        RETURNING song_id
+                        """,
+                        (
+                            song_data.name,
+                            song_data.artist,g
+                            song_data.album,
+                            song_data.genre,
+                            song_data.release_date,
+                            song_data.length,
+                            song_data.bpm,
+                        ),
+                    )
+
+                    # Fetch the inserted song_id and return it as an integer
+                    song_id = cur.fetchone()[0]
+                    return song_id
+                except Exception as e:
+                    print(f"Error in create_song: {e}")
+                    raise HTTPException(status_code=500, detail=f"Could not add the song. Error: {e}")
+
 
     def like_song(self, song_id, account_id):
         with pool.connection() as conn:
