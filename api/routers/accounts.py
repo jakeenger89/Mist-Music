@@ -5,7 +5,7 @@ from queries.accounts import AccountQueries, AccountIn, AccountOut, AccountQueri
 router = APIRouter()
 
 
-@router.get("/api/account", response_model = AccountOut)
+@router.get("/api/account", response_model=AccountOut)
 def get_all_accounts(queries: AccountQueries = Depends()):
     return {
         "accounts": queries.get_all_accounts(),

@@ -4,78 +4,71 @@ from datetime import datetime
 from queries.pool import pool
 
 
+class DuplicateAccountError(ValueError):
+    pass
+
+
 class AccountIn(BaseModel):
     username: str
-    email_address: str
+    email: str
     password: str
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    profile_picture_url: Optional[str] = None
-    banner_url: Optional[str] = None
-    signup_date: Optional[datetime] = None
 
 
-class AccountOut(AccountIn):
-    account_id: int
-    signup_date: datetime
+class AccountOut(BaseModel):
+    account_id: str
+    email: str
+    username: str
+
 
 class AccountOutWithPassword(AccountOut):
     hashed_password: str
 
-class AccountQueries:
-    def get_accounts(self):
-        with pool.connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    """
-                    Select info here
-                    """
-                )
-                accounts = []
-                rows = cur.fetchall()
-                for row in rows:
-                    account = accounts.append(account)
-                return accounts
-    # def get_all_users(self):
-class AccountQueries:
-    def get_all_accounts(self) -> List[AccountOut]:
+
+class AccountQueries():
+    def get(self, email: str) -> AccountOutWithPassword:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
                     db.execute(
                         """
                         SELECT account_id,
-                            , username
-                            , email
-                            , password
-                            , profile_picture
-                            , signup_date
-                            , first_name
-                            , last_name
-                            , banner_url
-                        FROM users
+                            username,
+                            email,
+                            password
+                        FROM account
+                        WHERE email = %s
                         ORDER BY username
-                        """
+                        """,
+                        [email],
                     )
-                    result = []
-                    for record in db:
-                        account_out = AccountOut(
+                    record = db.fetchone()
+                    if record:
+                        account_out = AccountOutWithPassword(
                             account_id=record[0],
                             username=record[1],
-                            email_address=record[2],
+                            email=record[2],
                             password=record[3],
-                            profile_picture_url=record[4],
-                            signup_date=record[5],
-                            first_name=record[6],
-                            last_name=record[7],
-                            banner_url=record[8],
+                            hashed_password=record[3],
                         )
-                        result.append(account_out)
-                    return result
-        except Exception:
-            return {"message": "Could not get all users"}
+                        return account_out
+                    else:
+                        return AccountOutWithPassword(
+                            account_id="",
+                            username="",
+                            email="",
+                            password="",
+                            hashed_password=""
+                        )
+        except Exception as e:
+            return AccountOutWithPassword(
+                account_id="",
+                username="",
+                email="",
+                password="",
+                hashed_password="",
+            )
 
-    def create_account(self, account_in: AccountIn) -> AccountOut:
+    def create(self, info: AccountIn, hashed_password: str) -> AccountOutWithPassword:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
@@ -83,37 +76,25 @@ class AccountQueries:
                     INSERT INTO account
                         (
                             username,
-                            email_address,
-                            password,
-                            profile_picture_url,
-                            first_name,
-                            last_name,
-                            banner_url
+                            email,
+                            password
                         )
                     VALUES
-                        (%s, %s, %s, %s, %s, %s, %s)
-                    RETURNING account_id, username, email_address, password, profile_picture_url, signup_date, first_name, last_name, banner_url
+                        (%s, %s, %s)
+                    RETURNING account_id, username, email, password
                     """,
                     [
-                        account_in.username,
-                        account_in.email_address,
-                        account_in.password,
-                        account_in.profile_picture_url,
-                        account_in.first_name,
-                        account_in.last_name,
-                        account_in.banner_url,
+                        info.username,
+                        info.email,
+                        hashed_password,
                     ],
                 )
                 record = db.fetchone()
-                AccountOut = AccountOut(
+                accountOut = AccountOutWithPassword(
                     account_id=record[0],
                     username=record[1],
-                    email_address=record[2],
+                    email=record[2],
                     password=record[3],
-                    profile_picture_url=record[4],
-                    signup_date=record[5],
-                    first_name=record[6],
-                    last_name=record[7],
-                    banner_url=record[8],
+                    hashed_password=hashed_password,
                 )
-                return AccountOut
+                return accountOut
