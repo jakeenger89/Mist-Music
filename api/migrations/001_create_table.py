@@ -4,7 +4,7 @@ steps = [
     CREATE TABLE account (
         account_id SERIAL PRIMARY KEY NOT NULL,
         username VARCHAR(20) UNIQUE NOT NULL,
-        email_address VARCHAR(100) UNIQUE NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
         password VARCHAR(100) NOT NULL,
         first_name VARCHAR(50),
         last_name  VARCHAR(50),
@@ -28,10 +28,11 @@ steps = [
         artist VARCHAR(50),
         album VARCHAR(100),
         genre VARCHAR(50),
-        release_date DATE,
-        length INTERVAL,
+        release_date VARCHAR(20),
+        length INTEGER,
         bpm VARCHAR(4),
-        rating INTEGER
+        rating INTEGER,
+        account_id INTEGER REFERENCES account(account_id)
     );
 
     """,

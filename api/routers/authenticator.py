@@ -5,12 +5,12 @@ from queries.accounts import AccountQueries, AccountOut, AccountOutWithPassword
 
 
 class UserAuthenticator(Authenticator):
-    async def get_account_data (
+    async def get_account_data(
             self,
-            username: str,
+            email: str,
             accounts: AccountQueries,
     ):
-        return accounts.get(username)
+        return accounts.get(email)
 
     def get_account_getter(
             self,
@@ -21,7 +21,8 @@ class UserAuthenticator(Authenticator):
     def get_hashed_password(self, account: AccountOutWithPassword):
         return account.hashed_password
 
-    def get_user_data_for_cookie(self, account: AccountOut):
-        return account.username, AccountOut(**account.dict())
+    def get_account_data_for_cookie(self, account: AccountOut):
+        return account.email, AccountOut(**account.dict())
 
-authenticator = UserAuthenticator(os.environ["SIGNIN_KEY"])
+
+authenticator = UserAuthenticator(os.environ["SIGNING_KEY"])
