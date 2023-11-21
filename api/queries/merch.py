@@ -3,6 +3,10 @@ from .pool import pool
 from typing import List
 
 
+class Error(BaseModel):
+    message: str
+
+
 class MerchIn(BaseModel):
     name: str
     image_url: str
@@ -13,7 +17,7 @@ class MerchIn(BaseModel):
 
 
 class MerchOut(BaseModel):
-    item_id: int | str
+    item_id: int
     name: str
     image_url: str
     price: int
@@ -23,6 +27,35 @@ class MerchOut(BaseModel):
 
 
 class MerchQueries:
+    def create_merch(self, merch: MerchIn) -> MerchOut:
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                result = db.execute(
+                    """
+                    INSERT INTO merchandise(
+                        name,
+                        image_url,
+                        price,
+                        size,
+                        description,
+                        quantity
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    RETURNING item_id;
+                    """,
+                    [
+                        merch.name,
+                        merch.image_url,
+                        merch.price,
+                        merch.size,
+                        merch.description,
+                        merch.quantity
+                    ]
+                )
+                id = result.fetchone()[0]
+                old_data = merch.dict()
+                return MerchOut(item_id=id, **old_data)
+
     def get_all_merch(self) -> List[MerchOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:

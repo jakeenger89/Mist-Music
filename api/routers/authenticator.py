@@ -24,5 +24,4 @@ class UserAuthenticator(Authenticator):
     def get_account_data_for_cookie(self, account: AccountOut):
         return account.email, AccountOut(**account.dict())
 
-
 authenticator = UserAuthenticator(os.environ["SIGNING_KEY"])
