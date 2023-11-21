@@ -75,12 +75,12 @@ class AccountQueries:
         except Exception:
             return {"message": "Could not get all users"}
 
-    def create(self, account_in: AccountIn) -> AccountOut:
+    def create_account(self, account_in: AccountIn) -> AccountOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
                     """
-                    INSERT INTO users
+                    INSERT INTO account
                         (
                             username,
                             email_address,
@@ -92,7 +92,7 @@ class AccountQueries:
                         )
                     VALUES
                         (%s, %s, %s, %s, %s, %s, %s)
-                    RETURNING user_id, username, email_address, password, profile_picture_url, signup_date, first_name, last_name, banner_url
+                    RETURNING account_id, username, email_address, password, profile_picture_url, signup_date, first_name, last_name, banner_url
                     """,
                     [
                         account_in.username,

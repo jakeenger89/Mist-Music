@@ -27,10 +27,11 @@ def get_account(
 
 @router.post("/api/account", response_model=AccountOut)
 def create_account(
-    users: AccountIn,
+    accounts: AccountIn,
     repo: AccountQueries = Depends()
 ):
-    return repo.create_user(users)
+    # print('account data', accounts)
+    return repo.create_account(accounts)
 
 
 @router.delete("/api/account/{account_id}", response_model=dict)
