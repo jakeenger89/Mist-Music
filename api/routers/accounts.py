@@ -25,14 +25,6 @@ def get_account(
         return record
 
 
-@router.post("/api/account", response_model=AccountOut)
-def create_account(
-    users: AccountIn,
-    repo: AccountQueries = Depends()
-):
-    return repo.create_user(users)
-
-
 @router.delete("/api/account/{account_id}", response_model=dict)
 def delete_account(
     account_id: int,
