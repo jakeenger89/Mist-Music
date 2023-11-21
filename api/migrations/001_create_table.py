@@ -62,7 +62,7 @@ steps = [
         item_id SERIAL PRIMARY KEY NOT NULL,
         name VARCHAR(100) NOT NULL,
         image_url VARCHAR(1000) NOT NULL,
-        price MONEY NOT NULL,
+        price SMALLINT NOT NULL,
         size VARCHAR(30),
         description VARCHAR(1000),
         quantity SMALLINT
