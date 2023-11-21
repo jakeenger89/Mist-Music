@@ -2,6 +2,7 @@ from typing import Optional, Literal, List
 from pydantic import BaseModel, constr
 from queries.pool import pool
 from fastapi import HTTPException
+from fastapi.responses import JSONResponse
 
 
 class SongIn(BaseModel):
@@ -85,6 +86,9 @@ class SongQueries:
                     songs = []
                     rows = cur.fetchall()
                     for row in rows:
+                        # Handle the case where 'rating' is None
+                        rating = row[8] if row[8] is not None else "N/A"
+
                         song = {
                             'song_id': row[0],
                             'name': row[1],
@@ -94,7 +98,7 @@ class SongQueries:
                             'release_date': row[5],
                             'length': row[6],
                             'bpm': row[7],
-                            'rating': row[8],
+                            'rating': rating,
                             'liked_by_user': False  # You might need to determine this based on user data
                         }
                         songs.append(song)
@@ -119,7 +123,7 @@ class SongQueries:
                         """,
                         (
                             song_data.name,
-                            song_data.artist,g
+                            song_data.artist,
                             song_data.album,
                             song_data.genre,
                             song_data.release_date,
@@ -128,9 +132,24 @@ class SongQueries:
                         ),
                     )
 
-                    # Fetch the inserted song_id and return it as an integer
+                    # Fetch the inserted song_id
                     song_id = cur.fetchone()[0]
-                    return song_id
+
+                    # Construct the response
+                    response_data = {
+                        "song_id": song_id,
+                        "name": song_data.name,
+                        "artist": song_data.artist,
+                        "album": song_data.album,
+                        "genre": song_data.genre,
+                        "release_date": song_data.release_date,
+                        "length": song_data.length,
+                        "bpm": song_data.bpm,
+                        "rating": song_data.rating,
+                        "liked_by_user": False,
+                    }
+
+                    return JSONResponse(content=response_data)
                 except Exception as e:
                     print(f"Error in create_song: {e}")
                     raise HTTPException(status_code=500, detail=f"Could not add the song. Error: {e}")
