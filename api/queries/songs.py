@@ -108,8 +108,6 @@ class SongQueries:
             print(f"Error in get_songs: {e}")
             raise HTTPException(status_code=500, detail="Error")
 
-<<<<<<< HEAD
-=======
     def create_song(self, song_data: SongIn):
         with pool.connection() as conn:
             with conn.cursor() as cur:
@@ -159,7 +157,6 @@ class SongQueries:
                     raise HTTPException(status_code=500, detail=f"Could not add the song. Error: {e}")
 
 
->>>>>>> main
     def like_song(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
