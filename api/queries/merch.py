@@ -27,6 +27,22 @@ class MerchOut(BaseModel):
 
 
 class MerchQueries:
+    def delete_merch(self, merch_id: int) -> bool:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        DELETE FROM merchandise
+                        WHERE item_id = %s
+                        """,
+                        [merch_id]
+                    )
+                    return True
+        except Exception as e:
+            print(e)
+            return False
+
     def update_merch(self, merch_id: int, merch: MerchIn) -> Union[MerchOut, Error]:
         try:
             with pool.connection() as conn:
