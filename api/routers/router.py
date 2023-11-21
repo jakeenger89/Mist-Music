@@ -15,6 +15,7 @@ from queries.accounts import (
     AccountOut,
     AccountQueries,
     DuplicateAccountError,
+    AccountUpdateIn,
 )
 
 
@@ -29,6 +30,16 @@ class AccountToken(Token):
 
 class HttpError(BaseModel):
     detail: str
+
+
+class UpdateAccountForm(BaseModel):
+    username: str
+    email: str
+    new_password: str = None
+    first_name: str = None
+    last_name: str = None
+    profile_picture_url: str = None
+    banner_url: str = None
 
 
 router = APIRouter()
@@ -72,3 +83,26 @@ async def create_account(
     form = AccountForm(username=info.email, password=info.password)
     token = await authenticator.login(response, request, form, accounts)
     return AccountToken(account=account, **token.dict())
+
+
+#@router.put("/api/account/{account_id}", response_model=AccountOut)
+#def update_account(
+#    account_id: int,
+#    account_update: AccountUpdateIn,
+#    repo: AccountQueries = Depends()
+#):
+#    updated_account = repo.update_account(account_id, account_update)
+#    return updated_account
+
+@router.put("/api/account/{account_id}", response_model=AccountOut)
+def update_account(
+    account_id: int,
+    account_update: AccountUpdateIn,
+    repo: AccountQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data)
+):
+    if account_data:
+        updated_account = repo.update_account(account_id, account_update)
+        return updated_account
+    else:
+        raise HTTPException(status_code=401, detail="Not authenticated")

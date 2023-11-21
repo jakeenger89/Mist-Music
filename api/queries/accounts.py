@@ -24,6 +24,14 @@ class AccountOutWithPassword(AccountOut):
     hashed_password: str
 
 
+class AccountUpdateIn(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    profile_picture_url: Optional[str] = None
+    banner_url: Optional[str] = None
+    signup_date: Optional[datetime] = None
+
+
 class AccountQueries():
     def get(self, email: str) -> AccountOutWithPassword:
         try:
@@ -98,3 +106,44 @@ class AccountQueries():
                     hashed_password=hashed_password,
                 )
                 return accountOut
+
+
+    def update_account(self, account_id: int, info: AccountUpdateIn) -> AccountOut:
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                try:
+                    db.execute(
+                        """
+                        UPDATE account
+                        SET first_name = %s, last_name = %s,
+                            profile_picture_url = %s, banner_url = %s,
+                            signup_date = %s
+                        WHERE account_id = %s
+                        RETURNING account_id, username, email, password,
+                            first_name, last_name, profile_picture_url,
+                            banner_url, signup_date
+                        """,
+                        [
+                            info.first_name, info.last_name,
+                            info.profile_picture_url, info.banner_url,
+                            info.signup_date, account_id
+                        ],
+                    )
+                    record = db.fetchone()
+                    if record:
+                        updated_account = AccountOut(
+                            account_id=record[0],
+                            username=record[1],
+                            email=record[2],
+                            password=record[3],  # You can exclude this if you don't want to return the password
+                            first_name=record[4],
+                            last_name=record[5],
+                            profile_picture_url=record[6],
+                            banner_url=record[7],
+                            signup_date=record[8],
+                        )
+                        return updated_account
+                    else:
+                        raise HTTPException(status_code=404, detail="Account not found")
+                except Exception as e:
+                    raise HTTPException(status_code=500, detail=str(e))
