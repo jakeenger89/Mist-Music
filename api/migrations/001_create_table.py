@@ -90,5 +90,23 @@ steps = [
     """
     DROP TABLE albums;
     """
+    ],
+
+    [
+    """
+    CREATE TABLE customer (
+        order_id SERIAL PRIMARY KEY NOT NULL,
+        first_name VARCHAR(100) NOT NULL,
+        last_name VARCHAR(100),
+        address VARCHAR(150) NOT NULL,
+        city VARCHAR(100) NOT NULL,
+        zipcode SMALLINT NOT NULL,
+        state varchar(20) NOT NULL
+    );
+    """,
+
+    """
+    DROP TABLE customer;
+    """
     ]
 ]
