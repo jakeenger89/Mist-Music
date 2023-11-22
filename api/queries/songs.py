@@ -232,7 +232,7 @@ class SongQueries:
                     print(e)
                     return False
 
-    # Update the unlike_song method to set liked_by_user to False
+
     def unlike_song(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:

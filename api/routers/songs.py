@@ -1,13 +1,12 @@
 from queries.songs import SongIn, SongsOut, SongQueries, Like
-from typing import Literal
+from queries.accounts import AccountIn, AccountOut, AccountQueries, AccountOutWithPassword
 from fastapi import APIRouter, Depends, Response, HTTPException
-from .authenticator import authenticator
-from queries.accounts import AccountQueries
+from routers.authenticator import authenticator
 
 
 router = APIRouter()
 song_queries = SongQueries()
-
+aacount_querries = AccountQueries()
 
 #get a specific song
 @router.get("/songs/{song_id}", response_model=SongsOut)
@@ -28,12 +27,17 @@ def get_songs(queries: SongQueries = Depends()):
 
 
 #create a song
+#authentication required
 @router.post("/songs", response_model=SongsOut)
 def create_song(
     song: SongIn,
     queries: SongQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data)
 ):
-    return queries.create_song(song)
+    if account_data:
+        return queries.create_song(song)
+    else:
+        raise HTTPExcepton(status_code=401, detail="Not authorized")
 
 
 #DELETE a song
@@ -53,20 +57,35 @@ def delete_song(
 
 
 #get all liked songs from an account
+#authentication required
 @router.get("/liked-songs/{account_id}", response_model=SongsOut, operation_id="get_liked_songs_by_account")
-def get_liked_songs_by_account(account_id: int, queries: SongQueries = Depends()):
-    return queries.get_songs(account_id)
+def get_liked_songs_by_account(
+    account_id: int,
+    queries: SongQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data)
+):
+    if account_data:
+        return queries.get_songs(account_id)
+    else:
+        raise HTTPException(status_code=401, detail="Not authenticated")
 
 
 #like a song
+#authentication required
 @router.post("/songs/{song_id}/like", response_model=bool)
-def like_song(song_id: int, like: Like, queries: SongQueries = Depends()):
-    queries.like_song(song_id, like.account_id)
-    return True
+def like_song(song_id: int, like: Like, queries: SongQueries = Depends(), account_data: dict = Depends(authenticator.get_current_account_data)):
+    if account_data:
+        queries.like_song(song_id, like.account_id)
+        return True
+    else:
+        raise HTTPException(status_code=401, detail="Not authenticated")
 
-
-# Unlike a song
+# unlike a song
+#authentication required
 @router.delete("/songs/{song_id}/unlike", response_model=bool)
-def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends()):
-    queries.unlike_song(song_id, like.account_id)
-    return True
+def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends(), account_data: dict = Depends(authenticator.get_current_account_data)):
+    if account_data:
+        queries.unlike_song(song_id, like.account_id)
+        return True
+    else:
+        raise HTTPException(status_code=401, detail="Not authenticated")
