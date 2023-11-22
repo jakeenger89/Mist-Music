@@ -147,3 +147,20 @@ class AccountQueries():
                         raise HTTPException(status_code=404, detail="Account not found")
                 except Exception as e:
                     raise HTTPException(status_code=500, detail=str(e))
+
+
+    def delete_account(self, account_id: int) -> bool:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        DELETE FROM account
+                        WHERE account_id = %s
+                        """,
+                        [account_id],
+                    )
+                    return True
+        except Exception as e:
+            print(e)
+            return False
