@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from queries.merch import MerchIn, MerchOut, MerchQueries, Error
-from typing import List, Union
+from typing import List, Union, Optional
 
 
 router = APIRouter()
@@ -31,3 +31,15 @@ def delete_merch(
     q: MerchQueries = Depends(),
 ) -> bool:
     return q.delete_merch(item_id)
+
+
+@router.get("/api/merch/{item_id}", response_model=Optional[MerchOut])
+def get_one_merch(
+    item_id: int,
+    response: Response,
+    q: MerchQueries = Depends(),
+) -> MerchOut:
+    merch = q.get_one_merch(item_id)
+    if merch is None:
+        response.status_code = 404
+    return merch
