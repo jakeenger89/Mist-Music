@@ -12,7 +12,7 @@ aacount_querries = AccountQueries()
 @router.get("/songs/{song_id}", response_model=SongsOut)
 def get_song(
     song_id: int,
-    queries: SongQueries = Depends(),
+    queries: SongQueries = Depends(SongQueries),
 ):
     song = queries.get_song(song_id)
     if song is None:
@@ -37,7 +37,7 @@ def create_song(
     if account_data:
         return queries.create_song(song)
     else:
-        raise HTTPExcepton(status_code=401, detail="Not authorized")
+        raise HTTPException(status_code=401, detail="Not authorized")
 
 
 #DELETE a song
