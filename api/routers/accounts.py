@@ -6,8 +6,8 @@ router = APIRouter()
 
 
 @router.get("/api/account", response_model=AccountOut)
-def get_all_accounts(queries: AccountQueries = Depends()):
-    return queries.get()
+def get_accounts(queries: AccountQueries = Depends()):
+    return queries.get_accounts()
 
 
 
@@ -33,13 +33,13 @@ def get_account(
 #     return repo.create_account(accounts)
 
 
-@router.delete("/api/account/{account_id}", response_model=dict)
-def delete_account(
-    account_id: int,
-    repo: AccountQueries = Depends()
-):
-    success = repo.delete_account(account_id)
-    if success:
-        return {"message": "User deleted successfully kek"}
-    else:
-        raise HTTPException(status_code=404, detail="User not found lol")
+#@router.delete("/api/account/{account_id}", response_model=dict)
+#def delete_account(
+#    account_id: int,
+#    repo: AccountQueries = Depends()
+#):
+#    success = repo.delete_account(account_id)
+#    if success:
+#        return {"message": "User deleted successfully kek"}
+#    else:
+#        raise HTTPException(status_code=404, detail="User not found lol")
