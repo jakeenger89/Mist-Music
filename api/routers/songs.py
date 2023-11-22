@@ -8,18 +8,17 @@ from queries.accounts import AccountQueries
 router = APIRouter()
 song_queries = SongQueries()
 
+
 #get a specific song
 @router.get("/songs/{song_id}", response_model=SongsOut)
 def get_song(
     song_id: int,
-    response: Response,
     queries: SongQueries = Depends(),
 ):
-    record = queries.get_song(song_id)
-    if record is None:
-        response.status_code = 404
-    else:
-        return record
+    song = queries.get_song(song_id)
+    if song is None:
+        raise HTTPException(status_code=404, detail="Song not found")
+    return song
 
 
 #all songs

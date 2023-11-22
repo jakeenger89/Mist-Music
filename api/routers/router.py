@@ -106,3 +106,20 @@ def update_account(
         return updated_account
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
+
+
+
+@router.delete("/api/account/{account_id}", response_model=dict)
+def delete_account(
+    account_id: int,
+    repo: AccountQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data)
+):
+    if not account_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    success = repo.delete_account(account_id)
+    if success:
+        return {"message": "User deleted successfully kek"}
+    else:
+        raise HTTPException(status_code=404, detail="User not found lol")

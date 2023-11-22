@@ -66,10 +66,10 @@ class SongQueries:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT s.id AS song_id, s.name, s.artist,
+                    SELECT song.id AS song_id, s.name, s.artist,
                     s.album, s.genre, s.release_date, s.length,
                     s.bpm, s.rating, s.like_by_use
-                    FROM songs s
+                    FROM songs
                     INNER JOIN users u ON(s.id = u.id)
                     WHERE s.id = %s
                     """,

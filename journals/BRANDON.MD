@@ -1,4 +1,10 @@
-# November 13-17, 2021
+# November 19-22, 2023
+
+* Working on backend API for Songs & User authenticaton, POST for User, GET for a specific song in our database, and I was trying to get to playing around with the frontend code.
+
+This week I worked on the POST function for userauthenticaiton.
+
+# November 13-17, 2023
 
 * Setting up the Database
 
