@@ -77,7 +77,7 @@ class SongQueries:
                     [song_id],
                 )
 
-    def get_songs(self, account_id=None):
+    def get_songs(self):
         try:
             with pool.connection() as conn:
                 with conn.cursor() as cur:
@@ -91,9 +91,6 @@ class SongQueries:
                         # Handle the case where 'rating' is None
                         rating = row[8] if row[8] is not None else "N/A"
 
-                        # Check if the song is liked by the user and include the 'liked_by_user' attribute
-                        liked_by_user = self.is_song_liked_by_user(row[0], account_id) if account_id else False
-
                         song = {
                             'song_id': row[0],
                             'name': row[1],
@@ -104,13 +101,9 @@ class SongQueries:
                             'length': row[6],
                             'bpm': row[7],
                             'rating': rating,
-                            'liked_by_user': liked_by_user
+                            'liked_by_user': False  # Always set to False
                         }
                         songs.append(song)
-
-                    if account_id:
-                        # If account_id is specified, filter out songs not liked by the account
-                        songs = [song for song in songs if song['liked_by_user']]
 
                     return {"songs": songs}
         except Exception as e:
@@ -217,7 +210,6 @@ class SongQueries:
                 )
                 return cur.fetchone() is not None
 
-
     def like_song(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
@@ -236,7 +228,6 @@ class SongQueries:
                     print(e)
                     return False
 
-
     def unlike_song(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
@@ -254,6 +245,64 @@ class SongQueries:
                     # Handle errors (e.g., if the like doesn't exist)
                     print(e)
                     return False
+    #update a song
+    def update_song(self, song_id: int, update_data: SongIn, account_id: int):
+        #function below to check is song_id is tied that account_id
+        if not self.is_song_owner(song_id, account_id):
+            raise HTTPException(status_code=403, detail="Not authorized to update this song")
+
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                set_clause = ", ".join([f"{key} = %s" for key, value in update_data.dict(exclude_unset=True).items()])
+                update_values = [value for value in update_data.dict(exclude_unset=True).values()]
+                update_values.append(song_id)
+
+                # Update the song
+                cur.execute(
+                    f"""
+                    UPDATE songs
+                    SET {set_clause}
+                    WHERE song_id = %s
+                    RETURNING song_id, name, artist, album, genre, release_date, length, bpm, rating
+                    """,
+                    update_values
+                )
+
+                # Fetch the updated song data
+                updated_song = cur.fetchone()
+
+                # Check if the song was found and updated
+                if not updated_song:
+                    raise HTTPException(status_code=404, detail="Song not found")
+
+                # Construct the response data
+                response_data = {
+                    "song_id": updated_song[0],
+                    "name": updated_song[1],
+                    "artist": updated_song[2],
+                    "album": updated_song[3],
+                    "genre": updated_song[4],
+                    "release_date": updated_song[5],
+                    "length": updated_song[6],
+                    "bpm": updated_song[7],
+                    "rating": updated_song[8],
+                    "liked_by_user": False,  # Liked by user should not be updated
+                }
+
+                return JSONResponse(content=response_data)
+    #helper check for update song
+    def is_song_owner(self, song_id, account_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT 1
+                    FROM songs
+                    WHERE song_id = %s AND account_id = %s
+                    """,
+                    [song_id, account_id],
+                )
+                return cur.fetchone() is not None
 
     def delete_song(self, song_id):
         with pool.connection() as conn:
