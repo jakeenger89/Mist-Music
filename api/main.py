@@ -1,12 +1,11 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 import os
-from routers import songs, merch, accounts, router
+from routers import songs, merch, accounts
 from routers.authenticator import authenticator
 
 app = FastAPI()
 app.include_router(authenticator.router)
-app.include_router(router.router)
 
 app.add_middleware(
     CORSMiddleware,

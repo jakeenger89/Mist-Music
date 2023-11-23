@@ -1,4 +1,4 @@
-from queries.songs import SongIn, SongsOut, SongQueries, Like
+from queries.songs import SongIn, SongsOut, SongQueries, Like, SongOut
 from queries.accounts import AccountIn, AccountOut, AccountQueries, AccountOutWithPassword
 from fastapi import APIRouter, Depends, Response, HTTPException
 from routers.authenticator import authenticator
@@ -6,11 +6,12 @@ from routers.authenticator import authenticator
 
 router = APIRouter()
 song_queries = SongQueries()
-aacount_querries = AccountQueries()
+account_querries = AccountQueries()
 
-#get a specific song
-@router.get("/songs/{song_id}", response_model=SongsOut)
-def get_song(
+
+# get a specific song by song id [x]
+@router.get("/api/songs/{song_id}", response_model=SongOut)
+def get_song_id(
     song_id: int,
     queries: SongQueries = Depends(SongQueries),
 ):
@@ -20,15 +21,15 @@ def get_song(
     return song
 
 
-#all songs
-@router.get("/songs", response_model=SongsOut)
+#all songs w
+@router.get("/api/songs", response_model=SongsOut)
 def get_songs(queries: SongQueries = Depends()):
     return queries.get_songs()
 
 
-#create a song
+#create a song w
 #authentication required
-@router.post("/songs", response_model=SongsOut)
+@router.post("/api/songs", response_model=SongsOut)
 def create_song(
     song: SongIn,
     queries: SongQueries = Depends(),
@@ -41,7 +42,7 @@ def create_song(
 
 
 #DELETE a song
-@router.delete("/songs/{songs_id}", response_model=bool)
+@router.delete("/api/songs/{songs_id}", response_model=bool)
 def delete_song(
     song_id: int,
     account_data: dict = Depends(authenticator.get_current_account_data),
@@ -58,7 +59,7 @@ def delete_song(
 
 #get all liked songs from an account
 #authentication required
-@router.get("/liked-songs/{account_id}", response_model=SongsOut, operation_id="get_liked_songs_by_account")
+@router.get("/api/liked-songs/{account_id}", response_model=SongsOut, operation_id="get_liked_songs_by_account")
 def get_liked_songs_by_account(
     account_id: int,
     queries: SongQueries = Depends(),
@@ -72,7 +73,7 @@ def get_liked_songs_by_account(
 
 #like a song
 #authentication required
-@router.post("/songs/{song_id}/like", response_model=bool)
+@router.post("/api/songs/{song_id}/like", response_model=bool)
 def like_song(song_id: int, like: Like, queries: SongQueries = Depends(), account_data: dict = Depends(authenticator.get_current_account_data)):
     if account_data:
         queries.like_song(song_id, like.account_id)
@@ -82,7 +83,7 @@ def like_song(song_id: int, like: Like, queries: SongQueries = Depends(), accoun
 
 # unlike a song
 #authentication required
-@router.delete("/songs/{song_id}/unlike", response_model=bool)
+@router.delete("/api/songs/{song_id}/unlike", response_model=bool)
 def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends(), account_data: dict = Depends(authenticator.get_current_account_data)):
     if account_data:
         queries.unlike_song(song_id, like.account_id)
