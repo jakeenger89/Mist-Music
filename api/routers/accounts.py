@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, Response, HTTPException
 from queries.accounts import AccountQueries, AccountIn, AccountOut, AccountQueries
-
+from typing import List
 
 router = APIRouter()
 
 
-@router.get("/api/account", response_model=AccountOut)
+@router.get("/api/account", response_model=List[AccountOut])
 def get_accounts(queries: AccountQueries = Depends()):
     return queries.get_accounts()
 

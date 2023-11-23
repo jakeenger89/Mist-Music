@@ -86,7 +86,7 @@ class AccountQueries():
                         SELECT
                             account_id,
                             email,
-                            username,
+                            username
                         FROM account
                         ORDER BY username
                         """
@@ -103,46 +103,6 @@ class AccountQueries():
                     return result
         except Exception:
             return {"message": "Could not get all users"}
-
-    # def get_accounts(self, account_id=None):
-    #     try:
-    #         with pool.connection() as conn:
-    #             with conn.cursor() as cur:
-    #                 cur.execute("""
-    #                     SELECT song_id, name, artist, album, genre, release_date, length, bpm, rating
-    #                     FROM songs
-    #                 """)
-    #                 songs = []
-    #                 rows = cur.fetchall()
-    #                 for row in rows:
-    #                     # Handle the case where 'rating' is None
-    #                     rating = row[8] if row[8] is not None else "N/A"
-
-    #                     # Check if the song is liked by the user and include the 'liked_by_user' attribute
-    #                     liked_by_user = self.is_song_liked_by_user(row[0], account_id) if account_id else False
-
-    #                     song = {
-    #                         'song_id': row[0],
-    #                         'name': row[1],
-    #                         'artist': row[2],
-    #                         'album': row[3],
-    #                         'genre': row[4],
-    #                         'release_date': row[5],
-    #                         'length': row[6],
-    #                         'bpm': row[7],
-    #                         'rating': rating,
-    #                         'liked_by_user': liked_by_user
-    #                     }
-    #                     songs.append(song)
-
-    #                 if account_id:
-    #                     # If account_id is specified, filter out songs not liked by the account
-    #                     songs = [song for song in songs if song['liked_by_user']]
-
-    #                 return {"songs": songs}
-    #     except Exception as e:
-    #         print(f"Error in get_songs: {e}")
-    #         raise HTTPException(status_code=500, detail="Error")
 
 
 
