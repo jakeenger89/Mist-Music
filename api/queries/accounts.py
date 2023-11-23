@@ -15,7 +15,7 @@ class AccountIn(BaseModel):
 
 
 class AccountOut(BaseModel):
-    account_id: str
+    account_id: int
     email: str
     username: str
 
@@ -33,7 +33,7 @@ class AccountUpdateIn(BaseModel):
 
 
 class AccountQueries():
-    def get(self, email: str) -> AccountOutWithPassword:
+    def get_account(self, email: str) -> AccountOutWithPassword:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -81,23 +81,23 @@ class AccountQueries():
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
-                    db.execute(
+                    records = db.execute(
                         """
                         SELECT
                             account_id,
-                            username,
                             email,
-                        FROM users
+                            username,
+                        FROM account
                         ORDER BY username
                         """
                     )
                     result = []
-                    for record in db:
+                    for record in records:
                         print("this is the record", record)
                         account_out = AccountOut(
-                            account_id=str(record[0]),
-                            username=str(record[1]),
-                            email=str(record[2]),
+                            account_id=int(record[0]),
+                            email=record[1],
+                            username=record[2],
                         )
                         result.append(account_out)
                     return result
