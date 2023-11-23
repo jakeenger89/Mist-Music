@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 from queries.pool import pool
-
+from fastapi import HTTPException
 
 class DuplicateAccountError(ValueError):
     pass
@@ -15,7 +15,7 @@ class AccountIn(BaseModel):
 
 
 class AccountOut(BaseModel):
-    account_id: str
+    account_id: int
     email: str
     username: str
 
@@ -33,7 +33,7 @@ class AccountUpdateIn(BaseModel):
 
 
 class AccountQueries():
-    def get(self, email: str) -> AccountOutWithPassword:
+    def get_account(self, email: str) -> AccountOutWithPassword:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -75,6 +75,36 @@ class AccountQueries():
                 password="",
                 hashed_password="",
             )
+
+
+    def get_accounts(self) -> List[AccountOut]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    records = db.execute(
+                        """
+                        SELECT
+                            account_id,
+                            email,
+                            username
+                        FROM account
+                        ORDER BY username
+                        """
+                    )
+                    result = []
+                    for record in records:
+                        print("this is the record", record)
+                        account_out = AccountOut(
+                            account_id=int(record[0]),
+                            email=record[1],
+                            username=record[2],
+                        )
+                        result.append(account_out)
+                    return result
+        except Exception:
+            return {"message": "Could not get all users"}
+
+
 
     def create(self, info: AccountIn, hashed_password: str) -> AccountOutWithPassword:
         with pool.connection() as conn:

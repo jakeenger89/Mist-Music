@@ -32,7 +32,7 @@ steps = [
         length INTEGER,
         bpm VARCHAR(4),
         rating INTEGER,
-        account_id INTEGER REFERENCES account(account_id)
+        account_id INTEGER REFERENCES account(account_id) ON DELETE CASCADE
     );
 
     """,
@@ -45,7 +45,7 @@ steps = [
     [
     """
     CREATE TABLE liked_songs (
-    account_id INTEGER REFERENCES account(account_id),
+    account_id INTEGER REFERENCES account(account_id) ON DELETE CASCADE,
     song_id INTEGER REFERENCES songs(song_id),
     PRIMARY KEY (account_id, song_id)
     );

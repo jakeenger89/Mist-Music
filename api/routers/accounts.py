@@ -1,15 +1,14 @@
 from fastapi import APIRouter, Depends, Response, HTTPException
 from queries.accounts import AccountQueries, AccountIn, AccountOut, AccountQueries
-
+from typing import List
 
 router = APIRouter()
 
 
-@router.get("/api/account", response_model=AccountOut)
-def get_all_accounts(queries: AccountQueries = Depends()):
-    return {
-        "accounts": queries.get_all_accounts(),
-    }
+@router.get("/api/account", response_model=List[AccountOut])
+def get_accounts(queries: AccountQueries = Depends()):
+    return queries.get_accounts()
+
 
 
 @router.get("/api/account/{account_id}", response_model=AccountOut)
@@ -18,19 +17,20 @@ def get_account(
     response: Response,
     queries: AccountQueries = Depends(),
 ):
-    record = queries.get_account(account_id)
+    record = queries.get(account_id)
     if record is None:
         response.status_code = 404
     else:
         return record
 
 
-#@router.post("/api/account", response_model=AccountOut)
-#def create_account(
-#    users: AccountIn,
-#    repo: AccountQueries = Depends()
-#):
-#    return repo.create_user(users)
+# @router.post("/api/account", response_model=AccountOut)
+# def create_account(
+#     accounts: AccountIn,
+#     repo: AccountQueries = Depends()
+# ):
+#     # print('account data', accounts)
+#     return repo.create_account(accounts)
 
 
 #@router.delete("/api/account/{account_id}", response_model=dict)

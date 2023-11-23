@@ -1,3 +1,14 @@
+## November 22, 2023
+
+Today I worked on the frontend portion of merchandise.
+
+Earlier in the week, I finished up all of the endpoints for merchandise. This includes, GET all, GET one, DELETE, POST, and PUT.
+I also started on Customer endpoints.
+
+We overlooked the endpoints required to get the search bar for our app to work, so we had to decide on how to handle that. I imagine this will happen a few more times during this project. It's difficult to think of absolutely everything we would need to get things running in the beginning.
+
+I've been learning a lot of useful tools in VSCode, specifically the replace all feature. It helped a lot when we had to change the name of one of our objects.
+
 ## November 17, 2023
 
 Today, I worked on the backend endpoints for the merchandise section of Mist Music. Specifically GET and POST.

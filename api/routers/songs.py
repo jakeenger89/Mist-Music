@@ -60,6 +60,19 @@ def get_liked_songs_by_account(
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
+#update song account posted
+@router.put("/songs/{song_id}", response_model=SongsOut)
+def update_song(
+    song_id: int,
+    update_data: SongIn,
+    queries: SongQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data),
+):
+    if account_data:
+        return queries.update_song(song_id, update_data, account_data['account_id'])
+    else:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
 #like a song
 #authentication required
 @router.post("/songs/{song_id}/like", response_model=bool)
