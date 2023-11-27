@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, Response, HTTPException, status, Request
-from queries.accounts import AccountQueries, AccountIn, AccountOut, AccountQueries, DuplicateAccountError, AccountUpdateIn
+from queries.accounts import AccountQueries, AccountIn, AccountOut, DuplicateAccountError, AccountUpdateIn, AccountOutWithPassword
 from jwtdown_fastapi.authentication import Token
 from routers.authenticator import authenticator
 from pydantic import BaseModel
+from typing import List
 
 router = APIRouter()
 
@@ -108,25 +109,22 @@ def delete_account(
         raise HTTPException(status_code=404, detail="User not found lol")
 
 
-@router.get("/api/account", response_model=AccountOut)
-def get_all_accounts(queries: AccountQueries = Depends()):
-    return {
-        "accounts": queries.get_all_accounts(),
-    }
+@router.get("/api/accounts", response_model=List[AccountOut])
+def get_accounts(queries: AccountQueries = Depends()):
+    return queries.get_accounts()
 
 
 @router.get("/api/account/{account_id}", response_model=AccountOut)
-def get_account(
+async def get_account(
     account_id: int,
     response: Response,
     queries: AccountQueries = Depends(),
 ):
-    record = queries.get_account(account_id)
+    record = await queries.get_account(account_id)
     if record is None:
-        response.status_code = 404
+        response.status_code = 404 
     else:
         return record
-
 
 # @router.delete("/api/account/{account_id}", response_model=dict)
 # def delete_account(
