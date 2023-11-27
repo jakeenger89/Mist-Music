@@ -4,6 +4,7 @@ from datetime import datetime
 from queries.pool import pool
 from fastapi import HTTPException
 
+
 class DuplicateAccountError(ValueError):
     pass
 
@@ -76,7 +77,6 @@ class AccountQueries():
                 hashed_password="",
             )
 
-
     def get_accounts(self) -> List[AccountOut]:
         try:
             with pool.connection() as conn:
@@ -103,8 +103,6 @@ class AccountQueries():
                     return result
         except Exception:
             return {"message": "Could not get all users"}
-
-
 
     def create(self, info: AccountIn, hashed_password: str) -> AccountOutWithPassword:
         with pool.connection() as conn:
@@ -136,7 +134,6 @@ class AccountQueries():
                     hashed_password=hashed_password,
                 )
                 return accountOut
-
 
     def update_account(self, account_id: int, info: AccountUpdateIn) -> AccountOut:
         with pool.connection() as conn:
@@ -177,7 +174,6 @@ class AccountQueries():
                         raise HTTPException(status_code=404, detail="Account not found")
                 except Exception as e:
                     raise HTTPException(status_code=500, detail=str(e))
-
 
     def delete_account(self, account_id: int) -> bool:
         try:
