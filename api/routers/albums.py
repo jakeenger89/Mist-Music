@@ -5,10 +5,12 @@ router = APIRouter()
 
 
 @router.get("/api/albums", response_model=List[AlbumOut])
-def get_all_albums(queries: AlbumQueries = Depends()):
-    return {
-        "albums": queries.get_all_albums(),
-    }
+def get_all_albums(response: Response, queries: AlbumQueries = Depends()):
+    records = queries.get_all_albums()
+    if records is None:
+        response.status_code = 404
+    else:
+        return records
 
 
 @router.get("/api/albums/{album_id}", response_model=AlbumOut)
@@ -53,17 +55,3 @@ def delete_album(
         return {"message": "Album deleted successfully"}
     else:
         raise HTTPException(status_code=404, detail="Album not found")
-
-
-#@router.delete("/api/albums/{album_id}", response_model=DeleteResponse)
-#def delete_album(
-#    album_id: int,
-#    response: Response,
-#    queries: AlbumQueries = Depends(),
-#):
-#    album_deleted = queries.delete_album(album_id)
-#    if album_deleted:
-#        return AlbumDeleteResponse(message="Album deleted")
-#    else:
-#        response.status_code = 404
-#        return AlbumDeleteResponse(message="Album not found")
