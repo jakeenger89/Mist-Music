@@ -7,6 +7,7 @@ function Nav() {
                 <NavLink className="navbar-brand" to="/">MistMusic</NavLink>
                 <NavLink className="navbar-brand" to="/loginform">Login</NavLink>
                 <NavLink className="navbar-brand" to="/createsongform">Upload Song</NavLink>
+                <NavLink className="navbar-brand" to="/signupform">Sign Up Form</NavLink>
             </div>
         </nav>
     )
