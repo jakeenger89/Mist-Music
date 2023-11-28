@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Construct from "./Construct.js";
 import ErrorNotification from "./ErrorNotification";
 import "./App.css";
+import Nav from './Nav'
+import AccountForm from "./LoginForm.js";
+import CreateSongForm from "./CreateSongForm.js";
 
 function App() {
   const [launchInfo, setLaunchInfo] = useState([]);
@@ -27,11 +31,15 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <ErrorNotification error={error} />
-      <Construct info={launchInfo} />
-    </div>
+    <BrowserRouter>
+      <Nav />
+      <div className="container">
+        <Routes>
+          <Route index path="loginform" element={<AccountForm/>}></Route>
+          <Route index path="createsongform" element={<CreateSongForm/>}></Route>
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
-
 export default App;

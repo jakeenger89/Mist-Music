@@ -144,42 +144,10 @@ class AlbumQueries:
 
                         return album_out
                     else:
-                        return None
+                        return AlbumOut()
 
         except Exception as e:
             raise Exception(str(e))
-
-    def get_all_albums(self) -> List[AlbumOut]:
-        try:
-            with pool.connection() as conn:
-                with conn.cursor() as db:
-                    db.execute(
-                        """
-                        SELECT album_id, name, artist, genre, release_date, cover_image_url
-                        FROM albums
-                        """
-                    )
-
-                    records = db.fetchall()
-                    albums = []
-
-                    for record in records:
-                        album_out = AlbumOut(
-                            album_id=record[0],
-                            name=record[1],
-                            artist=record[2],
-                            genre=record[3],
-                            release_date=record[4],
-                            cover_image_url=record[5],
-                        )
-
-                        albums.append(album_out)
-
-                    return albums
-
-        except Exception as e:
-            raise Exception(str(e))
-
 
     def delete_album(self, album_id: int) -> bool:
         try:
@@ -199,3 +167,37 @@ class AlbumQueries:
             raise Exception(str(e))
 
             return False
+
+    def get_all_albums(self) -> List[AlbumOut]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        SELECT album_id, name, artist, genre, release_date, cover_image_url
+                        FROM albums
+                        """
+                    )
+
+                    records = db.fetchall()
+
+                    if records:
+                        albums_out = []
+                        for record in records:
+                            album_out = AlbumOut(
+                                album_id=record[0],
+                                name=record[1],
+                                artist=record[2],
+                                genre=record[3],
+                                release_date=record[4],
+                                cover_image_url=record[5],
+                            )
+
+                            albums_out.append(album_out)
+
+                        return albums_out
+                    else:
+                        return None
+
+        except Exception as e:
+            raise Exception(str(e))

@@ -1,35 +1,35 @@
-from queries.songs import SongIn, SongsOut, SongQueries, Like
-from typing import Literal
-from fastapi import APIRouter, Depends, Response
+from queries.songs import SongIn, SongsOut, SongQueries, Like, SongOut
+from queries.accounts import AccountIn, AccountOut, AccountQueries, AccountOutWithPassword
+from fastapi import APIRouter, Depends, Response, HTTPException
 from routers.authenticator import authenticator
 
 
 router = APIRouter()
 song_queries = SongQueries()
+account_querries = AccountQueries()
 
-#get a specific song
-@router.get("/songs/{song_id}", response_model=SongsOut)
-def get_song(
+
+# get a specific song by song id [x]
+@router.get("/api/songs/{song_id}", response_model=SongOut)
+def get_song_id(
     song_id: int,
-    response: Response,
-    queries: SongQueries = Depends(),
+    queries: SongQueries = Depends(SongQueries),
 ):
-    record = queries.get_song(song_id)
-    if record is None:
-        response.status_code = 404
-    else:
-        return record
+    song = queries.get_song(song_id)
+    if song is None:
+        raise HTTPException(status_code=404, detail="Song not found")
+    return song
 
 
-#all songs
-@router.get("/songs", response_model=SongsOut)
+# all songs w
+@router.get("/api/songs", response_model=SongsOut)
 def get_songs(queries: SongQueries = Depends()):
     return queries.get_songs()
 
 
-#create a song
-#authentication required
-@router.post("/songs", response_model=SongsOut)
+# create a song w
+# authentication required
+@router.post("/api/songs", response_model=SongsOut)
 def create_song(
     song: SongIn,
     queries: SongQueries = Depends(),
@@ -38,17 +38,27 @@ def create_song(
     if account_data:
         return queries.create_song(song)
     else:
-        raise HTTPExcepton(status_code=401, detail="Not authorized")
+        raise HTTPException(status_code=401, detail="Not authorized")
 
 
-#delete a song
+# delete a song
 @router.delete("/songs/{songs_id}", response_model=bool)
-def delete_song(song_id: int, queries: SongQueries = Depends()):
+def delete_song(
+    song_id: int,
+    account_data: dict = Depends(authenticator.get_current_account_data),
+    queries: SongQueries = Depends(),
+):
+    email = account_data.get("email")
+    accounts = AccountQueries
+    account_id = authenticator.get_account_data(email, accounts)
+    if not queries.is_user_allowed_to_delete_song(song_id, account_id):
+        raise HTTPException(status_code=403, detail="You are not allowed to delete")
     queries.delete_song(song_id)
     return True
 
-#get all liked songs from an account
-#authentication required
+
+# get all liked songs from an account
+# authentication required
 @router.get("/liked-songs/{account_id}", response_model=SongsOut, operation_id="get_liked_songs_by_account")
 def get_liked_songs_by_account(
     account_id: int,
@@ -60,7 +70,8 @@ def get_liked_songs_by_account(
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
-#update song account posted
+
+# update song account posted
 @router.put("/songs/{song_id}", response_model=SongsOut)
 def update_song(
     song_id: int,
@@ -73,8 +84,9 @@ def update_song(
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
-#like a song
-#authentication required
+
+# like a song
+# authentication required
 @router.post("/songs/{song_id}/like", response_model=bool)
 def like_song(song_id: int, like: Like, queries: SongQueries = Depends(), account_data: dict = Depends(authenticator.get_current_account_data)):
     if account_data:
@@ -83,9 +95,10 @@ def like_song(song_id: int, like: Like, queries: SongQueries = Depends(), accoun
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
-# unlike a song
-#authentication required
-@router.delete("/songs/{song_id}/unlike", response_model=bool)
+
+#  unlike a song
+# authentication required
+@router.delete("/api/songs/{song_id}/unlike", response_model=bool)
 def unlike_song(song_id: int, like: Like, queries: SongQueries = Depends(), account_data: dict = Depends(authenticator.get_current_account_data)):
     if account_data:
         queries.unlike_song(song_id, like.account_id)

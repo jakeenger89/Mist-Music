@@ -5,7 +5,6 @@ from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 
 
-
 class SongIn(BaseModel):
     name: str
     artist: str
@@ -62,20 +61,33 @@ class Like(BaseModel):
 
 
 class SongQueries:
-    def get_song(self, song_id):
+    def get_song(self, song_id: int):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT s.id AS song_id, s.name, s.artist,
-                    s.album, s.genre, s.release_date, s.length,
-                    s.bpm, s.rating, s.like_by_use
-                    FROM songs s
-                    INNER JOIN users u ON(s.id = u.id)
-                    WHERE s.id = %s
+                    SELECT song_id, name, artist, album, genre,
+                    release_date, length, bpm, rating
+                    FROM songs
+                    WHERE song_id = %s
                     """,
                     [song_id],
                 )
+                row = cur.fetchone()
+                if row:
+                    return SongOut(
+                        song_id=row[0],
+                        name=row[1],
+                        artist=row[2],
+                        album=row[3],
+                        genre=row[4],
+                        release_date=row[5],
+                        length=row[6],
+                        bpm=row[7],
+                        rating=row[8]
+                    )
+                else:
+                    return None
 
     def get_songs(self):
         try:
@@ -110,8 +122,6 @@ class SongQueries:
             print(f"Error in get_songs: {e}")
             raise HTTPException(status_code=500, detail="Error")
 
-
-
     def create_song(self, song_data: SongIn):
         with pool.connection() as conn:
             with conn.cursor() as cur:
@@ -123,7 +133,7 @@ class SongQueries:
                     cur.execute(
                         """
                         INSERT INTO songs (name, artist, album, genre, release_date, length, bpm, rating)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s, %s , %s, %s)
                         RETURNING song_id, name, artist, album, genre, release_date, length, bpm, rating
                         """,
                         (
@@ -314,3 +324,21 @@ class SongQueries:
                     """,
                     [song_id]
                 )
+                return True
+
+    def is_user_allowed_to_delete_song(self, song_id: int, account_id: int):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT account_id
+                    DELETE FROM songs
+                    WHERE song_id = %s
+                    """,
+                    [song_id],
+                )
+                result = cur.fetchone()
+                if result:
+                    song_owner_account_id = result[0]
+                    return account_id == song_owner_account_id
+            return False

@@ -77,33 +77,32 @@ class AccountQueries():
                 hashed_password="",
             )
 
-
     def get_accounts(self) -> List[AccountOut]:
-        with pool.connection() as conn:
-            with conn.cursor() as db:
-                records = db.execute(
-                    """
-                    SELECT
-                        account_id,
-                        email,
-                        username
-                    FROM account
-                    ORDER BY username
-                    """
-                )
-                result = []
-                for record in records:
-                    print("this is the record", record)
-                    account_out = AccountOut(
-                        account_id=int(record[0]),
-                        email=record[1],
-                        username=record[2],
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    records = db.execute(
+                        """
+                        SELECT
+                            account_id,
+                            email,
+                            username
+                        FROM account
+                        ORDER BY username
+                        """
                     )
-                    result.append(account_out)
-                return result
-
-
-
+                    result = []
+                    for record in records:
+                        print("this is the record", record)
+                        account_out = AccountOut(
+                            account_id=int(record[0]),
+                            email=record[1],
+                            username=record[2],
+                        )
+                        result.append(account_out)
+                    return result
+        except Exception:
+            return {"message": "Could not get all users"}
 
     def create(self, info: AccountIn, hashed_password: str) -> AccountOutWithPassword:
         with pool.connection() as conn:
@@ -135,7 +134,6 @@ class AccountQueries():
                     hashed_password=hashed_password,
                 )
                 return accountOut
-
 
     def update_account(self, account_id: int, info: AccountUpdateIn) -> AccountOut:
         with pool.connection() as conn:
@@ -176,7 +174,6 @@ class AccountQueries():
                         raise HTTPException(status_code=404, detail="Account not found")
                 except Exception as e:
                     raise HTTPException(status_code=500, detail=str(e))
-
 
     def delete_account(self, account_id: int) -> bool:
         try:
