@@ -21,6 +21,7 @@ class AccountOut(BaseModel):
 
 
 class AccountOutWithPassword(AccountOut):
+
     hashed_password: str
 
 
@@ -65,7 +66,7 @@ class AccountQueries():
                             username="",
                             email="",
                             password="",
-                            hashed_password=""
+                            hashed_password="",
                         )
         except Exception as e:
             return AccountOutWithPassword(
@@ -78,31 +79,29 @@ class AccountQueries():
 
 
     def get_accounts(self) -> List[AccountOut]:
-        try:
-            with pool.connection() as conn:
-                with conn.cursor() as db:
-                    records = db.execute(
-                        """
-                        SELECT
-                            account_id,
-                            email,
-                            username
-                        FROM account
-                        ORDER BY username
-                        """
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                records = db.execute(
+                    """
+                    SELECT
+                        account_id,
+                        email,
+                        username
+                    FROM account
+                    ORDER BY username
+                    """
+                )
+                result = []
+                for record in records:
+                    print("this is the record", record)
+                    account_out = AccountOut(
+                        account_id=int(record[0]),
+                        email=record[1],
+                        username=record[2],
                     )
-                    result = []
-                    for record in records:
-                        print("this is the record", record)
-                        account_out = AccountOut(
-                            account_id=int(record[0]),
-                            email=record[1],
-                            username=record[2],
-                        )
-                        result.append(account_out)
-                    return result
-        except Exception:
-            return {"message": "Could not get all users"}
+                    result.append(account_out)
+                return result
+
 
 
 

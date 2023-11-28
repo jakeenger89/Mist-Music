@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Response, HTTPException
 from queries.accounts import AccountQueries, AccountIn, AccountOut, AccountQueries
-from typing import List
+from typing import List, Union
 
 router = APIRouter()
 
@@ -13,11 +13,18 @@ def get_accounts(queries: AccountQueries = Depends()):
 
 @router.get("/api/account/{account_id}", response_model=AccountOut)
 def get_account(
-    account_id: int,
+    account_id: Union[int,str],
     response: Response,
     queries: AccountQueries = Depends(),
 ):
-    record = queries.get(account_id)
+    try:
+        # Try to convert the account_id to an integer
+        account_id = int(account_id)
+    except ValueError:
+        # If the conversion fails, return a 422 Unprocessable Entity response
+        response.status_code = 422
+        return {"detail": "Account ID must be a valid integer"}
+    record = queries.get_account(account_id)
     if record is None:
         response.status_code = 404
     else:
