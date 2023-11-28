@@ -122,9 +122,8 @@ async def get_account(
 ):
     record = await queries.get_account(account_id)
     if record is None:
-        response.status_code = 404 
-    else:
-        return record
+        response.status_code = 404
+    return record
 
 # @router.delete("/api/account/{account_id}", response_model=dict)
 # def delete_account(
