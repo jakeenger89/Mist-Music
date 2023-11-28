@@ -4,7 +4,6 @@ from datetime import datetime
 from queries.pool import pool
 from fastapi import HTTPException
 
-
 class DuplicateAccountError(ValueError):
     pass
 
@@ -22,6 +21,7 @@ class AccountOut(BaseModel):
 
 
 class AccountOutWithPassword(AccountOut):
+
     hashed_password: str
 
 
@@ -66,7 +66,7 @@ class AccountQueries():
                             username="",
                             email="",
                             password="",
-                            hashed_password=""
+                            hashed_password="",
                         )
         except Exception as e:
             return AccountOutWithPassword(
