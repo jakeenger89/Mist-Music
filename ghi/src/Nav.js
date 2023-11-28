@@ -6,6 +6,7 @@ function Nav() {
             <div className="container-fluid">
                 <NavLink className="navbar-brand" to="/">MistMusic</NavLink>
                 <NavLink className="navbar-brand" to="/loginform">Login</NavLink>
+                <NavLink className="navbar-brand" to="/createsongform">Upload Song</NavLink>
             </div>
         </nav>
     )

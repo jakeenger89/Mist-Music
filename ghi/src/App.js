@@ -5,6 +5,7 @@ import ErrorNotification from "./ErrorNotification";
 import "./App.css";
 import Nav from './Nav'
 import AccountForm from "./LoginForm.js";
+import CreateSongForm from "./CreateSongForm.js";
 
 function App() {
   const [launchInfo, setLaunchInfo] = useState([]);
@@ -34,9 +35,8 @@ function App() {
       <Nav />
       <div className="container">
         <Routes>
-          <Route index path="loginform" element={<AccountForm/>}>
-
-          </Route>
+          <Route index path="loginform" element={<AccountForm/>}></Route>
+          <Route index path="createsongform" element={<CreateSongForm/>}></Route>
         </Routes>
       </div>
     </BrowserRouter>
