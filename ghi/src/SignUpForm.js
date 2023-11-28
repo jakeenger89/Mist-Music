@@ -13,7 +13,7 @@ const SignUpForm = () => {
             password,
         }
 
-        const MistURL: "http://localhost:8000/api/accounts/"
+        const MistURL = "http://localhost:8000/api/accounts/"
         const fetchOptions = {
             method: "post",
             body: JSON.stringify(data),
@@ -57,13 +57,14 @@ const SignUpForm = () => {
                             <label htmlFor="email">Set Email</label>
                     </div>
                     <div className="form-floating mb-3">
-                            <input value={username} onChange={handleChangeUsername} placeholder="password" required type="text" name="password" id="last_name" className="form-control" />
+                            <input value={username} onChange={handleChangeUsername} placeholder="username" required type="text" name="username" id="username" className="form-control" />
                             <label htmlFor="username">Set Username</label>
                     </div>
                     <div className="form-floating mb-3">
-                            <input value={email} onChange={handleChangePassword} placeholder="email" required type="text" name="email" id="email" className="form-control" />
+                            <input value={password} onChange={handleChangePassword} placeholder="password" required type="text" name="password" id="password" className="form-control" />
                             <label htmlFor="password">Set Password</label>
                     </div>
+                        <button className="btn btn-primary">Sign Up</button>
                     </form>
                 </div>
             </div>
