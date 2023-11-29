@@ -4,6 +4,7 @@ from datetime import datetime
 from queries.pool import pool
 from fastapi import HTTPException
 
+
 class DuplicateAccountError(ValueError):
     pass
 
