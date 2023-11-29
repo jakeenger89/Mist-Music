@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends
 from queries.customer import CustomerOut, CustomerIn, CustomerQuery, OrderOut
 from typing import List
+
 router = APIRouter()
 
 

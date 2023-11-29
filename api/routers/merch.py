@@ -18,9 +18,7 @@ def create_merch(merch: MerchIn, q: MerchQueries = Depends()):
 
 @router.put("/api/merch/{item_id}", response_model=Union[MerchOut, Error])
 def update_merch(
-    item_id: int,
-    merch: MerchIn,
-    q: MerchQueries = Depends()
+    item_id: int, merch: MerchIn, q: MerchQueries = Depends()
 ) -> Union[MerchOut, Error]:
     return q.update_merch(item_id, merch)
 
