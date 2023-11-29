@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Response, HTTPException
 from queries.albums import AlbumQueries, AlbumIn, AlbumOut
 from typing import List
 from routers.authenticator import authenticator
+
 router = APIRouter()
 
 
@@ -12,6 +13,7 @@ def get_all_albums(response: Response, queries: AlbumQueries = Depends()):
         response.status_code = 404
     else:
         return records
+
 
 @router.get("/api/albums/{album_id}", response_model=AlbumOut)
 def get_album(
@@ -25,6 +27,7 @@ def get_album(
     else:
         return record
 
+
 @router.post("/api/albums", response_model=AlbumOut)
 def create_album(
     album_in: AlbumIn,
@@ -33,11 +36,13 @@ def create_album(
     queries: AlbumQueries = Depends(),
 ):
     if account_data:
-        # Proceed with album creation logic after user authentication is confirmed
+        # Proceed with album creation logic after
+        #  user authentication is confirmed
         album_out = queries.create_album(album_in)
         return album_out
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
+
 
 @router.put("/api/albums/{album_id}", response_model=AlbumOut)
 def update_album(
@@ -53,12 +58,13 @@ def update_album(
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
+
 @router.delete("/api/albums/{album_id}", response_model=dict)
 def delete_album(
     album_id: int,
     response: Response,
     account_data: dict = Depends(authenticator.get_current_account_data),
-    queries: AlbumQueries = Depends()
+    queries: AlbumQueries = Depends(),
 ):
     if account_data:
         success = queries.delete_album(album_id)

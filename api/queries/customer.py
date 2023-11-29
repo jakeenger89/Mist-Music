@@ -71,8 +71,8 @@ class CustomerQuery:
                         order.address,
                         order.city,
                         order.zipcode,
-                        order.state
-                    ]
+                        order.state,
+                    ],
                 )
                 id = result.fetchone()[0]
                 old_data = order.dict()
@@ -87,5 +87,5 @@ class CustomerQuery:
             city=record[4],
             zipcode=record[5],
             state=record[6],
-            fulfilled=record[7]
+            fulfilled=record[7],
         )

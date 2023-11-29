@@ -37,7 +37,7 @@ class MerchQueries:
                         FROM merchandise
                         WHERE item_id = %s
                         """,
-                        [merch_id]
+                        [merch_id],
                     )
                     record = result.fetchone()
                     if record is None:
@@ -56,14 +56,16 @@ class MerchQueries:
                         DELETE FROM merchandise
                         WHERE item_id = %s
                         """,
-                        [merch_id]
+                        [merch_id],
                     )
                     return True
         except Exception as e:
             print(e)
             return False
 
-    def update_merch(self, merch_id: int, merch: MerchIn) -> Union[MerchOut, Error]:
+    def update_merch(
+        self, merch_id: int, merch: MerchIn
+    ) -> Union[MerchOut, Error]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -85,8 +87,8 @@ class MerchQueries:
                             merch.size,
                             merch.description,
                             merch.quantity,
-                            merch_id
-                        ]
+                            merch_id,
+                        ],
                     )
                     old_data = merch.dict()
                     return MerchOut(item_id=merch_id, **old_data)
@@ -116,8 +118,8 @@ class MerchQueries:
                         merch.price,
                         merch.size,
                         merch.description,
-                        merch.quantity
-                    ]
+                        merch.quantity,
+                    ],
                 )
                 id = result.fetchone()[0]
                 old_data = merch.dict()
@@ -147,5 +149,5 @@ class MerchQueries:
             price=record[3],
             size=record[4],
             description=record[5],
-            quantity=record[6]
+            quantity=record[6],
         )

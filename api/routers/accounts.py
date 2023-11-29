@@ -1,5 +1,19 @@
-from fastapi import APIRouter, Depends, Response, HTTPException, status, Request
-from queries.accounts import AccountQueries, AccountIn, AccountOut, DuplicateAccountError, AccountUpdateIn, AccountOutWithPassword
+from fastapi import (
+    APIRouter,
+    Depends,
+    Response,
+    HTTPException,
+    status,
+    Request,
+)
+from queries.accounts import (
+    AccountQueries,
+    AccountIn,
+    AccountOut,
+    DuplicateAccountError,
+    AccountUpdateIn,
+    AccountOutWithPassword,
+)
 from jwtdown_fastapi.authentication import Token
 from routers.authenticator import authenticator
 from pydantic import BaseModel
@@ -41,7 +55,7 @@ async def get_protected(
 @router.get("/token", response_model=AccountToken | None)
 async def get_token(
     request: Request,
-    account: AccountOut = Depends(authenticator.try_get_current_account_data)
+    account: AccountOut = Depends(authenticator.try_get_current_account_data),
 ) -> AccountToken | None:
     if account and authenticator.cookie_name in request.cookies:
         return {
@@ -76,13 +90,15 @@ def update_account(
     account_id: int,
     account_update: AccountUpdateIn,
     repo: AccountQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     if account_data:
         updated_account = repo.update_account(account_id, account_update)
         return updated_account
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
+
+
 # @router.put("/api/account/{account_id}", response_model=AccountOut)
 # def update_account(
 #    account_id: int,
@@ -97,7 +113,7 @@ def update_account(
 def delete_account(
     account_id: int,
     repo: AccountQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     if not account_data:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -124,6 +140,7 @@ async def get_account(
     if record is None:
         response.status_code = 404
     return record
+
 
 # @router.delete("/api/account/{account_id}", response_model=dict)
 # def delete_account(

@@ -84,7 +84,7 @@ class SongQueries:
                         release_date=row[5],
                         length=row[6],
                         bpm=row[7],
-                        rating=row[8]
+                        rating=row[8],
                     )
                 else:
                     return None
@@ -93,10 +93,12 @@ class SongQueries:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as cur:
-                    cur.execute("""
+                    cur.execute(
+                        """
                         SELECT song_id, name, artist, album, genre, release_date, length, bpm, rating
                         FROM songs
-                    """)
+                    """
+                    )
                     songs = []
                     rows = cur.fetchall()
                     for row in rows:
@@ -104,16 +106,16 @@ class SongQueries:
                         rating = row[8] if row[8] is not None else "N/A"
 
                         song = {
-                            'song_id': row[0],
-                            'name': row[1],
-                            'artist': row[2],
-                            'album': row[3],
-                            'genre': row[4],
-                            'release_date': row[5],
-                            'length': row[6],
-                            'bpm': row[7],
-                            'rating': rating,
-                            'liked_by_user': False  # Always set to False
+                            "song_id": row[0],
+                            "name": row[1],
+                            "artist": row[2],
+                            "album": row[3],
+                            "genre": row[4],
+                            "release_date": row[5],
+                            "length": row[6],
+                            "bpm": row[7],
+                            "rating": rating,
+                            "liked_by_user": False,  # Always set to False
                         }
                         songs.append(song)
 
@@ -144,7 +146,7 @@ class SongQueries:
                             song_data.release_date,
                             song_data.length,
                             song_data.bpm,
-                            song_data.account_id
+                            song_data.account_id,
                         ),
                     )
 
@@ -168,9 +170,12 @@ class SongQueries:
                     return JSONResponse(content=response_data)
                 except Exception as e:
                     print(f"Error in create_song: {e}")
-                    raise HTTPException(status_code=500, detail=f"Could not add the song. Error: {e}")
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Could not add the song. Error: {e}",
+                    )
 
-    #all liked songs an account has LIKED
+    # all liked songs an account has LIKED
     def get_liked_songs_by_account(self, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
@@ -189,22 +194,24 @@ class SongQueries:
                     rows = cur.fetchall()
                     for row in rows:
                         song = {
-                            'song_id': row[0],
-                            'name': row[1],
-                            'artist': row[2],
-                            'album': row[3],
-                            'genre': row[4],
-                            'release_date': row[5],
-                            'length': row[6],
-                            'bpm': row[7],
-                            'rating': row[8],
-                            'liked_by_user': True  # Indicates that the user has liked this song
+                            "song_id": row[0],
+                            "name": row[1],
+                            "artist": row[2],
+                            "album": row[3],
+                            "genre": row[4],
+                            "release_date": row[5],
+                            "length": row[6],
+                            "bpm": row[7],
+                            "rating": row[8],
+                            "liked_by_user": True,  # Indicates that the user has liked this song
                         }
                         liked_songs.append(song)
                     return {"songs": liked_songs}
                 except Exception as e:
                     print(f"Error in get_liked_songs_by_account: {e}")
-                    raise HTTPException(status_code=500, detail="Error retrieving liked songs")
+                    raise HTTPException(
+                        status_code=500, detail="Error retrieving liked songs"
+                    )
 
     # Helper method to check if a song is liked by a user
     def is_song_liked_by_user(self, song_id, account_id):
@@ -255,16 +262,29 @@ class SongQueries:
                     # Handle errors (e.g., if the like doesn't exist)
                     print(e)
                     return False
-    #update a song
+
+    # update a song
     def update_song(self, song_id: int, update_data: SongIn, account_id: int):
-        #function below to check is song_id is tied that account_id
+        # function below to check is song_id is tied that account_id
         if not self.is_song_owner(song_id, account_id):
-            raise HTTPException(status_code=403, detail="Not authorized to update this song")
+            raise HTTPException(
+                status_code=403, detail="Not authorized to update this song"
+            )
 
         with pool.connection() as conn:
             with conn.cursor() as cur:
-                set_clause = ", ".join([f"{key} = %s" for key, value in update_data.dict(exclude_unset=True).items()])
-                update_values = [value for value in update_data.dict(exclude_unset=True).values()]
+                set_clause = ", ".join(
+                    [
+                        f"{key} = %s"
+                        for key, value in update_data.dict(
+                            exclude_unset=True
+                        ).items()
+                    ]
+                )
+                update_values = [
+                    value
+                    for value in update_data.dict(exclude_unset=True).values()
+                ]
                 update_values.append(song_id)
 
                 # Update the song
@@ -275,7 +295,7 @@ class SongQueries:
                     WHERE song_id = %s
                     RETURNING song_id, name, artist, album, genre, release_date, length, bpm, rating
                     """,
-                    update_values
+                    update_values,
                 )
 
                 # Fetch the updated song data
@@ -283,7 +303,9 @@ class SongQueries:
 
                 # Check if the song was found and updated
                 if not updated_song:
-                    raise HTTPException(status_code=404, detail="Song not found")
+                    raise HTTPException(
+                        status_code=404, detail="Song not found"
+                    )
 
                 # Construct the response data
                 response_data = {
@@ -300,7 +322,8 @@ class SongQueries:
                 }
 
                 return JSONResponse(content=response_data)
-    #helper check for update song
+
+    # helper check for update song
     def is_song_owner(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:
@@ -322,7 +345,7 @@ class SongQueries:
                     DELETE FROM songs
                     WHERE song_id = %s
                     """,
-                    [song_id]
+                    [song_id],
                 )
                 return True
 

@@ -22,7 +22,6 @@ class AlbumOut(BaseModel):
 
 
 class AlbumQueries:
-
     def create_album(self, info: AlbumIn) -> AlbumOut:
         try:
             with pool.connection() as conn:
