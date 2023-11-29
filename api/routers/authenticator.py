@@ -6,15 +6,15 @@ from queries.accounts import AccountQueries, AccountOut, AccountOutWithPassword
 
 class UserAuthenticator(Authenticator):
     async def get_account_data(
-            self,
-            email: str,
-            accounts: AccountQueries,
+        self,
+        email: str,
+        accounts: AccountQueries,
     ):
         return accounts.get_account(email)
 
     def get_account_getter(
-            self,
-            accounts: AccountQueries = Depends(),
+        self,
+        accounts: AccountQueries = Depends(),
     ):
         return accounts
 
