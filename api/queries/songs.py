@@ -255,9 +255,10 @@ class SongQueries:
                     # Handle errors (e.g., if the like doesn't exist)
                     print(e)
                     return False
-    #update a song
+
+    # update a song
     def update_song(self, song_id: int, update_data: SongIn, account_id: int):
-        #function below to check is song_id is tied that account_id
+        # function below to check is song_id is tied that account_id
         if not self.is_song_owner(song_id, account_id):
             raise HTTPException(status_code=403, detail="Not authorized to update this song")
 
@@ -300,7 +301,8 @@ class SongQueries:
                 }
 
                 return JSONResponse(content=response_data)
-    #helper check for update song
+
+    # helper check for update song
     def is_song_owner(self, song_id, account_id):
         with pool.connection() as conn:
             with conn.cursor() as cur:

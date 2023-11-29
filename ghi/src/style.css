@@ -1,0 +1,30 @@
+
+.nav {
+    background-color: black;
+    color:white;
+    display: flex;
+    justify-content: center;
+    height: 40px;
+    padding: 20px 0;
+}
+
+.nav a {
+    color: white;
+    margin: 0 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.nav a:hover {
+    color:rgb(26, 123, 138)
+}
+
+.nav a:active {
+    color: rgb(0, 0, 0);
+}
+
+.nav img.navbar-logo {
+    width: 70px;
+    height: auto;
+}
