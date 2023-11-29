@@ -69,6 +69,7 @@ class AccountQueries:
                             hashed_password="",
                         )
         except Exception as e:
+            print(e)
             return AccountOutWithPassword(
                 account_id="",
                 username="",
@@ -171,7 +172,8 @@ class AccountQueries:
                             email=record[2],
                             password=record[
                                 3
-                            ],  # You can exclude this if you don't want to return the password
+                            ],  # You can exclude this if you don't
+                                # want to return the password
                             first_name=record[4],
                             last_name=record[5],
                             profile_picture_url=record[6],

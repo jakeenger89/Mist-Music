@@ -1,11 +1,8 @@
 from queries.songs import SongIn, SongsOut, SongQueries, Like, SongOut
 from queries.accounts import (
-    AccountIn,
-    AccountOut,
     AccountQueries,
-    AccountOutWithPassword,
 )
-from fastapi import APIRouter, Depends, Response, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from routers.authenticator import authenticator
 
 

@@ -95,7 +95,15 @@ class SongQueries:
                 with conn.cursor() as cur:
                     cur.execute(
                         """
-                        SELECT song_id, name, artist, album, genre, release_date, length, bpm, rating
+                        SELECT song_id,
+                        name,
+                        artist,
+                        album,
+                        genre,
+                        release_date,
+                        length,
+                        bpm,
+                        rating
                         FROM songs
                     """
                     )
@@ -134,9 +142,25 @@ class SongQueries:
 
                     cur.execute(
                         """
-                        INSERT INTO songs (name, artist, album, genre, release_date, length, bpm, rating)
+                        INSERT INTO songs (
+                            name,
+                            artist,
+                            album,
+                            genre,
+                            release_date,
+                            length,
+                            bpm,
+                            rating
+                            )
                         VALUES (%s, %s, %s, %s, %s, %s , %s, %s)
-                        RETURNING song_id, name, artist, album, genre, release_date, length, bpm, rating
+                        RETURNING song_id,
+                        name,
+                        artist,
+                        album, genre,
+                        release_date,
+                        length,
+                        bpm,
+                        rating
                         """,
                         (
                             song_data.name,
@@ -182,8 +206,10 @@ class SongQueries:
                 try:
                     cur.execute(
                         """
-                        SELECT s.song_id, s.name, s.artist, s.album, s.genre, s.release_date,
-                        s.length, s.bpm, s.rating, l.account_id AS liked_by_user
+                        SELECT s.song_id, s.name, s.artist, s.album, s.genre,
+                        s.release_date,
+                        s.length, s.bpm, s.rating,
+                        l.account_id AS liked_by_user
                         FROM songs s
                         INNER JOIN liked_songs l ON s.song_id = l.song_id
                         WHERE l.account_id = %s
@@ -203,7 +229,8 @@ class SongQueries:
                             "length": row[6],
                             "bpm": row[7],
                             "rating": row[8],
-                            "liked_by_user": True,  # Indicates that the user has liked this song
+                            "liked_by_user": True,
+                            # Indicates that the user has liked this song
                         }
                         liked_songs.append(song)
                     return {"songs": liked_songs}
@@ -293,7 +320,8 @@ class SongQueries:
                     UPDATE songs
                     SET {set_clause}
                     WHERE song_id = %s
-                    RETURNING song_id, name, artist, album, genre, release_date, length, bpm, rating
+                    RETURNING song_id, name, artist, album, genre,
+                    release_date, length, bpm, rating
                     """,
                     update_values,
                 )
@@ -318,7 +346,8 @@ class SongQueries:
                     "length": updated_song[6],
                     "bpm": updated_song[7],
                     "rating": updated_song[8],
-                    "liked_by_user": False,  # Liked by user should not be updated
+                    "liked_by_user": False,
+                    # Liked by user should not be updated
                 }
 
                 return JSONResponse(content=response_data)

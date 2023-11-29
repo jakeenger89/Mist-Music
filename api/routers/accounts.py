@@ -12,7 +12,6 @@ from queries.accounts import (
     AccountOut,
     DuplicateAccountError,
     AccountUpdateIn,
-    AccountOutWithPassword,
 )
 from jwtdown_fastapi.authentication import Token
 from routers.authenticator import authenticator
