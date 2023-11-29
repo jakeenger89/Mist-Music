@@ -10,7 +10,7 @@ steps = [
         last_name  VARCHAR(50),
         profile_picture_url VARCHAR(1000),
         banner_url VARCHAR(1000),
-        signup_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        signup_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     );
 
     """,
@@ -100,8 +100,9 @@ steps = [
         last_name VARCHAR(100),
         address VARCHAR(150) NOT NULL,
         city VARCHAR(100) NOT NULL,
-        zipcode SMALLINT NOT NULL,
-        state varchar(20) NOT NULL
+        zipcode INT NOT NULL,
+        state VARCHAR(20) NOT NULL,
+        fulfilled BOOL DEFAULT FALSE
     );
     """,
 
