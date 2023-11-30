@@ -1,18 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Account = ({ isAuthenticated }) => {
+const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    // Function to fetch username from the authentication token when the component mounts
+    const fetchUsernameFromToken = () => {
+      try {
+        // Get the authentication token from localStorage
+        const authToken = localStorage.getItem('yourAuthToken');
+
+        if (authToken) {
+          // Decode the token to get user information
+          const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
+          // Extract the username from the decoded token
+          const { account: { username } } = decodedToken;
+          console.log('Decoded Token:', decodedToken);
+
+          setUsername(username);
+          console.log('Updated username:', username);
+        } else {
+          console.error('Authentication token not found');
+        }
+      } catch (error) {
+        console.error('Error decoding authentication token:', error);
+      }
+    };
+
+    // Call the fetchUsernameFromToken function if the user is authenticated
+    if (isAuthenticated) {
+      fetchUsernameFromToken();
+    }
+  }, [isAuthenticated]);
 
   // Function to handle logout
   const handleLogout = () => {
-    // You can add additional logic for logging out here
-    // For now, let's clear the authentication status and redirect to the login page
-
-    // Clear authentication status in localStorage
-    localStorage.removeItem('isAuthenticated');
-
-    // Redirect to the login page
+    localStorage.removeItem('yourAuthToken');
+    setIsAuthenticated(false);
+    // Additional logout logic if needed
     navigate('/loginform');
   };
 
@@ -38,7 +65,7 @@ const Account = ({ isAuthenticated }) => {
     <div className="row">
       <div className="offset-3 col-6">
         <div className="shadow p-4 mt-4">
-          <h1>Welcome to the Generic Home Page!</h1>
+          <h1>Welcome {username}, to Mist Music!</h1>
           <p>This is a placeholder for your home page content.</p>
 
           {/* Logout button */}
