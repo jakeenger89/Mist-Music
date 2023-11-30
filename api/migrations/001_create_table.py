@@ -10,7 +10,8 @@ steps = [
             last_name  VARCHAR(50),
             profile_picture_url VARCHAR(1000),
             banner_url VARCHAR(1000),
-            signup_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            signup_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            currency INT DEFAULT 0
         );
 
         """,

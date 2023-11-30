@@ -28,7 +28,7 @@ function MerchList() {
           {merchs && merchs.map(merch => (
             <div key={merch.item_id} className="col-lg-4 col-md-6">
               <div className="card" style={{ width: '12rem' }}>
-                <a href= {`/merch`} ><img src={merch.image_url} className="card-img-top" alt="Merch" style={{ height: '180px', width: '100%', objectFit: 'cover' }} /></a>
+                <a href= {`/merch/${merch.item_id}`} ><img src={merch.image_url} className="card-img-top" alt="Merch" style={{ height: '180px', width: '100%', objectFit: 'cover' }} /></a>
                 <div className="card-body">
                   <h5 className="card-title">{`${merch.name}`}</h5>
                   <h5 className="card-title">{`${merch.price}`}</h5>

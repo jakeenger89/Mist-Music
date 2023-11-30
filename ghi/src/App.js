@@ -4,9 +4,10 @@ import Nav from './Nav';
 import AccountForm from "./LoginForm";
 import CreateSongForm from "./CreateSongForm";
 import SignUpForm from "./SignUpForm";
-import MerchList from "./merch";
+import MerchList from "./merchandise/merch";
 import Account from "./account";
 import AuthenticatedRoute from "./authentication";
+import OrderForm from "./merchandise/merchdetail";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -31,6 +32,7 @@ useEffect(() => {
           <Route index path="loginform" element={<AccountForm setIsAuthenticated={setIsAuthenticated} />} />
           <Route index path="createsongform" element={<AuthenticatedRoute element={<CreateSongForm isAuthenticated={isAuthenticated} />} isAuthenticated={isAuthenticated} />} />
           <Route index path="merch" element={<MerchList />} />
+          <Route index path="merch/:item_id" element={<OrderForm />} />
         </Routes>
       </div>
     </BrowserRouter>
