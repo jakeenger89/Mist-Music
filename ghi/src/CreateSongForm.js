@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const CreateSongForm = () => {
+const CreateSongForm = ({ isAuthenticated }) => {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [artist, setArtist] = useState('');
   const [album, setAlbum] = useState('');
@@ -13,10 +15,19 @@ const CreateSongForm = () => {
   useEffect(() => {
     const fetchAlbums = async () => {
       try {
+        const yourAuthToken = localStorage.getItem('yourAuthToken');
+
+        if (!isAuthenticated || !yourAuthToken) {
+          // Redirect to the login page
+          navigate('/loginform');
+          return;
+        }
+
         const response = await fetch('http://localhost:8000/api/albums', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${yourAuthToken}`,
           },
         });
 
@@ -32,10 +43,17 @@ const CreateSongForm = () => {
     };
 
     fetchAlbums();
-  }, []);
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Check if the user is authenticated
+    if (!isAuthenticated) {
+      // Redirect to the login page
+      navigate('/loginform');
+      return;
+    }
 
     const data = {
       name,
