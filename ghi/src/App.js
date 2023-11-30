@@ -7,20 +7,24 @@ import SignUpForm from "./SignUpForm";
 import MerchList from "./merchandise/merch";
 import Account from "./account";
 import AuthenticatedRoute from "./authentication";
+<<<<<<< HEAD
+import AllSongs from "./seachsongs";
+=======
 import OrderForm from "./merchandise/merchdetail";
+>>>>>>> main
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(localStorage.getItem('yourAuthToken'))
   );
 
-useEffect(() => {
-  const storedToken = localStorage.getItem('yourAuthToken');
-  if (storedToken) {
-    // You may want to validate the token on the server side as well
-    setIsAuthenticated(true);
-  }
-}, []);
+  useEffect(() => {
+    const storedToken = localStorage.getItem('yourAuthToken');
+    if (storedToken) {
+      // You may want to validate the token on the server side as well
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
     <BrowserRouter>
@@ -32,7 +36,11 @@ useEffect(() => {
           <Route index path="loginform" element={<AccountForm setIsAuthenticated={setIsAuthenticated} />} />
           <Route index path="createsongform" element={<AuthenticatedRoute element={<CreateSongForm isAuthenticated={isAuthenticated} />} isAuthenticated={isAuthenticated} />} />
           <Route index path="merch" element={<MerchList />} />
+<<<<<<< HEAD
+          <Route index path="allsongs" element={<AllSongs />} /> {/* Add this line */}
+=======
           <Route index path="merch/:item_id" element={<OrderForm />} />
+>>>>>>> main
         </Routes>
       </div>
     </BrowserRouter>
