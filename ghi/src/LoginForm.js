@@ -52,24 +52,24 @@ const handleChangePassword = (event) => {
 };
 
     return (
-    <div className="row">
-        <div className="offset-3 col-6">
-        <div className="shadow p-4 mt-4">
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit} id="create-account-form">
-            <div className="form-floating mb-3">
-                <input value={email} onChange={handleChangeEmail} placeholder="email" required type="text" name="email" id="email" className="form-control" />
-                <label htmlFor="email">Email</label>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '200px'}}>
+            <div style={{ border: '4px solid black', padding: '20px', backgroundColor: '#ddd', borderRadius: '5px'}}>
+                <div className="shadow p-4 mt-4">
+                    <h1 style={{ textAlign: 'center' }}>Login</h1>
+                    <form onSubmit={handleSubmit} id="create-account-form">
+                    <div style={{marginTop: '10px'}} className="form-floating mb-3">
+                        <input value={email} onChange={handleChangeEmail} placeholder="email" required type="text" name="email" id="email" className="form-control" />
+                        <label htmlFor="email"></label>
+                    </div>
+                    <div style={{marginTop: '10px'}} className="form-floating mb-3">
+                        <input value={password} onChange={handleChangePassword} placeholder="password" required type="password" name="password" id="password" className="form-control" />
+                        <label htmlFor="password"></label>
+                    </div>
+                    <button style={{ backgroundColor: 'black', width: '100%', color: 'white', borderRadius: '5px', padding: "5x", marginTop: '10px'}}type="submit" className="btn btn-primary">Login</button>
+                    </form>
+                </div>
             </div>
-            <div className="form-floating mb-3">
-                <input value={password} onChange={handleChangePassword} placeholder="password" required type="password" name="password" id="password" className="form-control" />
-                <label htmlFor="password">Password</label>
-            </div>
-            <button className="btn btn-primary">Login</button>
-            </form>
         </div>
-        </div>
-    </div>
     );
 };
 

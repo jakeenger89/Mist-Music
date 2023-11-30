@@ -22,7 +22,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Nav />
+      <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
           <Route index path="account" element={<Account isAuthenticated={isAuthenticated} />} />
