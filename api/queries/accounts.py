@@ -22,8 +22,8 @@ class AccountOut(BaseModel):
 
 
 class AccountOutWithPassword(AccountOut):
-
     hashed_password: str
+    account_id: Optional[int]
 
 
 class AccountUpdateIn(BaseModel):
@@ -34,7 +34,7 @@ class AccountUpdateIn(BaseModel):
     signup_date: Optional[datetime] = None
 
 
-class AccountQueries():
+class AccountQueries:
     def get_account(self, email: str) -> AccountOutWithPassword:
         try:
             with pool.connection() as conn:
@@ -70,6 +70,7 @@ class AccountQueries():
                             hashed_password="",
                         )
         except Exception as e:
+            print(e)
             return AccountOutWithPassword(
                 account_id="",
                 username="",
@@ -105,7 +106,9 @@ class AccountQueries():
         except Exception:
             return {"message": "Could not get all users"}
 
-    def create(self, info: AccountIn, hashed_password: str) -> AccountOutWithPassword:
+    def create(
+        self, info: AccountIn, hashed_password: str
+    ) -> AccountOutWithPassword:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
@@ -136,7 +139,9 @@ class AccountQueries():
                 )
                 return accountOut
 
-    def update_account(self, account_id: int, info: AccountUpdateIn) -> AccountOut:
+    def update_account(
+        self, account_id: int, info: AccountUpdateIn
+    ) -> AccountOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 try:
@@ -152,9 +157,12 @@ class AccountQueries():
                             banner_url, signup_date
                         """,
                         [
-                            info.first_name, info.last_name,
-                            info.profile_picture_url, info.banner_url,
-                            info.signup_date, account_id
+                            info.first_name,
+                            info.last_name,
+                            info.profile_picture_url,
+                            info.banner_url,
+                            info.signup_date,
+                            account_id,
                         ],
                     )
                     record = db.fetchone()
@@ -163,7 +171,10 @@ class AccountQueries():
                             account_id=record[0],
                             username=record[1],
                             email=record[2],
-                            password=record[3],  # You can exclude this if you don't want to return the password
+                            password=record[
+                                3
+                            ],  # You can exclude this if you don't
+                                # want to return the password
                             first_name=record[4],
                             last_name=record[5],
                             profile_picture_url=record[6],
@@ -172,7 +183,9 @@ class AccountQueries():
                         )
                         return updated_account
                     else:
-                        raise HTTPException(status_code=404, detail="Account not found")
+                        raise HTTPException(
+                            status_code=404, detail="Account not found"
+                        )
                 except Exception as e:
                     raise HTTPException(status_code=500, detail=str(e))
 

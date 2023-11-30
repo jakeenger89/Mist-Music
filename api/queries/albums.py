@@ -22,7 +22,6 @@ class AlbumOut(BaseModel):
 
 
 class AlbumQueries:
-
     def create_album(self, info: AlbumIn) -> AlbumOut:
         try:
             with pool.connection() as conn:
@@ -43,7 +42,8 @@ class AlbumQueries:
                             %s,
                             %s
                         )
-                        RETURNING album_id, name, artist, genre, release_date, cover_image_url
+                        RETURNING album_id, name, artist, genre,
+                        release_date, cover_image_url
                         """,
                         [
                             info.name,
@@ -86,7 +86,8 @@ class AlbumQueries:
                             release_date = %s,
                             cover_image_url = %s
                         WHERE album_id = %s
-                        RETURNING album_id, name, artist, genre, release_date, cover_image_url
+                        RETURNING album_id, name, artist,
+                        genre, release_date, cover_image_url
                         """,
                         [
                             info.name,
@@ -123,7 +124,8 @@ class AlbumQueries:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        SELECT album_id, name, artist, genre, release_date, cover_image_url
+                        SELECT album_id, name, artist,
+                        genre, release_date, cover_image_url
                         FROM albums
                         WHERE album_id = %s
                         """,
@@ -174,7 +176,8 @@ class AlbumQueries:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        SELECT album_id, name, artist, genre, release_date, cover_image_url
+                        SELECT album_id, name, artist, genre,
+                        release_date, cover_image_url
                         FROM albums
                         """
                     )
