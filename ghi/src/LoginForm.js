@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const AccountForm = ({ setIsAuthenticated }) => {
-    const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const AccountForm = ({ setIsAuthenticated, setUserId }) => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
     async function handleSubmit(event) {
     event.preventDefault();
@@ -19,7 +19,7 @@ const AccountForm = ({ setIsAuthenticated }) => {
 
         if (response.ok) {
         // Parse the response to get the authentication token
-        const { access_token } = await response.json();
+        const { access_token, account_id } = await response.json();
 
         // Store the authentication token in localStorage
         localStorage.setItem('yourAuthToken', access_token);
@@ -29,9 +29,12 @@ const AccountForm = ({ setIsAuthenticated }) => {
 
         // Save authentication status in localStorage
         localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('userId', account_id);
+
 
         // Use navigate to redirect without a full page reload
         navigate('/account');
+        setUserId(account_id);
 
         // Optionally, you can clear the form fields or perform other actions
         setEmail('');

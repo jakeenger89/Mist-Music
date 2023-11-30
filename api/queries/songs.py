@@ -47,6 +47,7 @@ class SongOut(BaseModel):
 
 
 class SongWithStatsOut(SongOut):
+    account_id: int
     play_count: Optional[int] = None
     download_count: Optional[int] = None
 
@@ -123,7 +124,8 @@ class SongQueries:
                             "length": row[6],
                             "bpm": row[7],
                             "rating": rating,
-                            "liked_by_user": False,  # Always set to False
+                            "liked_by_user": False,
+                            "account_id": row[8],
                         }
                         songs.append(song)
 
@@ -136,9 +138,18 @@ class SongQueries:
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 try:
-                    # Explicitly convert length to integer
-                    song_data.length = int(song_data.length)
-                    song_data.bpm = str(song_data.bpm)[:4]
+                    # Create a new object with modified values
+                    modified_song_data = SongIn(
+                        name=song_data.name,
+                        artist=song_data.artist,
+                        album=song_data.album,
+                        genre=song_data.genre,
+                        release_date=song_data.release_date,
+                        length=int(song_data.length),
+                        bpm=str(song_data.bpm)[:4],
+                        rating=song_data.rating,
+                        account_id=song_data.account_id,
+                    )
 
                     cur.execute(
                         """
@@ -150,27 +161,22 @@ class SongQueries:
                             release_date,
                             length,
                             bpm,
-                            rating
+                            rating,
+                            account_id
                             )
-                        VALUES (%s, %s, %s, %s, %s, %s , %s, %s)
-                        RETURNING song_id,
-                        name,
-                        artist,
-                        album, genre,
-                        release_date,
-                        length,
-                        bpm,
-                        rating
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        RETURNING song_id
                         """,
                         (
-                            song_data.name,
-                            song_data.artist,
-                            song_data.album,
-                            song_data.genre,
-                            song_data.release_date,
-                            song_data.length,
-                            song_data.bpm,
-                            song_data.account_id,
+                            modified_song_data.name,
+                            modified_song_data.artist,
+                            modified_song_data.album,
+                            modified_song_data.genre,
+                            modified_song_data.release_date,
+                            modified_song_data.length,
+                            modified_song_data.bpm,
+                            modified_song_data.rating,
+                            modified_song_data.account_id,
                         ),
                     )
 
@@ -180,15 +186,16 @@ class SongQueries:
                     # Construct the response
                     response_data = {
                         "song_id": song_id,
-                        "name": song_data.name,
-                        "artist": song_data.artist,
-                        "album": song_data.album,
-                        "genre": song_data.genre,
-                        "release_date": song_data.release_date,
-                        "length": song_data.length,
-                        "bpm": song_data.bpm,
-                        "rating": song_data.rating,
+                        "name": modified_song_data.name,
+                        "artist": modified_song_data.artist,
+                        "album": modified_song_data.album,
+                        "genre": modified_song_data.genre,
+                        "release_date": modified_song_data.release_date,
+                        "length": modified_song_data.length,
+                        "bpm": modified_song_data.bpm,
+                        "rating": modified_song_data.rating,
                         "liked_by_user": False,
+                        "account_id": modified_song_data.account_id,
                     }
 
                     return JSONResponse(content=response_data)
