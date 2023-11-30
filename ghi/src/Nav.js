@@ -18,6 +18,7 @@ function Nav({ isAuthenticated, onLogout }) {
                     <img src="https://i.imgur.com/oGvU6bt.png" alt="Logo" className="navbar-logo"/>
                 </NavLink>
                 {isAuthenticated && <NavLink className="navbar-brand" to="/createsongform">Upload Song</NavLink>}
+                <NavLink className={"navbar-brand"} to="/allsongs">Search Songs</NavLink>
                 {!isAuthenticated && <NavLink className="navbar-brand" to="/signupform">Sign Up Form</NavLink>}
                 <NavLink className="navbar-brand" to="/merch">Merchandise</NavLink>
                 {!isAuthenticated && <NavLink className="navbar-brand" to="/loginform">Login</NavLink>}
