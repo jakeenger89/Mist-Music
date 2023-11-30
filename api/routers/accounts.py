@@ -131,11 +131,11 @@ def get_accounts(queries: AccountQueries = Depends()):
 
 @router.get("/api/account/{account_id}", response_model=AccountOut)
 async def get_account(
-    account_id: int,
+    email: str,
     response: Response,
     queries: AccountQueries = Depends(),
 ):
-    record = await queries.get_account(account_id)
+    record = queries.get_account(email)
     if record is None:
         response.status_code = 404
     return record

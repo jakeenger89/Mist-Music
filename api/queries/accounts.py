@@ -23,6 +23,7 @@ class AccountOut(BaseModel):
 
 class AccountOutWithPassword(AccountOut):
     hashed_password: str
+    account_id: Optional[int]
 
 
 class AccountUpdateIn(BaseModel):
