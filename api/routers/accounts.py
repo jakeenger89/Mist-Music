@@ -119,9 +119,9 @@ def delete_account(
 
     success = repo.delete_account(account_id)
     if success:
-        return {"message": "User deleted successfully kek"}
+        return {"message": "User deleted successfully"}
     else:
-        raise HTTPException(status_code=404, detail="User not found lol")
+        raise HTTPException(status_code=404, detail="User not found")
 
 
 @router.get("/api/accounts", response_model=List[AccountOut])
@@ -139,15 +139,3 @@ async def get_account(
     if record is None:
         response.status_code = 404
     return record
-
-
-# @router.delete("/api/account/{account_id}", response_model=dict)
-# def delete_account(
-#    account_id: int,
-#    repo: AccountQueries = Depends()
-# ):
-#    success = repo.delete_account(account_id)
-#    if success:
-#        return {"message": "User deleted successfully kek"}
-#    else:
-#        raise HTTPException(status_code=404, detail="User not found lol")
