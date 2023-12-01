@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBCard,
+  MDBCardBody,
+  MDBInput,
+  MDBIcon,
+} from "mdb-react-ui-kit";
 
 const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  async function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = {
       email,
@@ -21,7 +31,9 @@ const SignUpForm = () => {
         "Content-Type": "application/json",
       },
     };
+
     const response = await fetch(MistURL, fetchOptions);
+
     if (response.ok) {
       const newaccount = await response.json();
       setEmail("");
@@ -29,71 +41,78 @@ const SignUpForm = () => {
       setPassword("");
       window.location.reload();
     }
-  }
-
-  const handleChangeEmail = async (event) => {
-    const { value } = event.target;
-    setEmail(value);
-  };
-  const handleChangeUsername = async (event) => {
-    const { value } = event.target;
-    setUsername(value);
-  };
-  const handleChangePassword = async (event) => {
-    const { value } = event.target;
-    setPassword(value);
   };
 
   return (
-    <div className="row">
-      <div className="offset-3 col-6">
-        <div className="shadow p-4 mt-4">
-          <h1>Create/Login</h1>
-          <form onSubmit={handleSubmit} id="create-account-form">
-            <div className="form-floating mb-3">
-              <input
-                value={email}
-                onChange={handleChangeEmail}
-                placeholder="email"
-                required
-                type="text"
-                name="email"
-                id="email"
-                className="form-control"
+    <MDBContainer fluid>
+      <MDBCard className="text-black m-5" style={{ borderRadius: "25px" }}>
+        <MDBCardBody>
+          <MDBRow>
+            <MDBCol
+              md="10"
+              lg="6"
+              className="order-2 order-lg-1 d-flex flex-column align-items-center"
+            >
+              <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
+                Sign up
+              </p>
+
+              <div className="d-flex flex-row align-items-center mb-4">
+                <MDBIcon fas icon="user me-3" size="lg" />
+                <MDBInput
+                  label="Username"
+                  id="form1"
+                  type="text"
+                  className="w-100"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+
+              <div className="d-flex flex-row align-items-center mb-4">
+                <MDBIcon fas icon="envelope me-3" size="lg" />
+                <MDBInput
+                  label="Your Email"
+                  id="form2"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="d-flex flex-row align-items-center mb-4">
+                <MDBIcon fas icon="lock me-3" size="lg" />
+                <MDBInput
+                  label="Password"
+                  id="form3"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              <MDBBtn className="mb-4" size="lg" onClick={handleSubmit}>
+                Register
+              </MDBBtn>
+            </MDBCol>
+
+            <MDBCol
+              md="10"
+              lg="6"
+              className="order-1 order-lg-2 d-flex align-items-center"
+            >
+              <img
+                src="https://i.imgur.com/oGvU6bt.png"
+                alt="Registration"
+                className="img-fluid"
+                style={{ borderRadius: "25px", marginRight: "70px" }}
               />
-              <label htmlFor="email">Set Email</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                value={username}
-                onChange={handleChangeUsername}
-                placeholder="username"
-                required
-                type="text"
-                name="username"
-                id="username"
-                className="form-control"
-              />
-              <label htmlFor="username">Set Username</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                value={password}
-                onChange={handleChangePassword}
-                placeholder="password"
-                required
-                type="text"
-                name="password"
-                id="password"
-                className="form-control"
-              />
-              <label htmlFor="password">Set Password</label>
-            </div>
-            <button className="btn btn-primary">Sign Up</button>
-          </form>
-        </div>
-      </div>
-    </div>
+            </MDBCol>
+          </MDBRow>
+        </MDBCardBody>
+      </MDBCard>
+    </MDBContainer>
   );
 };
+
 export default SignUpForm;
