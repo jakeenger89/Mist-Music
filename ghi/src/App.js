@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import './index.css';
 import Nav from "./Nav";
 import AccountForm from "./LoginForm";
 import CreateSongForm from "./CreateSongForm";
