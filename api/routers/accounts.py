@@ -12,6 +12,7 @@ from queries.accounts import (
     AccountOut,
     DuplicateAccountError,
     AccountUpdateIn,
+    AccountOutWithPassword,
 )
 from jwtdown_fastapi.authentication import Token
 from routers.authenticator import authenticator
@@ -64,7 +65,8 @@ async def get_token(
         }
 
 
-@router.post("/api/create_account", response_model=AccountToken | HttpError)
+@router.post("/api/create_account",
+             response_model=AccountOutWithPassword | HttpError)
 async def create_account(
     info: AccountIn,
     request: Request,
@@ -74,14 +76,11 @@ async def create_account(
     hashed_password = authenticator.hash_password(info.password)
     try:
         account = accounts.create(info, hashed_password)
+        return account
     except DuplicateAccountError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Cannot create an account with those credentials",
-        )
-    form = AccountForm(username=info.email, password=info.password)
-    token = await authenticator.login(response, request, form, accounts)
-    return AccountToken(account=account, **token.dict())
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return HttpError(detail="Cannot create an account with\
+                          those credentials")
 
 
 @router.put("/api/account/{account_id}", response_model=AccountOut)
@@ -98,16 +97,6 @@ def update_account(
         raise HTTPException(status_code=401, detail="Not authenticated")
 
 
-# @router.put("/api/account/{account_id}", response_model=AccountOut)
-# def update_account(
-#    account_id: int,
-#    account_update: AccountUpdateIn,
-#    repo: AccountQueries = Depends()
-# ):
-#    updated_account = repo.update_account(account_id, account_update)
-#    return updated_account
-
-
 @router.delete("/api/account/{account_id}", response_model=dict)
 def delete_account(
     account_id: int,
@@ -119,9 +108,9 @@ def delete_account(
 
     success = repo.delete_account(account_id)
     if success:
-        return {"message": "User deleted successfully kek"}
+        return {"message": "User deleted successfully"}
     else:
-        raise HTTPException(status_code=404, detail="User not found lol")
+        raise HTTPException(status_code=404, detail="User not found")
 
 
 @router.get("/api/accounts", response_model=List[AccountOut])
@@ -139,15 +128,3 @@ async def get_account(
     if record is None:
         response.status_code = 404
     return record
-
-
-# @router.delete("/api/account/{account_id}", response_model=dict)
-# def delete_account(
-#    account_id: int,
-#    repo: AccountQueries = Depends()
-# ):
-#    success = repo.delete_account(account_id)
-#    if success:
-#        return {"message": "User deleted successfully kek"}
-#    else:
-#        raise HTTPException(status_code=404, detail="User not found lol")

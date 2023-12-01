@@ -38,7 +38,7 @@ def create_song(
     account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     if account_data:
-        return queries.create_song(song)
+        return queries.create_song(song, account_data["account_id"])
     else:
         raise HTTPException(status_code=401, detail="Not authorized")
 
@@ -125,3 +125,11 @@ def unlike_song(
         return True
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
+
+
+@router.get("/user-songs/{account_id}", response_model=SongsOut)
+def get_user_songs(
+    account_id: int,
+    queries: SongQueries = Depends(),
+):
+    return queries.get_user_songs(account_id)
