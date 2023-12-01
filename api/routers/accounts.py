@@ -13,11 +13,14 @@ from queries.accounts import (
     DuplicateAccountError,
     AccountUpdateIn,
     AccountOutWithPassword,
+    CurrencyChangeOut,
+    CurrencyChangeIn,
+    IDError,
 )
 from jwtdown_fastapi.authentication import Token
 from routers.authenticator import authenticator
 from pydantic import BaseModel
-from typing import List
+from typing import List, Union
 
 router = APIRouter()
 
@@ -128,3 +131,10 @@ async def get_account(
     if record is None:
         response.status_code = 404
     return record
+
+
+@router.put("/api/currency/{account_id}", response_model=Union[CurrencyChangeOut, IDError])
+def update_currency(
+    account_id: int, account: CurrencyChangeIn, queries: AccountQueries = Depends()
+) -> Union[CurrencyChangeOut, IDError]:
+    return queries.update_currency(account_id, account)

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Union
 from datetime import datetime
 from queries.pool import pool
 from fastapi import HTTPException
@@ -34,7 +34,41 @@ class AccountUpdateIn(BaseModel):
     signup_date: Optional[datetime] = None
 
 
+class CurrencyChangeIn(BaseModel):
+    currency: int
+
+
+class CurrencyChangeOut(BaseModel):
+    account_id: int
+    currency: int
+
+
+class IDError(BaseModel):
+    message: str
+
+
 class AccountQueries:
+    def update_currency(self, account_id: int, account: CurrencyChangeIn) -> Union[CurrencyChangeOut, IDError]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        UPDATE account
+                        SET currency = %s
+                        WHERE account_id = %s
+                        """,
+                        [
+                            account.currency,
+                            account_id
+                        ],
+                    )
+                    old_data = account.dict()
+                    return CurrencyChangeOut(account_id=account_id, **old_data)
+        except Exception as e:
+            print(e)
+            return {"message": "Could not update currency"}
+
     def get_account(self, email: str) -> AccountOutWithPassword:
         try:
             with pool.connection() as conn:
