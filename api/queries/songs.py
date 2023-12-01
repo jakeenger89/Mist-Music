@@ -134,7 +134,7 @@ class SongQueries:
             print(f"Error in get_songs: {e}")
             raise HTTPException(status_code=500, detail="Error")
 
-    def create_song(self, song_data: SongIn):
+    def create_song(self, song_data: SongIn, account_id: int):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 try:
@@ -148,7 +148,7 @@ class SongQueries:
                         length=int(song_data.length),
                         bpm=str(song_data.bpm)[:4],
                         rating=song_data.rating,
-                        account_id=song_data.account_id,
+                        account_id=account_id,
                     )
 
                     cur.execute(
@@ -401,3 +401,43 @@ class SongQueries:
                     song_owner_account_id = result[0]
                     return account_id == song_owner_account_id
             return False
+
+    def get_user_songs(self, account_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                try:
+                    cur.execute(
+                        """
+                        SELECT song_id, name, artist, album, genre,
+                        release_date, length, bpm, rating
+                        FROM songs
+                        WHERE account_id = %s
+                        """,
+                        [account_id],
+                    )
+                    user_songs = []
+                    rows = cur.fetchall()
+                    for row in rows:
+                        song = {
+                            "song_id": row[0],
+                            "name": row[1],
+                            "artist": row[2],
+                            "album": row[3],
+                            "genre": row[4],
+                            "release_date": row[5],
+                            "length": row[6],
+                            "bpm": row[7],
+                            "rating": row[8],
+                            "liked_by_user": self.is_song_liked_by_user
+                            (row[0], account_id),
+                            "account_id": account_id,
+                        }
+                        user_songs.append(song)
+
+                    # Modify the return statement to match the SongsOut model
+                    return SongsOut(songs=user_songs)
+                except Exception as e:
+                    print(f"Error in get_user_songs: {e}")
+                    raise HTTPException(
+                        status_code=500, detail="Error retrieving user's songs"
+                    )
