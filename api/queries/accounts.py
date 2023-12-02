@@ -48,7 +48,9 @@ class IDError(BaseModel):
 
 
 class AccountQueries:
-    def update_currency(self, account_id: int, account: CurrencyChangeIn) -> Union[CurrencyChangeOut, IDError]:
+    def update_currency(
+        self, account_id: int, account: CurrencyChangeIn
+    ) -> Union[CurrencyChangeOut, IDError]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -58,10 +60,7 @@ class AccountQueries:
                         SET currency = %s
                         WHERE account_id = %s
                         """,
-                        [
-                            account.currency,
-                            account_id
-                        ],
+                        [account.currency, account_id],
                     )
                     old_data = account.dict()
                     return CurrencyChangeOut(account_id=account_id, **old_data)
@@ -80,7 +79,7 @@ class AccountQueries:
                             email,
                             password
                         FROM account
-                        WHERE email = %s
+                        WHERE account_id = %s
                         ORDER BY username
                         """,
                         [email],
@@ -208,7 +207,7 @@ class AccountQueries:
                             password=record[
                                 3
                             ],  # You can exclude this if you don't
-                                # want to return the password
+                            # want to return the password
                             first_name=record[4],
                             last_name=record[5],
                             profile_picture_url=record[6],

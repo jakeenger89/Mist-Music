@@ -68,8 +68,9 @@ async def get_token(
         }
 
 
-@router.post("/api/create_account",
-             response_model=AccountOutWithPassword | HttpError)
+@router.post(
+    "/api/create_account", response_model=AccountOutWithPassword | HttpError
+)
 async def create_account(
     info: AccountIn,
     request: Request,
@@ -82,8 +83,10 @@ async def create_account(
         return account
     except DuplicateAccountError:
         response.status_code = status.HTTP_400_BAD_REQUEST
-        return HttpError(detail="Cannot create an account with\
-                          those credentials")
+        return HttpError(
+            detail="Cannot create an account with\
+                          those credentials"
+        )
 
 
 @router.put("/api/account/{account_id}", response_model=AccountOut)
@@ -123,18 +126,23 @@ def get_accounts(queries: AccountQueries = Depends()):
 
 @router.get("/api/account/{account_id}", response_model=AccountOut)
 async def get_account(
-    email: str,
+    account_id: int,
     response: Response,
     queries: AccountQueries = Depends(),
 ):
-    record = queries.get_account(email)
+    record = queries.get_account(account_id)
     if record is None:
         response.status_code = 404
     return record
 
 
-@router.put("/api/currency/{account_id}", response_model=Union[CurrencyChangeOut, IDError])
+@router.put(
+    "/api/currency/{account_id}",
+    response_model=Union[CurrencyChangeOut, IDError],
+)
 def update_currency(
-    account_id: int, account: CurrencyChangeIn, queries: AccountQueries = Depends()
+    account_id: int,
+    account: CurrencyChangeIn,
+    queries: AccountQueries = Depends(),
 ) -> Union[CurrencyChangeOut, IDError]:
     return queries.update_currency(account_id, account)
