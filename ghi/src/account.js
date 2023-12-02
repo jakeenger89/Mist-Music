@@ -1,66 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Routes, Route, useNavigate } from 'react-router-dom';
+import AllAccountSongs from './allAccountSongs';
 
 const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
+  const [accountSongs, setAccountSongs] = useState([]);
+  const [account_id, setAccountId] = useState(null);
 
   useEffect(() => {
-    // Function to fetch username from the authentication token when the component mounts
-    const fetchUsernameFromToken = () => {
+    const fetchData = async () => {
       try {
-        // Get the authentication token from localStorage
         const authToken = localStorage.getItem('yourAuthToken');
 
         if (authToken) {
-          // Decode the token to get user information
           const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
-          // Extract the username from the decoded token
-          const { account: { username } } = decodedToken;
-          console.log('Decoded Token:', decodedToken);
+          const { account: { account_id, username } } = decodedToken;
 
+          setAccountId(account_id);
           setUsername(username);
-          console.log('Updated username:', username);
+
+          const response = await fetch(`http://localhost:8000/user-songs/${account_id}`);
+          const data = await response.json();
+
+          setAccountSongs(data.songs);
         } else {
           console.error('Authentication token not found');
         }
       } catch (error) {
-        console.error('Error decoding authentication token:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    // Call the fetchUsernameFromToken function if the user is authenticated
     if (isAuthenticated) {
-      fetchUsernameFromToken();
+      fetchData();
     }
   }, [isAuthenticated]);
 
-  // Function to handle logout
   const handleLogout = () => {
     localStorage.removeItem('yourAuthToken');
     setIsAuthenticated(false);
-    // Additional logout logic if needed
     navigate('/loginform');
   };
 
-  // Check if the user is authenticated
   if (!isAuthenticated) {
-    // Render the "Login Required" message with a link to the login page
     return (
       <div className="row">
         <div className="offset-3 col-6">
           <div className="shadow p-4 mt-4">
             <h1>Login Required</h1>
-            <p>
-              Please <Link to="/loginform">log in</Link> to access this page.
-            </p>
+            <p>Please <Link to="/loginform">log in</Link> to access this page.</p>
           </div>
         </div>
       </div>
     );
   }
 
-  // If the user is authenticated, show the account content
   return (
     <div className="row">
       <div className="offset-3 col-6">
@@ -68,12 +63,26 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           <h1>Welcome {username}, to Mist Music!</h1>
           <p>This is a placeholder for your home page content.</p>
 
-          {/* Logout button */}
+          <h2>
+            {/* Link to a new page showing all songs */}
+            <Link to={`/account/all-songs/${account_id}`}>Your Songs</Link>
+          </h2>
+
+          <ul>
+            {accountSongs.map((song) => (
+              <li key={song.song_id}>{song.name}</li>
+            ))}
+          </ul>
+
           <button className="btn btn-danger" onClick={handleLogout}>
             Logout
           </button>
         </div>
       </div>
+
+      <Routes>
+        <Route path="all-songs/:account_id" element={<AllAccountSongs />} />
+      </Routes>
     </div>
   );
 };
