@@ -15,12 +15,10 @@ steps = [
         );
 
         """,
-
         """
         DROP TABLE account;
-        """
+        """,
     ],
-
     [
         """
         CREATE TABLE songs (
@@ -37,12 +35,10 @@ steps = [
         );
 
         """,
-
         """
         DROP TABLE songs;
-        """
+        """,
     ],
-
     [
         """
         CREATE TABLE liked_songs (
@@ -51,12 +47,10 @@ steps = [
         PRIMARY KEY (account_id, song_id)
         );
         """,
-
         """
         DROP TABLE liked_songs;
-        """
-        ],
-
+        """,
+    ],
     [
         """
         CREATE TABLE merchandise (
@@ -72,9 +66,8 @@ steps = [
         """,
         """
         DROP TABLE merchandise;
-        """
+        """,
     ],
-
     [
         """
         CREATE TABLE albums (
@@ -87,12 +80,10 @@ steps = [
         );
 
         """,
-
         """
         DROP TABLE albums;
-        """
+        """,
     ],
-
     [
         """
         CREATE TABLE customer (
@@ -106,9 +97,8 @@ steps = [
             fulfilled BOOL DEFAULT FALSE
         );
         """,
-
         """
         DROP TABLE customer;
-        """
-    ]
+        """,
+    ],
 ]

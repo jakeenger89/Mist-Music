@@ -21,8 +21,10 @@ const AccountForm = ({ setIsAuthenticated, setUserId }) => {
         // Parse the response to get the authentication token
         const { access_token, account_id } = await response.json();
 
+
         // Store the authentication token in localStorage
         localStorage.setItem('yourAuthToken', access_token);
+        console.log('Token stored:', access_token);
 
         // Update the authentication status in App component
         setIsAuthenticated(true);

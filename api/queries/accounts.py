@@ -174,7 +174,7 @@ class AccountQueries:
                             password=record[
                                 3
                             ],  # You can exclude this if you don't
-                                # want to return the password
+                            # want to return the password
                             first_name=record[4],
                             last_name=record[5],
                             profile_picture_url=record[6],
