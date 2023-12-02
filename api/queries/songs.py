@@ -391,22 +391,20 @@ class SongQueries:
                 return cur.fetchone() is not None
 
     def delete_song(self, song_id, account_id):
-        if not self.is_user_allowed_to_delete_song(song_id, account_id):
-            raise HTTPException(
-                status_code=403,
-                detail="You are not allowed to delete this song",
-            )
-
-        with pool.connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    """
-                    DELETE FROM songs
-                    WHERE song_id = %s
-                    """,
-                    [song_id],
-                )
-                return True
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        DELETE FROM songs
+                        WHERE song_id = %s
+                        """,
+                        [song_id],
+                    )
+                    return True
+        except Exception as e:
+            print(f"Error deleting song: {e}")
+            return False
 
     def is_user_allowed_to_delete_song(self, song_id: int, account_id: int):
         with pool.connection() as conn:

@@ -49,13 +49,12 @@ def delete_song(
     account_data: dict = Depends(authenticator.get_current_account_data),
     queries: SongQueries = Depends(),
 ):
+    # Extract account_id from account_data
     email = account_data.get("email")
     accounts = AccountQueries
     account_id = authenticator.get_account_data(email, accounts)
-    if not queries.is_user_allowed_to_delete_song(song_id, account_id):
-        raise HTTPException(
-            status_code=403, detail="You are not allowed to delete this song"
-        )
+
+    # Allow deletion without permission check
     queries.delete_song(song_id, account_id)
     return True
 

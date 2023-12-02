@@ -38,35 +38,44 @@ const AllAccountSongs = () => {
     navigate(`/update-song/${songId}`, { state: { account_id } });
   };
 
-  const handleDelete = async (songId) => {
-    try {
-      const authToken = localStorage.getItem('yourAuthToken');
+const handleDelete = async (songId) => {
+  try {
+    const authToken = localStorage.getItem('yourAuthToken');
+    console.log('Auth Token:', authToken);
 
-      if (!authToken) {
-        console.error('Authentication token not found');
-        return;
-      }
-
-      const response = await fetch(`http://localhost:8000/api/songs/${songId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      if (response.ok) {
-        console.log('Song deleted successfully');
-        // Optionally, update state or perform additional actions
-        fetchData();
-      } else {
-        const data = await response.json();
-        console.error('Failed to delete song', response.status, data);
-      }
-    } catch (error) {
-      console.error('Error deleting song:', error);
+    if (!authToken) {
+      console.error('Authentication token not found');
+      return;
     }
-  };
+
+    // Ask for confirmation before deleting
+    const confirmDelete = window.confirm('Are you sure you want to delete this song?');
+
+    if (!confirmDelete) {
+      console.log('Deletion canceled by user');
+      return;
+    }
+
+    const response = await fetch(`http://localhost:8000/api/songs/${songId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    if (response.ok) {
+      console.log('Song deleted successfully');
+      // Optionally, update state or perform additional actions
+      fetchData();
+    } else {
+      const data = await response.json();
+      console.error('Failed to delete song', response.status, data);
+    }
+  } catch (error) {
+    console.error('Error deleting song:', error);
+  }
+};
 
   return (
     <div>
