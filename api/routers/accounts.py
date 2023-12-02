@@ -65,8 +65,9 @@ async def get_token(
         }
 
 
-@router.post("/api/create_account",
-             response_model=AccountOutWithPassword | HttpError)
+@router.post(
+    "/api/create_account", response_model=AccountOutWithPassword | HttpError
+)
 async def create_account(
     info: AccountIn,
     request: Request,
@@ -79,8 +80,10 @@ async def create_account(
         return account
     except DuplicateAccountError:
         response.status_code = status.HTTP_400_BAD_REQUEST
-        return HttpError(detail="Cannot create an account with\
-                          those credentials")
+        return HttpError(
+            detail="Cannot create an account with\
+                          those credentials"
+        )
 
 
 @router.put("/api/account/{account_id}", response_model=AccountOut)

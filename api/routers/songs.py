@@ -43,8 +43,7 @@ def create_song(
         raise HTTPException(status_code=401, detail="Not authorized")
 
 
-# delete a song
-@router.delete("/songs/{songs_id}", response_model=bool)
+@router.delete("/api/songs/{song_id}", response_model=bool)
 def delete_song(
     song_id: int,
     account_data: dict = Depends(authenticator.get_current_account_data),
@@ -55,9 +54,9 @@ def delete_song(
     account_id = authenticator.get_account_data(email, accounts)
     if not queries.is_user_allowed_to_delete_song(song_id, account_id):
         raise HTTPException(
-            status_code=403, detail="You are not allowed to delete"
+            status_code=403, detail="You are not allowed to delete this song"
         )
-    queries.delete_song(song_id)
+    queries.delete_song(song_id, account_id)
     return True
 
 
@@ -80,7 +79,7 @@ def get_liked_songs_by_account(
 
 
 # update song account posted
-@router.put("/songs/{song_id}", response_model=SongsOut)
+@router.put("/api/songs/{song_id}", response_model=SongsOut)
 def update_song(
     song_id: int,
     update_data: SongIn,

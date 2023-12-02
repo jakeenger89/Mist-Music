@@ -6,9 +6,9 @@ from fastapi.responses import JSONResponse
 
 
 class SongIn(BaseModel):
-    name: str
-    artist: str
-    album: str
+    name: Optional[str]
+    artist: Optional[str]
+    album: Optional[str]
     genre: Literal[
         "Rock",
         "Pop",
@@ -18,11 +18,11 @@ class SongIn(BaseModel):
         "Electronic",
         "Classical",
     ]
-    release_date: str
-    length: int
-    bpm: constr(max_length=4)
-    rating: str
-    account_id: int
+    release_date: Optional[str]
+    length: Optional[int]
+    rating: Optional[int]
+    bpm: Optional[constr(max_length=4)]
+    account_id: Optional[int]
 
 
 class SongOut(BaseModel):
@@ -50,6 +50,7 @@ class SongWithStatsOut(SongOut):
     account_id: int
     play_count: Optional[int] = None
     download_count: Optional[int] = None
+    length: Optional[int]
 
 
 class SongsOut(BaseModel):
@@ -76,6 +77,10 @@ class SongQueries:
                 )
                 row = cur.fetchone()
                 if row:
+                    # Check if 'length' is None and handle it appropriately
+                    length = (
+                        row[6] if row[6] is not None else 0
+                    )  # You can choose a default value
                     return SongOut(
                         song_id=row[0],
                         name=row[1],
@@ -83,7 +88,7 @@ class SongQueries:
                         album=row[3],
                         genre=row[4],
                         release_date=row[5],
-                        length=row[6],
+                        length=length,
                         bpm=row[7],
                         rating=row[8],
                     )
@@ -145,7 +150,9 @@ class SongQueries:
                         album=song_data.album,
                         genre=song_data.genre,
                         release_date=song_data.release_date,
-                        length=int(song_data.length),
+                        length=int(song_data.length)
+                        if song_data.length
+                        else None,
                         bpm=str(song_data.bpm)[:4],
                         rating=song_data.rating,
                         account_id=account_id,
@@ -299,7 +306,7 @@ class SongQueries:
 
     # update a song
     def update_song(self, song_id: int, update_data: SongIn, account_id: int):
-        # function below to check is song_id is tied that account_id
+        # Function below to check if song_id is tied to that account_id
         if not self.is_song_owner(song_id, account_id):
             raise HTTPException(
                 status_code=403, detail="Not authorized to update this song"
@@ -307,19 +314,33 @@ class SongQueries:
 
         with pool.connection() as conn:
             with conn.cursor() as cur:
-                set_clause = ", ".join(
-                    [
-                        f"{key} = %s"
-                        for key, value in update_data.dict(
-                            exclude_unset=True
-                        ).items()
-                    ]
+                update_values_dict = {
+                    key: value
+                    for key, value in update_data.dict(
+                        exclude_unset=True
+                    ).items()
+                    if value is not None
+                }
+
+                # Remove 'length' and 'rating' from the update data
+                update_values_dict.pop("length", None)
+                update_values_dict.pop("rating", None)
+
+                # Adjust conversion if BPM is not supposed to be an integer
+                update_values_dict["bpm"] = (
+                    int(update_values_dict["bpm"])
+                    if "bpm" in update_values_dict
+                    else None
                 )
-                update_values = [
-                    value
-                    for value in update_data.dict(exclude_unset=True).values()
-                ]
-                update_values.append(song_id)
+
+                # Create the SET clause for the SQL query
+                set_clause = ", ".join(
+                    [f"{key} = %s" for key in update_values_dict]
+                )
+
+                # Create a list of values for the SQL query
+                update_values = list(update_values_dict.values())
+                update_values.append(song_id)  # Append song_id to the end
 
                 # Update the song
                 cur.execute(
@@ -333,10 +354,8 @@ class SongQueries:
                     update_values,
                 )
 
-                # Fetch the updated song data
                 updated_song = cur.fetchone()
 
-                # Check if the song was found and updated
                 if not updated_song:
                     raise HTTPException(
                         status_code=404, detail="Song not found"
@@ -353,8 +372,6 @@ class SongQueries:
                     "length": updated_song[6],
                     "bpm": updated_song[7],
                     "rating": updated_song[8],
-                    "liked_by_user": False,
-                    # Liked by user should not be updated
                 }
 
                 return JSONResponse(content=response_data)
@@ -373,7 +390,13 @@ class SongQueries:
                 )
                 return cur.fetchone() is not None
 
-    def delete_song(self, song_id):
+    def delete_song(self, song_id, account_id):
+        if not self.is_user_allowed_to_delete_song(song_id, account_id):
+            raise HTTPException(
+                status_code=403,
+                detail="You are not allowed to delete this song",
+            )
+
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -391,7 +414,7 @@ class SongQueries:
                 cur.execute(
                     """
                     SELECT account_id
-                    DELETE FROM songs
+                    FROM songs
                     WHERE song_id = %s
                     """,
                     [song_id],
@@ -428,8 +451,9 @@ class SongQueries:
                             "length": row[6],
                             "bpm": row[7],
                             "rating": row[8],
-                            "liked_by_user": self.is_song_liked_by_user
-                            (row[0], account_id),
+                            "liked_by_user": self.is_song_liked_by_user(
+                                row[0], account_id
+                            ),
                             "account_id": account_id,
                         }
                         user_songs.append(song)

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import './index.css';
 import Nav from "./Nav";
 import AccountForm from "./LoginForm";
 import CreateSongForm from "./CreateSongForm";
@@ -10,6 +11,7 @@ import AuthenticatedRoute from "./authentication";
 import AllSongs from "./seachsongs";
 import OrderForm from "./merchandise/merchdetail";
 import AllAccountSongs from "./allAccountSongs";
+import UpdateSongForm from "./updateSongForm";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -50,6 +52,7 @@ function App() {
           <Route index path="allsongs" element={<AllSongs />} /> {/* Add this line */}
           <Route index path="merch/:item_id" element={<OrderForm />} />
           <Route index path="account/all-songs/:account_id" element={<AllAccountSongs />} />
+          <Route index path="update-song/:song_id" element={<UpdateSongForm />} />
         </Routes>
       </div>
     </BrowserRouter>

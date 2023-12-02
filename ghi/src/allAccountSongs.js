@@ -1,35 +1,72 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const AllAccountSongs = () => {
   const [accountSongs, setAccountSongs] = useState([]);
   const { account_id } = useParams();
+  const navigate = useNavigate();
+
+  const fetchData = async () => {
+    try {
+      if (!account_id) {
+        console.error('Account ID is undefined');
+        return;
+      }
+
+      const accountIdInt = parseInt(account_id, 10);
+
+      if (isNaN(accountIdInt)) {
+        console.error('Invalid account_id:', account_id);
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8000/user-songs/${accountIdInt}`);
+      const data = await response.json();
+      setAccountSongs(data.songs);
+    } catch (error) {
+      console.error('Error fetching user songs:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!account_id) {
-          console.error('Account ID is undefined');
-          return;
-        }
-
-        const accountIdInt = parseInt(account_id, 10);
-
-        if (isNaN(accountIdInt)) {
-          console.error('Invalid account_id:', account_id);
-          return;
-        }
-
-        const response = await fetch(`http://localhost:8000/user-songs/${accountIdInt}`);
-        const data = await response.json();
-        setAccountSongs(data.songs);
-      } catch (error) {
-        console.error('Error fetching user songs:', error);
-      }
-    };
-
     fetchData();
   }, [account_id]);
+
+  const handleUpdate = (songId) => {
+    console.log('Updating song with ID:', songId);
+    console.log('Navigating to update page with account ID:', account_id);
+    navigate(`/update-song/${songId}`, { state: { account_id } });
+  };
+
+  const handleDelete = async (songId) => {
+    try {
+      const authToken = localStorage.getItem('yourAuthToken');
+
+      if (!authToken) {
+        console.error('Authentication token not found');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8000/api/songs/${songId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (response.ok) {
+        console.log('Song deleted successfully');
+        // Optionally, update state or perform additional actions
+        fetchData();
+      } else {
+        const data = await response.json();
+        console.error('Failed to delete song', response.status, data);
+      }
+    } catch (error) {
+      console.error('Error deleting song:', error);
+    }
+  };
 
   return (
     <div>
@@ -58,6 +95,11 @@ const AllAccountSongs = () => {
               <td>{song.length}</td>
               <td>{song.bpm}</td>
               <td>{song.rating}</td>
+              <td>
+                {/* Add buttons for update and delete */}
+                <button onClick={() => handleUpdate(song.song_id)}>Update</button>
+                <button onClick={() => handleDelete(song.song_id)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>

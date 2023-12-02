@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AccountForm = ({ setIsAuthenticated, setUserId }) => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     async function handleSubmit(event) {
     event.preventDefault();
@@ -21,8 +21,10 @@ const AccountForm = ({ setIsAuthenticated, setUserId }) => {
         // Parse the response to get the authentication token
         const { access_token, account_id } = await response.json();
 
+
         // Store the authentication token in localStorage
         localStorage.setItem('yourAuthToken', access_token);
+        console.log('Token stored:', access_token);
 
         // Update the authentication status in App component
         setIsAuthenticated(true);
