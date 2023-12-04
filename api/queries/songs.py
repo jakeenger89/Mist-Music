@@ -44,6 +44,7 @@ class SongOut(BaseModel):
     bpm: str
     rating: str
     liked_by_user: Optional[bool] = None  # Make it optional
+    likes_count: Optional[int] = None
 
 
 class SongWithStatsOut(SongOut):
@@ -51,6 +52,7 @@ class SongWithStatsOut(SongOut):
     play_count: Optional[int] = None
     download_count: Optional[int] = None
     length: Optional[int]
+    likes_count: Optional[int]
 
 
 class SongsOut(BaseModel):
@@ -101,23 +103,29 @@ class SongQueries:
                 with conn.cursor() as cur:
                     cur.execute(
                         """
-                        SELECT song_id,
-                        name,
-                        artist,
-                        album,
-                        genre,
-                        release_date,
-                        length,
-                        bpm,
-                        rating
-                        FROM songs
-                    """
+                        SELECT s.song_id,
+                               s.name,
+                               s.artist,
+                               s.album,
+                               s.genre,
+                               s.release_date,
+                               s.length,
+                               s.bpm,
+                               s.rating,
+                               COUNT(l.account_id) AS likes_count,
+                               s.account_id  -- Include account_id field
+                        FROM songs s
+                        LEFT JOIN liked_songs l ON s.song_id = l.song_id
+                        GROUP BY s.song_id, s.name, s.artist, s.album, s.genre,
+                                 s.release_date, s.length, s.bpm, s.rating,
+                                 s.account_id
+                        """
                     )
                     songs = []
                     rows = cur.fetchall()
                     for row in rows:
-                        # Handle the case where 'rating' is None
-                        rating = row[8] if row[8] is not None else "N/A"
+                        # ... Other fields
+                        likes_count = row[9] if row[9] is not None else 0
 
                         song = {
                             "song_id": row[0],
@@ -128,13 +136,15 @@ class SongQueries:
                             "release_date": row[5],
                             "length": row[6],
                             "bpm": row[7],
-                            "rating": rating,
-                            "liked_by_user": False,
-                            "account_id": row[8],
+                            "rating": row[8],
+                            "account_id": row[10],  # Include account_id
+                            "liked_by_user": None,
+                            "likes_count": likes_count,
                         }
                         songs.append(song)
 
-                    return {"songs": songs}
+                    # Modify the return statement to match the SongsOut model
+                    return SongsOut(songs=songs)
         except Exception as e:
             print(f"Error in get_songs: {e}")
             raise HTTPException(status_code=500, detail="Error")
@@ -269,6 +279,12 @@ class SongQueries:
                 return cur.fetchone() is not None
 
     def like_song(self, song_id, account_id):
+        # Check if the user is the owner of the song
+        if not self.is_song_owner(song_id, account_id):
+            raise HTTPException(
+                status_code=403, detail="Not authorized to like this song"
+            )
+
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 try:
