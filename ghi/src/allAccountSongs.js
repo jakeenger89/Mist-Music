@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const AllAccountSongs = () => {
@@ -6,7 +6,7 @@ const AllAccountSongs = () => {
   const { account_id } = useParams();
   const navigate = useNavigate();
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       if (!account_id) {
         console.error('Account ID is undefined');
@@ -26,11 +26,11 @@ const AllAccountSongs = () => {
     } catch (error) {
       console.error('Error fetching user songs:', error);
     }
-  };
+  }, [account_id]);
 
   useEffect(() => {
     fetchData();
-  }, [account_id]);
+  }, [fetchData]);
 
   const handleUpdate = (songId) => {
     console.log('Updating song with ID:', songId);
