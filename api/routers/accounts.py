@@ -136,6 +136,18 @@ async def get_account(
     return record
 
 
+@router.get("/api/login/{email}", response_model=AccountOut)
+async def login_account(
+    email: str,
+    response: Response,
+    queries: AccountQueries = Depends(),
+):
+    record = queries.login_account(email)
+    if record is None:
+        response.status_code = 404
+    return record
+
+
 @router.put(
     "/api/currency/{account_id}",
     response_model=Union[CurrencyChangeOut, IDError],

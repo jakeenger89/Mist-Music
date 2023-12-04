@@ -68,7 +68,51 @@ class AccountQueries:
             print(e)
             return {"message": "Could not update currency"}
 
-    def get_account(self, email: str) -> AccountOutWithPassword:
+    def login_account(self, email: str) -> AccountOutWithPassword:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        SELECT account_id,
+                            username,
+                            email,
+                            password
+                        FROM account
+                        WHERE email = %s
+                        ORDER BY username
+                        """,
+                        [email],
+                    )
+                    record = db.fetchone()
+                    if record:
+                        account_out = AccountOutWithPassword(
+                            account_id=record[0],
+                            username=record[1],
+                            email=record[2],
+                            password=record[3],
+                            hashed_password=record[3],
+                        )
+                        return account_out
+                    else:
+                        return AccountOutWithPassword(
+                            account_id="",
+                            username="",
+                            email="",
+                            password="",
+                            hashed_password="",
+                        )
+        except Exception as e:
+            print(e)
+            return AccountOutWithPassword(
+                account_id="",
+                username="",
+                email="",
+                password="",
+                hashed_password="",
+            )
+
+    def get_account(self, account_id: int) -> AccountOutWithPassword:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -82,7 +126,7 @@ class AccountQueries:
                         WHERE account_id = %s
                         ORDER BY username
                         """,
-                        [email],
+                        [account_id],
                     )
                     record = db.fetchone()
                     if record:
