@@ -10,7 +10,7 @@ class UserAuthenticator(Authenticator):
         email: str,
         accounts: AccountQueries,
     ):
-        return accounts.get_account(email)
+        return accounts.login_account(email)
 
     def get_account_getter(
         self,
