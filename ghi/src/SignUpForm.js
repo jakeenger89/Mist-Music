@@ -56,7 +56,6 @@ const SignUpForm = () => {
               <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
                 Sign up
               </p>
-
               <div className="d-flex flex-row align-items-center mb-4">
                 <MDBIcon fas icon="user me-3" size="lg" />
                 <MDBInput
