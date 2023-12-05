@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Routes, Route, useNavigate } from 'react-router-dom';
 import AllAccountSongs from './allAccountSongs';
+import UserLikedSongs from './UserLikedSongs';
 
 const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const navigate = useNavigate();
@@ -64,15 +65,11 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           <p>This is a placeholder for your home page content.</p>
 
           <h2>
-            {/* Link to a new page showing all songs */}
             <Link to={`/account/all-songs/${account_id}`}>Your Songs</Link>
+            <Link to={`/account/liked-songs/${account_id}`}>Your Liked Songs</Link>
           </h2>
 
-          <ul>
-            {accountSongs.map((song) => (
-              <li key={song.song_id}>{song.name}</li>
-            ))}
-          </ul>
+          {/* Existing code... */}
 
           <button className="btn btn-danger" onClick={handleLogout}>
             Logout
@@ -82,6 +79,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
 
       <Routes>
         <Route path="all-songs/:account_id" element={<AllAccountSongs />} />
+        <Route path="liked-songs/:account_id" element={<UserLikedSongs account_id={account_id} />} />
       </Routes>
     </div>
   );

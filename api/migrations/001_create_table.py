@@ -101,4 +101,17 @@ steps = [
         DROP TABLE customer;
         """,
     ],
+
+    [
+        """
+        CREATE TABLE song_files (
+            file_id SERIAL PRIMARY KEY,
+            song_id INTEGER REFERENCES songs(song_id) ON DELETE CASCADE,
+            file_path VARCHAR(1000) NOT NULL
+        );
+        """,
+        """
+        DROP TABLE song_files;
+        """,
+    ],
 ]
