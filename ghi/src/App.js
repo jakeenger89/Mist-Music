@@ -12,7 +12,7 @@ import AllSongs from "./seachsongs";
 import OrderForm from "./merchandise/merchdetail";
 import AllAccountSongs from "./allAccountSongs";
 import UpdateSongForm from "./updateSongForm";
-
+import AboutUs from "./aboutUs";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(localStorage.getItem("yourAuthToken"))
@@ -74,6 +74,7 @@ const basename = process.env.PUBLIC_URL.replace(domain, '');
             path="update-song/:song_id"
             element={<UpdateSongForm />}
           />
+          <Route index path="aboutus" element={<AboutUs />} />
         </Routes>
       </div>
     </BrowserRouter>
