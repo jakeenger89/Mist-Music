@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import './indexgit .css';
+import "./index.css";
 import Nav from "./Nav";
 import AccountForm from "./LoginForm";
 import CreateSongForm from "./CreateSongForm";
@@ -12,6 +12,8 @@ import AllSongs from "./seachsongs";
 import OrderForm from "./merchandise/merchdetail";
 import AllAccountSongs from "./allAccountSongs";
 import UpdateSongForm from "./updateSongForm";
+import Songs from "./Songs"
+import Profile from "./profilepage"
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -19,7 +21,7 @@ function App() {
   );
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('yourAuthToken');
+    const storedToken = localStorage.getItem("yourAuthToken");
     if (storedToken) {
       // You may want to validate the token on the server side as well
       setIsAuthenticated(true);
@@ -31,11 +33,19 @@ function App() {
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
-          <Route index path="account/*" element={<Account isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />} />
-          <Route index path="signupform" element={<SignUpForm />} />
           <Route
             index
-            path="loginform"
+            path="account/*"
+            element={
+              <Account
+                isAuthenticated={isAuthenticated}
+                setIsAuthenticated={setIsAuthenticated}
+              />
+            }
+          />
+          <Route index path="signupform" element={<SignUpForm />} />
+          <Route
+            index path="loginform"
             element={<AccountForm setIsAuthenticated={setIsAuthenticated} />}
           />
           <Route
@@ -49,10 +59,21 @@ function App() {
             }
           />
           <Route index path="merch" element={<MerchList />} />
-          <Route index path="allsongs" element={<AllSongs />} /> {/* Add this line */}
+          <Route index path="allsongs" element={<AllSongs />} />{" "}
+          {/* Add this line */}
           <Route index path="merch/:item_id" element={<OrderForm />} />
-          <Route index path="account/all-songs/:account_id" element={<AllAccountSongs />} />
-          <Route index path="update-song/:song_id" element={<UpdateSongForm />} />
+          <Route
+            index
+            path="account/all-songs/:account_id"
+            element={<AllAccountSongs />}
+          />
+          <Route
+            index
+            path="update-song/:song_id"
+            element={<UpdateSongForm />}
+          />
+          <Route index path="songs" element={<Songs/>} />
+          <Route path="/profile/:account_id" element={<Profile/>} />
         </Routes>
       </div>
     </BrowserRouter>
