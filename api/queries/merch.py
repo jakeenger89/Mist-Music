@@ -25,8 +25,31 @@ class MerchOut(BaseModel):
     description: str
     quantity: int
 
+class CurrencyChangeOut(BaseModel):
+    account_id: int
+
+
 
 class MerchQueries:
+    def deduct_currency(
+        self, account_id: int, amount: int
+    ) -> Union[CurrencyChangeOut, IDError]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        UPDATE account
+                        SET currency = currency - %s
+                        WHERE account_id = %s
+                        """,
+                        [amount, account_id],
+                    )
+                    return CurrencyChangeOut(account_id=account_id, currency=-amount)
+        except Exception as e:
+            print(e)
+            return {"message": "Could not deduct currency"}
+
     def get_one_merch(self, merch_id: int) -> Optional[MerchOut]:
         try:
             with pool.connection() as conn:

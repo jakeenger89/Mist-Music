@@ -1,6 +1,9 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Response, HTTPException, status
 from queries.merch import MerchIn, MerchOut, MerchQueries, Error
 from typing import List, Union, Optional
+from jwtdown_fastapi.authentication import Token
+from routers.authenticator import authenticator
+
 
 
 router = APIRouter()
@@ -36,7 +39,11 @@ def get_one_merch(
     item_id: int,
     response: Response,
     q: MerchQueries = Depends(),
+    token: Token = Depends(authenticator.get_current_account_data),
 ) -> MerchOut:
+    if not token:
+        raise HTTPException(status_code=401, detail="User Not Authenticated")
+
     merch = q.get_one_merch(item_id)
     if merch is None:
         response.status_code = 404

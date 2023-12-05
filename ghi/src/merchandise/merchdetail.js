@@ -9,8 +9,13 @@ function OrderForm() {
     const[zipcode, setZipcode] = useState('')
     const[state, setState] = useState('')
 
+    const authToken = localStorage.getItem('authToken');
+
     async function handleSubmit(event) {
         event.preventDefault()
+
+        const totalPrice = item.price;
+
         const data = {
             first_name,
             last_name,
@@ -18,7 +23,7 @@ function OrderForm() {
             city,
             zipcode,
             state
-        }
+        };
 
 
         const orderURL = "http://localhost:8000/api/customer"
@@ -26,7 +31,8 @@ function OrderForm() {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
             }
         }
         const response = await fetch(orderURL, fetchOptions)
@@ -41,6 +47,35 @@ function OrderForm() {
             window.location.reload()
         }
     };
+
+
+    async function updateCurrency(account_id, currencyChange) {
+    const url = `http://localhost:8000/api/currency/${account_id}`;
+    const fetchOptions = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`,
+      },
+      body: JSON.stringify(currencyChange),
+    };
+
+    try {
+      const response = await fetch(url, fetchOptions);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Currency updated successfully', data);
+        // Handle success, if needed
+      } else {
+        console.error('Failed to update currency');
+        // Handle failure, if needed
+      }
+    } catch (error) {
+      console.error('Error updating currency:', error);
+      // Handle error, if needed
+    }
+  }
 
 
     const handleFirstNameChange = async (event) => {
