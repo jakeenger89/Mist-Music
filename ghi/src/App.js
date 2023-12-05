@@ -12,7 +12,7 @@ import AllSongs from "./seachsongs";
 import OrderForm from "./merchandise/merchdetail";
 import AllAccountSongs from "./allAccountSongs";
 import UpdateSongForm from "./updateSongForm";
-
+import AboutUs from "./aboutUs";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(localStorage.getItem("yourAuthToken"))
@@ -26,8 +26,11 @@ function App() {
     }
   }, []);
 
+
+const domain = /https:\/\/[^/]+/;
+const basename = process.env.PUBLIC_URL.replace(domain, '');
   return (
-    <BrowserRouter>
+    <BrowserRouter basename ={basename}>
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
@@ -71,6 +74,7 @@ function App() {
             path="update-song/:song_id"
             element={<UpdateSongForm />}
           />
+          <Route index path="aboutus" element={<AboutUs />} />
         </Routes>
       </div>
     </BrowserRouter>

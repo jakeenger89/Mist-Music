@@ -35,7 +35,7 @@ const SignUpForm = () => {
     const response = await fetch(MistURL, fetchOptions);
 
     if (response.ok) {
-      const newaccount = await response.json();
+      // const newaccount = await response.json();
       setEmail("");
       setUsername("");
       setPassword("");
