@@ -73,8 +73,9 @@ def get_liked_songs_by_account(
 ):
     if account_data:
         try:
-            liked_songs_response = queries.get_liked_songs_by_account
-            (account_id)
+            liked_songs_response = (
+                queries.get_liked_songs_by_account(account_id)
+                )
 
             # Update the response structure to include account_id for each song
             for song in liked_songs_response["songs"]:

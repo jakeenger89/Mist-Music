@@ -13,6 +13,9 @@ import OrderForm from "./merchandise/merchdetail";
 import AllAccountSongs from "./allAccountSongs";
 import UpdateSongForm from "./updateSongForm";
 import AboutUs from "./aboutUs";
+import UserLikedSongs from "./UserLikedSongs";
+
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(localStorage.getItem("yourAuthToken"))
@@ -26,15 +29,19 @@ function App() {
     }
   }, []);
 
+  const domain = /https:\/\/[^/]+/;
+  const basename = process.env.PUBLIC_URL.replace(domain, '');
 
-const domain = /https:\/\/[^/]+/;
-const basename = process.env.PUBLIC_URL.replace(domain, '');
   return (
-    <BrowserRouter basename ={basename}>
+    <BrowserRouter basename={basename}>
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
-          <Route index path="account/*" element={<Account isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />} />
+          <Route
+            index
+            path="account/*"
+            element={<Account isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}
+          />
           <Route index path="signupform" element={<SignUpForm />} />
           <Route
             index
@@ -58,6 +65,11 @@ const basename = process.env.PUBLIC_URL.replace(domain, '');
             index
             path="account/all-songs/:account_id"
             element={<AllAccountSongs />}
+          />
+          <Route
+            index
+            path="account/liked-songs/:account_id"
+            element={<UserLikedSongs />}
           />
           <Route
             index
