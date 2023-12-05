@@ -72,7 +72,24 @@ def get_liked_songs_by_account(
     account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     if account_data:
-        return queries.get_songs(account_id)
+        try:
+            liked_songs_response = (
+                queries.get_liked_songs_by_account(account_id)
+                )
+
+            # Update the response structure to include account_id for each song
+            for song in liked_songs_response["songs"]:
+                song["account_id"] = account_id
+
+            return liked_songs_response
+        except HTTPException as e:
+            # Handle specific exceptions if needed
+            raise e
+        except Exception as e:
+            print(f"Error in get_liked_songs_by_account: {e}")
+            raise HTTPException(
+                status_code=500, detail="Error retrieving liked songs"
+            )
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
 

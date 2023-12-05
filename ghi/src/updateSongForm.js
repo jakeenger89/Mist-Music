@@ -69,7 +69,7 @@ const UpdateSongForm = () => {
         return;
       }
 
-      const userId = tokenPayload.sub;
+      // const userId = tokenPayload.sub;
 
       const releaseDateTimestamp = new Date(releaseDate).getTime() / 1000;
       const payload = {

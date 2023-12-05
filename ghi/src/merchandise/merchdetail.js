@@ -37,7 +37,7 @@ function OrderForm() {
         }
         const response = await fetch(orderURL, fetchOptions)
         if(response.ok) {
-            const newOrder = await response.json();
+            // const newOrder = await response.json();
             setFirstName('')
             setLastName('')
             setAddress('')
