@@ -15,6 +15,9 @@ import UpdateSongForm from "./updateSongForm";
 import Songs from "./Songs"
 import Profile from "./profilepage"
 import AboutUs from "./aboutUs";
+import AboutUs from "./aboutUs";
+import UserLikedSongs from "./UserLikedSongs";
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -29,15 +32,19 @@ function App() {
     }
   }, []);
 
+  const domain = /https:\/\/[^/]+/;
+  const basename = process.env.PUBLIC_URL.replace(domain, '');
 
-const domain = /https:\/\/[^/]+/;
-const basename = process.env.PUBLIC_URL.replace(domain, '');
   return (
-    <BrowserRouter basename ={basename}>
+    <BrowserRouter basename={basename}>
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
-          <Route index path="account/*" element={<Account isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />} />
+          <Route
+            index
+            path="account/*"
+            element={<Account isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}
+          />
           <Route index path="signupform" element={<SignUpForm />} />
           <Route
             index path="loginform"
@@ -63,11 +70,14 @@ const basename = process.env.PUBLIC_URL.replace(domain, '');
           />
           <Route
             index
+            path="account/liked-songs/:account_id"
+            element={<UserLikedSongs />}
+          />
+          <Route
+            index
             path="update-song/:song_id"
             element={<UpdateSongForm />}
           />
-          <Route index path="songs" element={<Songs/>} />
-          <Route path="/profile/:account_id" element={<Profile/>} />
           <Route index path="aboutus" element={<AboutUs />} />
         </Routes>
       </div>
