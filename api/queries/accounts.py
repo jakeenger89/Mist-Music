@@ -19,6 +19,7 @@ class AccountOut(BaseModel):
     account_id: int
     email: str
     username: str
+    currency: Optional[int]
 
 
 class AccountOutWithPassword(AccountOut):
@@ -32,6 +33,7 @@ class AccountUpdateIn(BaseModel):
     profile_picture_url: Optional[str] = None
     banner_url: Optional[str] = None
     signup_date: Optional[datetime] = None
+    currency: Optional[int] = None
 
 
 class CurrencyChangeIn(BaseModel):
@@ -49,7 +51,7 @@ class IDError(BaseModel):
 
 class AccountQueries:
     def update_currency(
-        self, account_id: int, account: CurrencyChangeIn
+        self, account_id: int, amount: int
     ) -> Union[CurrencyChangeOut, IDError]:
         try:
             with pool.connection() as conn:
@@ -57,13 +59,14 @@ class AccountQueries:
                     db.execute(
                         """
                         UPDATE account
-                        SET currency = %s
+                        SET currency = currency - %s
                         WHERE account_id = %s
                         """,
-                        [account.currency, account_id],
+                        [amount, account_id],
                     )
-                    old_data = account.dict()
-                    return CurrencyChangeOut(account_id=account_id, **old_data)
+                    return CurrencyChangeOut(
+                        account_id=account_id, currency=-amount
+                    )
         except Exception as e:
             print(e)
             return {"message": "Could not update currency"}
@@ -77,6 +80,7 @@ class AccountQueries:
                         SELECT account_id,
                             username,
                             email,
+                            currency,
                             password
                         FROM account
                         WHERE email = %s
@@ -90,8 +94,9 @@ class AccountQueries:
                             account_id=record[0],
                             username=record[1],
                             email=record[2],
-                            password=record[3],
-                            hashed_password=record[3],
+                            currency=record[3],
+                            password=record[4],
+                            hashed_password=record[4],
                         )
                         return account_out
                     else:
@@ -99,6 +104,7 @@ class AccountQueries:
                             account_id="",
                             username="",
                             email="",
+                            currency="",
                             password="",
                             hashed_password="",
                         )
@@ -108,6 +114,7 @@ class AccountQueries:
                 account_id="",
                 username="",
                 email="",
+                currency="",
                 password="",
                 hashed_password="",
             )
@@ -121,6 +128,7 @@ class AccountQueries:
                         SELECT account_id,
                             username,
                             email,
+                            currency,
                             password
                         FROM account
                         WHERE account_id = %s
@@ -134,8 +142,9 @@ class AccountQueries:
                             account_id=record[0],
                             username=record[1],
                             email=record[2],
-                            password=record[3],
-                            hashed_password=record[3],
+                            currency=record[3],
+                            password=record[4],
+                            hashed_password=record[4],
                         )
                         return account_out
                     else:
@@ -143,6 +152,7 @@ class AccountQueries:
                             account_id="",
                             username="",
                             email="",
+                            currency="",
                             password="",
                             hashed_password="",
                         )
@@ -152,6 +162,7 @@ class AccountQueries:
                 account_id="",
                 username="",
                 email="",
+                currency="",
                 password="",
                 hashed_password="",
             )
@@ -165,7 +176,8 @@ class AccountQueries:
                         SELECT
                             account_id,
                             email,
-                            username
+                            username,
+                            currency
                         FROM account
                         ORDER BY username
                         """
@@ -177,6 +189,7 @@ class AccountQueries:
                             account_id=int(record[0]),
                             email=record[1],
                             username=record[2],
+                            currency=record[3],
                         )
                         result.append(account_out)
                     return result
@@ -227,11 +240,11 @@ class AccountQueries:
                         UPDATE account
                         SET first_name = %s, last_name = %s,
                             profile_picture_url = %s, banner_url = %s,
-                            signup_date = %s
+                            signup_date = %s, currency = %s
                         WHERE account_id = %s
                         RETURNING account_id, username, email, password,
                             first_name, last_name, profile_picture_url,
-                            banner_url, signup_date
+                            banner_url, signup_date, currency
                         """,
                         [
                             info.first_name,
@@ -239,6 +252,7 @@ class AccountQueries:
                             info.profile_picture_url,
                             info.banner_url,
                             info.signup_date,
+                            info.currency,
                             account_id,
                         ],
                     )
@@ -257,6 +271,7 @@ class AccountQueries:
                             profile_picture_url=record[6],
                             banner_url=record[7],
                             signup_date=record[8],
+                            currency=record[9],
                         )
                         return updated_account
                     else:

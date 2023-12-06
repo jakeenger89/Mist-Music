@@ -26,6 +26,10 @@ class MerchOut(BaseModel):
     quantity: int
 
 
+class CurrencyChangeOut(BaseModel):
+    account_id: int
+
+
 class MerchQueries:
     def get_one_merch(self, merch_id: int) -> Optional[MerchOut]:
         try:

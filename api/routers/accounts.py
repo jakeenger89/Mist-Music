@@ -14,7 +14,6 @@ from queries.accounts import (
     AccountUpdateIn,
     AccountOutWithPassword,
     CurrencyChangeOut,
-    CurrencyChangeIn,
     IDError,
 )
 from jwtdown_fastapi.authentication import Token
@@ -154,10 +153,14 @@ async def login_account(
 )
 def update_currency(
     account_id: int,
-    account: CurrencyChangeIn,
-    queries: AccountQueries = Depends(),
+    amount: int,
+    q: AccountQueries = Depends(),
+    token: Token = Depends(authenticator.get_current_account_data),
 ) -> Union[CurrencyChangeOut, IDError]:
-    return queries.update_currency(account_id, account)
+    if not token:
+        raise HTTPException(status_code=401, detail="User not authenticated")
+    return q.update_currency(account_id, amount)
+
 
 @router.get("/api/search", response_model=List[AccountOut])
 async def search_accounts(

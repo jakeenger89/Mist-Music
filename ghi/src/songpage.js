@@ -1,0 +1,93 @@
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import "./SongPage.css";
+
+function SongPage() {
+  const { song_id } = useParams();
+  const [song, setSong] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showLyrics, setShowLyrics] = useState(false);
+
+  useEffect(() => {
+    const fetchSong = async () => {
+      try {
+        console.log("Fetching song with song_id:", song_id);
+        const response = await fetch(`http://localhost:8000/api/songs/${song_id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        console.log('Response:', response);
+
+        if (response.ok) {
+          const songData = await response.json();
+          console.log('Song Data:', songData);
+          setSong(songData);
+        } else {
+          console.error('Failed to fetch song');
+        }
+      } catch (error) {
+        console.error('Error fetching song:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSong();
+  }, [song_id]);
+
+  const toggleLyrics = () => {
+    setShowLyrics(!showLyrics);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!song) {
+    return <div>Error fetching song data</div>;
+  }
+
+  return (
+    <div className="SongPage-container">
+      <h1 className="SongPage-name">{song.name}</h1>
+
+      <div className="SongPage-info-container">
+        <div className="SongPage-info-left">
+          <p>Album: {song.album}</p>
+          <p>Artist: {song.artist}</p>
+          <p>Genre: {song.genre}</p>
+          <p>Release Date: {song.release_date}</p>
+          <p>BPM: {song.bpm}</p>
+          <p>Rating: {song.rating}</p>
+        </div>
+
+        {/* Display the image if available */}
+        {song.image_url && (
+          <div className="SongPage-info-right">
+            <img src={song.image_url} alt="Song Image" style={{ maxWidth: '300px', maxHeight: '300px' }} />
+          </div>
+        )}
+      </div>
+
+      {/* Player */}
+      <div className="SongPage-player-container">
+        <audio controls>
+          <source src={song.url} type="audio/mpeg" />
+          Your browser does not support the audio tag.
+        </audio>
+        <a href={song.url} download></a>
+      </div>
+
+      {/* Display the lyrics if available */}
+      <div className="SongPage-lyrics-container">
+        <h2 onClick={toggleLyrics}>Lyrics</h2>
+        {showLyrics && <p>{song.lyrics}</p>}
+      </div>
+    </div>
+  );
+}
+
+export default SongPage;

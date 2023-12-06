@@ -1,3 +1,10 @@
+# December 4, 2023
+
+* Working with the database
+
+During this week, I have been primarily focused on the frontend. I started by building the login page, profile page, and individual songs page. I feel as though since our project is very frontend heavy it's a good idea to start hashing out most of the problems on the frontend and the hardest pages. Login/logout is functioning currently. As a team, we have talked a lot more about how we could implement the search bar and are currently working on some solutions together. I learned a lot about writing frontend code this week.
+
+
 # November 22, 2023
 
 * Database Functionality
