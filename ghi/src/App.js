@@ -15,6 +15,7 @@ import UpdateSongForm from "./updateSongForm";
 import AboutUs from "./aboutUs";
 import UserLikedSongs from "./UserLikedSongs";
 import Profile from "./profilepage"
+import SongPage from "./songpage";
 
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
             element={<UpdateSongForm />}
           />
           <Route index path="aboutus" element={<AboutUs />} />
+          <Route index path="songs/:song_id" element={<SongPage />} />
         </Routes>
       </div>
     </BrowserRouter>

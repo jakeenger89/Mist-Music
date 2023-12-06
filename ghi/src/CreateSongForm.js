@@ -8,6 +8,8 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   const [releaseDate, setReleaseDate] = useState('');
   const [bpm, setBpm] = useState('');
   const [url, setUrl] = useState('');
+  const [lyrics, setLyrics] = useState(''); // Added state for lyrics
+  const [imageUrl, setImageUrl] = useState(''); // Added state for imageUrl
   const [albums, setAlbums] = useState([]);
 
   useEffect(() => {
@@ -34,94 +36,103 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
     fetchAlbums();
   }, []);
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  // Check if the user is authenticated
-  if (!isAuthenticated) {
-    // Redirect to the login page or handle unauthenticated user appropriately
-    console.error('User is not authenticated');
-    return;
-  }
-
-  // Retrieve the auth token from localStorage
-  const authToken = localStorage.getItem('yourAuthToken');
-  console.log('Auth Token:', authToken);
-
-  // Check if authToken is missing
-  if (!authToken) {
-    console.error('Authorization token is missing');
-    // Handle the missing token appropriately (redirect to login, etc.)
-    return;
-  }
-
-  // Decode the token to get account_id
-  const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
-  console.log('Decoded Token:', decodedToken)
-  const account_id = decodedToken.account.account_id;
-  console.log(account_id)
-
-  // Prepare the data to be sent in the request
-  console.log('URL value:', url);
-  const data = {
-    name,
-    artist,
-    album,
-    genre,
-    release_date: releaseDate,
-    bpm,
-    account_id: decodedToken.account.account_id,
-    url,
-  };
-  console.log('Data to be sent:', data);
-
-  // Optionally, add 'length' and 'rating' to data if they are needed with default values
-  // You can adjust the default values as needed
-  if (!data.hasOwnProperty('length')) {
-    data.length = 0;
-  }
-
-  if (!data.hasOwnProperty('rating')) {
-    data.rating = 0;
-  }
-
-  try {
-    // Use authToken in the headers for authentication
-    const response = await fetch('http://localhost:8000/api/songs', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (response.ok) {
-      console.log('Song created successfully');
-      // Reset form values after successful submission
-      setName('');
-      setArtist('');
-      setAlbum('');
-      setGenre('');
-      setReleaseDate('');
-      setBpm('');
-    } else {
-      // Log the details of the error
-      const errorDetails = await response.json();
-      console.error('Failed to create song', response.status, response.statusText, errorDetails);
-
-
-      // Handle specific validation errors if needed
-      if (errorDetails && errorDetails.detail) {
-        errorDetails.detail.forEach((detail) => {
-          console.error('Validation error:', detail);
-        });
-      }
+    // Check if the user is authenticated
+    if (!isAuthenticated) {
+      // Redirect to the login page or handle unauthenticated user appropriately
+      console.error('User is not authenticated');
+      return;
     }
-  } catch (error) {
-    console.error('Error creating song:', error);
-  }
-};
+
+    // Retrieve the auth token from localStorage
+    const authToken = localStorage.getItem('yourAuthToken');
+    console.log('Auth Token:', authToken);
+
+    // Check if authToken is missing
+    if (!authToken) {
+      console.error('Authorization token is missing');
+      // Handle the missing token appropriately (redirect to login, etc.)
+      return;
+    }
+
+    // Decode the token to get account_id
+    const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
+    console.log('Decoded Token:', decodedToken);
+    const account_id = decodedToken.account.account_id;
+    console.log(account_id);
+
+    // Prepare the data to be sent in the request
+    console.log('URL value:', url);
+    const data = {
+      name,
+      artist,
+      album,
+      genre,
+      release_date: releaseDate,
+      bpm,
+      account_id: decodedToken.account.account_id,
+      url,
+      lyrics, // Include lyrics in the data
+      image_url: imageUrl, // Include imageUrl in the data
+    };
+    console.log('Data to be sent:', data);
+
+    // Optionally, add 'length' and 'rating' to data if they are needed with default values
+    // You can adjust the default values as needed
+    if (!data.hasOwnProperty('length')) {
+      data.length = 0;
+    }
+
+    if (!data.hasOwnProperty('rating')) {
+      data.rating = 0;
+    }
+
+    try {
+      // Use authToken in the headers for authentication
+      const response = await fetch('http://localhost:8000/api/songs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log('Song created successfully');
+        // Reset form values after successful submission
+        setName('');
+        setArtist('');
+        setAlbum('');
+        setGenre('');
+        setReleaseDate('');
+        setBpm('');
+        setUrl('');
+        setLyrics(''); // Reset lyrics state
+        setImageUrl(''); // Reset imageUrl state
+      } else {
+        // Log the details of the error
+        const errorDetails = await response.json();
+        console.error(
+          'Failed to create song',
+          response.status,
+          response.statusText,
+          errorDetails
+        );
+
+        // Handle specific validation errors if needed
+        if (errorDetails && errorDetails.detail) {
+          errorDetails.detail.forEach((detail) => {
+            console.error('Validation error:', detail);
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error creating song:', error);
+    }
+  };
 
   return (
     <div className="row">
@@ -216,8 +227,34 @@ const handleSubmit = async (event) => {
                 type="text"
                 name="url"
                 className="form-control"
-                />
-              <label className="url">URL</label>
+              />
+              <label className="url">Song URL</label>
+            </div>
+
+            {/* New input fields for lyrics and imageUrl */}
+            <div className="form-floating mb-3">
+              <textarea
+                value={lyrics}
+                onChange={(e) => setLyrics(e.target.value)}
+                placeholder="Lyrics (Optional)"
+                type="text"
+                name="lyrics"
+                className="form-control"
+                rows ="50"
+              />
+              <label htmlFor="lyrics">Lyrics (Optional)</label>
+            </div>
+
+            <div className="form-floating mb-3">
+              <input
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="Image URL (Optional)"
+                type="text"
+                name="imageUrl"
+                className="form-control"
+              />
+              <label htmlFor="imageUrl">Image URL (Optional)</label>
             </div>
 
             <button type="submit" className="btn btn-primary">

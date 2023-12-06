@@ -32,7 +32,9 @@ steps = [
             bpm VARCHAR(4),
             rating INTEGER,
             url VARCHAR(1000),
-            account_id INTEGER REFERENCES account(account_id) ON DELETE CASCADE
+            account_id INTEGER REFERENCES account(account_id) ON DELETE CASCADE,
+            lyrics TEXT,
+            image_url VARCHAR(1000)
         );
 
         """,

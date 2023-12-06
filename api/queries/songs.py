@@ -24,6 +24,8 @@ class SongIn(BaseModel):
     bpm: Optional[constr(max_length=4)]
     account_id: Optional[int]
     url: Optional[str]
+    lyrics: Optional[str]
+    image_url: Optional[str]
 
 
 class SongOut(BaseModel):
@@ -48,6 +50,8 @@ class SongOut(BaseModel):
     likes_count: Optional[int] = None
     account_id: Optional[int]
     url: Optional[str]
+    lyrics: Optional[str]
+    image_url: Optional[str]
 
 
 class SongWithStatsOut(SongOut):
@@ -74,7 +78,7 @@ class SongQueries:
                 cur.execute(
                     """
                     SELECT song_id, name, artist, album, genre,
-                    release_date, length, bpm, rating, url
+                    release_date, length, bpm, rating, url, lyrics, image_url
                     FROM songs
                     WHERE song_id = %s
                     """,
@@ -94,7 +98,9 @@ class SongQueries:
                         length=length,
                         bpm=row[7],
                         rating=row[8],
-                        url=row[9],  # Include the url field
+                        url=row[9],
+                        lyrics=row[10],
+                        image_url=row[11]
                     )
                 else:
                     return None
@@ -168,7 +174,9 @@ class SongQueries:
                         bpm=str(song_data.bpm)[:4],
                         rating=song_data.rating,
                         account_id=account_id,
-                        url=song_data.url,  # Include the URL
+                        url=song_data.url,
+                        lyrics=song_data.lyrics,  # Include lyrics
+                        image_url=song_data.image_url,  # Include image_url
                     )
                     print(f'URL before saving to database: {song_data.url}')
 
@@ -184,9 +192,11 @@ class SongQueries:
                             bpm,
                             rating,
                             account_id,
-                            url
-                            )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            url,
+                            lyrics,
+                            image_url
+                        )
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         RETURNING song_id
                         """,
                         (
@@ -199,7 +209,9 @@ class SongQueries:
                             modified_song_data.bpm,
                             modified_song_data.rating,
                             modified_song_data.account_id,
-                            modified_song_data.url,  # Insert the URL
+                            modified_song_data.url,
+                            modified_song_data.lyrics,  # Insert lyrics
+                            modified_song_data.image_url,  # Insert image_url
                         ),
                     )
 
@@ -220,6 +232,8 @@ class SongQueries:
                         "liked_by_user": False,
                         "account_id": modified_song_data.account_id,
                         "url": modified_song_data.url,
+                        "lyrics": modified_song_data.lyrics,  # Include lyrics
+                        "image_url": modified_song_data.image_url,
                     }
 
                     return JSONResponse(content=response_data)
@@ -298,7 +312,7 @@ class SongQueries:
                             "length": row[6],
                             "bpm": row[7],
                             "rating": row[8],
-                            "url": row[9],  # Add the URL to the response
+                            "url": row[9],
                         }
                         liked_songs.append(song)
                     return {"songs": liked_songs}

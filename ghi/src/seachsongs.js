@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function AllSongs() {
   const [songs, setSongs] = useState([]);
@@ -112,7 +113,9 @@ const handleLike = async (songId) => {
         <tbody>
           {songs.map((song) => (
             <tr key={song.song_id}>
-              <td>{song.name}</td>
+              <td>
+                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+              </td>
               <td>{song.artist}</td>
               <td>{song.album}</td>
               <td>{song.genre}</td>
