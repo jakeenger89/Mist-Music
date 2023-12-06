@@ -31,6 +31,7 @@ steps = [
             length INTEGER,
             bpm VARCHAR(4),
             rating INTEGER,
+            url VARCHAR(1000),
             account_id INTEGER REFERENCES account(account_id) ON DELETE CASCADE
         );
 
