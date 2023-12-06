@@ -23,6 +23,7 @@ function Nav({ isAuthenticated, onLogout }) {
                 <NavLink className="navbar-brand" to="/merch">Merchandise</NavLink>
                 {isAuthenticated && <NavLink className="navbar-brand" to='/profile'>Profile</NavLink>}
                 {!isAuthenticated && <NavLink className="navbar-brand" to="/loginform">Login</NavLink>}
+                <NavLink className={"navbar-brand"} to="/aboutus">About Us</NavLink>
                 {isAuthenticated && <button className="navbar-brand" onClick={handleLogout}>Logout</button>}
             </div>
         </nav>

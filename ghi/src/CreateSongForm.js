@@ -106,6 +106,7 @@ const handleSubmit = async (event) => {
       const errorDetails = await response.json();
       console.error('Failed to create song', response.status, response.statusText, errorDetails);
 
+
       // Handle specific validation errors if needed
       if (errorDetails && errorDetails.detail) {
         errorDetails.detail.forEach((detail) => {

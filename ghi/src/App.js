@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./index.css";
+import './index.css';
 import Nav from "./Nav";
 import AccountForm from "./LoginForm";
 import CreateSongForm from "./CreateSongForm";
@@ -14,6 +14,7 @@ import AllAccountSongs from "./allAccountSongs";
 import UpdateSongForm from "./updateSongForm";
 import Songs from "./Songs"
 import Profile from "./profilepage"
+import AboutUs from "./aboutUs";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -21,28 +22,22 @@ function App() {
   );
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("yourAuthToken");
+    const storedToken = localStorage.getItem('yourAuthToken');
     if (storedToken) {
       // You may want to validate the token on the server side as well
       setIsAuthenticated(true);
     }
   }, []);
 
+
+const domain = /https:\/\/[^/]+/;
+const basename = process.env.PUBLIC_URL.replace(domain, '');
   return (
-    <BrowserRouter>
+    <BrowserRouter basename ={basename}>
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
-          <Route
-            index
-            path="account/*"
-            element={
-              <Account
-                isAuthenticated={isAuthenticated}
-                setIsAuthenticated={setIsAuthenticated}
-              />
-            }
-          />
+          <Route index path="account/*" element={<Account isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />} />
           <Route index path="signupform" element={<SignUpForm />} />
           <Route
             index path="loginform"
@@ -59,8 +54,7 @@ function App() {
             }
           />
           <Route index path="merch" element={<MerchList />} />
-          <Route index path="allsongs" element={<AllSongs />} />{" "}
-          {/* Add this line */}
+          <Route index path="allsongs" element={<AllSongs />} /> {/* Add this line */}
           <Route index path="merch/:item_id" element={<OrderForm />} />
           <Route
             index
@@ -74,6 +68,7 @@ function App() {
           />
           <Route index path="songs" element={<Songs/>} />
           <Route path="/profile/:account_id" element={<Profile/>} />
+          <Route index path="aboutus" element={<AboutUs />} />
         </Routes>
       </div>
     </BrowserRouter>
