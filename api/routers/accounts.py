@@ -155,7 +155,7 @@ def update_currency(
     account_id: int,
     amount: int,
     q: AccountQueries = Depends(),
-    token: Token = Depends(authenticator.get_current_account_data)
+    token: Token = Depends(authenticator.get_current_account_data),
 ) -> Union[CurrencyChangeOut, IDError]:
     if not token:
         raise HTTPException(status_code=401, detail="User not authenticated")

@@ -25,9 +25,9 @@ class MerchOut(BaseModel):
     description: str
     quantity: int
 
+
 class CurrencyChangeOut(BaseModel):
     account_id: int
-
 
 
 class MerchQueries:

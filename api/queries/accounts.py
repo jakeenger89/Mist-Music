@@ -65,9 +65,8 @@ class AccountQueries:
                         [amount, account_id],
                     )
                     return CurrencyChangeOut(
-                        account_id=account_id,
-                        currency=-amount
-                        )
+                        account_id=account_id, currency=-amount
+                    )
         except Exception as e:
             print(e)
             return {"message": "Could not update currency"}
@@ -97,7 +96,7 @@ class AccountQueries:
                             email=record[2],
                             currency=record[3],
                             password=record[4],
-                            hashed_password=record[4]
+                            hashed_password=record[4],
                         )
                         return account_out
                     else:
@@ -190,7 +189,7 @@ class AccountQueries:
                             account_id=int(record[0]),
                             email=record[1],
                             username=record[2],
-                            currency=record[3]
+                            currency=record[3],
                         )
                         result.append(account_out)
                     return result
@@ -272,7 +271,7 @@ class AccountQueries:
                             profile_picture_url=record[6],
                             banner_url=record[7],
                             signup_date=record[8],
-                            currency=record[9]
+                            currency=record[9],
                         )
                         return updated_account
                     else:

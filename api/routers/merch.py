@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, HTTPException, status
+from fastapi import APIRouter, Depends, Response, HTTPException
 from queries.merch import MerchIn, MerchOut, MerchQueries, Error
 from typing import List, Union, Optional
 from jwtdown_fastapi.authentication import Token
