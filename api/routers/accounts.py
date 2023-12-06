@@ -160,3 +160,16 @@ def update_currency(
     if not token:
         raise HTTPException(status_code=401, detail="User not authenticated")
     return q.update_currency(account_id, amount)
+
+
+@router.get("/api/search", response_model=List[AccountOut])
+async def search_accounts(
+    search_term: str,
+    response: Response,
+    queries: AccountQueries = Depends(),
+):
+    record = queries.search_accounts(search_term)
+    if len(record) == 0:
+        response.status_code = 404
+        return []
+    return record

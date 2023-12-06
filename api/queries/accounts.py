@@ -296,3 +296,36 @@ class AccountQueries:
         except Exception as e:
             print(e)
             return False
+
+
+    def search_accounts(self, search_term: str) -> List[AccountOutWithPassword]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        SELECT account_id,
+                            username,
+                            email,
+                            password
+                        FROM account
+                        WHERE username LIKE %s
+                        ORDER BY username
+                        """,
+                        [f"%{search_term}%"],
+                    )
+                    records = db.fetchall()
+                    accounts = [
+                        AccountOutWithPassword(
+                            account_id=record[0],
+                            username=record[1],
+                            email=record[2],
+                            password=record[3],
+                            hashed_password=record[3],
+                        )
+                        for record in records
+                    ]
+                    return accounts
+        except Exception as e:
+            print(f"Error in search_accounts: {e}")
+            return []
