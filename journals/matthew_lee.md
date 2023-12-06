@@ -1,3 +1,6 @@
+## December 05, 2023
+Putting something here to merge for Brandon's issue
+
 ## December 04, 2023
 
 Today and all last week, I worked on the merchandise frontend.
