@@ -1,0 +1,57 @@
+.SongPage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.SongPage-name {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.SongPage-info-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+}
+
+.SongPage-info-left {
+  flex: 1;
+  text-align: left;
+}
+
+.SongPage-info-left p {
+  margin-bottom: 8px; /* Adjust the value to your preference */
+}
+
+.SongPage-info-right {
+  position: relative;
+}
+
+.SongPage-info-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: url('') center/cover no-repeat; /* Add your image URL here */
+  background-size: 80%; /* Adjust the value to your preference */
+  z-index: -1;
+}
+
+.SongPage-player-container {
+  margin-top: 20px;
+}
+
+.SongPage-lyrics-container {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  white-space: pre-line;
+}

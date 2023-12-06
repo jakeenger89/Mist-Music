@@ -37,11 +37,18 @@ def create_song(
     queries: SongQueries = Depends(),
     account_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    if account_data:
-        return queries.create_song(song, account_data["account_id"])
-    else:
-        raise HTTPException(status_code=401, detail="Not authorized")
-
+    try:
+        print("Endpoint reached. Received data:", song.dict())
+        if account_data:
+            return queries.create_song(song, account_data["account_id"])
+        else:
+            raise HTTPException(status_code=401, detail="Not authorized")
+    except Exception as e:
+        print(f"Error in create_song: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not add the song. Error: {e}",
+        )
 
 @router.delete("/api/songs/{song_id}", response_model=bool)
 def delete_song(

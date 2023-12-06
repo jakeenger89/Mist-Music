@@ -53,9 +53,9 @@ const UserLikedSongs = () => {
             <th>Album</th>
             <th>Genre</th>
             <th>Release Date</th>
-            <th>Length</th>
             <th>BPM</th>
             <th>Rating</th>
+            <th>Player</th>
           </tr>
         </thead>
         <tbody>
@@ -66,9 +66,20 @@ const UserLikedSongs = () => {
               <td>{song.album}</td>
               <td>{song.genre}</td>
               <td>{song.release_date}</td>
-              <td>{song.length}</td>
               <td>{song.bpm}</td>
               <td>{song.rating}</td>
+              <td>
+                {/* Display audio player and download link */}
+                  <figure>
+                    <figcaption>Listen to the song:</figcaption>
+                    <audio controls>
+                      <source src={song.url} type="audio/mpeg" />
+                      Your browser does not support the audio tag.
+                    </audio>
+                    <a href={song.url} download>
+                    </a>
+                  </figure>
+              </td>
             </tr>
           ))}
         </tbody>

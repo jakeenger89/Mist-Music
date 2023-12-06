@@ -23,6 +23,9 @@ class SongIn(BaseModel):
     rating: Optional[int]
     bpm: Optional[constr(max_length=4)]
     account_id: Optional[int]
+    url: Optional[str]
+    lyrics: Optional[str]
+    image_url: Optional[str]
 
 
 class SongOut(BaseModel):
@@ -46,6 +49,9 @@ class SongOut(BaseModel):
     liked_by_user: Optional[bool] = None  # Make it optional
     likes_count: Optional[int] = None
     account_id: Optional[int]
+    url: Optional[str]
+    lyrics: Optional[str]
+    image_url: Optional[str]
 
 
 class SongWithStatsOut(SongOut):
@@ -72,7 +78,7 @@ class SongQueries:
                 cur.execute(
                     """
                     SELECT song_id, name, artist, album, genre,
-                    release_date, length, bpm, rating
+                    release_date, length, bpm, rating, url, lyrics, image_url
                     FROM songs
                     WHERE song_id = %s
                     """,
@@ -81,9 +87,7 @@ class SongQueries:
                 row = cur.fetchone()
                 if row:
                     # Check if 'length' is None and handle it appropriately
-                    length = (
-                        row[6] if row[6] is not None else 0
-                    )  # You can choose a default value
+                    length = row[6] if row[6] is not None else 0
                     return SongOut(
                         song_id=row[0],
                         name=row[1],
@@ -94,6 +98,9 @@ class SongQueries:
                         length=length,
                         bpm=row[7],
                         rating=row[8],
+                        url=row[9],
+                        lyrics=row[10],
+                        image_url=row[11]
                     )
                 else:
                     return None
@@ -105,28 +112,29 @@ class SongQueries:
                     cur.execute(
                         """
                         SELECT s.song_id,
-                               s.name,
-                               s.artist,
-                               s.album,
-                               s.genre,
-                               s.release_date,
-                               s.length,
-                               s.bpm,
-                               s.rating,
-                               COUNT(l.account_id) AS likes_count,
-                               s.account_id  -- Include account_id field
+                            s.name,
+                            s.artist,
+                            s.album,
+                            s.genre,
+                            s.release_date,
+                            s.length,
+                            s.bpm,
+                            s.rating,
+                            s.url,  -- Include the url field
+                            COUNT(l.account_id) AS likes_count,
+                            s.account_id
                         FROM songs s
                         LEFT JOIN liked_songs l ON s.song_id = l.song_id
                         GROUP BY s.song_id, s.name, s.artist, s.album, s.genre,
-                                 s.release_date, s.length, s.bpm, s.rating,
-                                 s.account_id
+                                s.release_date, s.length, s.bpm, s.rating, s.url,
+                                s.account_id
                         """
                     )
                     songs = []
                     rows = cur.fetchall()
                     for row in rows:
                         # ... Other fields
-                        likes_count = row[9] if row[9] is not None else 0
+                        likes_count = row[10] if row[10] is not None else 0
 
                         song = {
                             "song_id": row[0],
@@ -138,7 +146,8 @@ class SongQueries:
                             "length": row[6],
                             "bpm": row[7],
                             "rating": row[8],
-                            "account_id": row[10],  # Include account_id
+                            "url": row[9],  # Include the url field
+                            "account_id": row[11],  # Include account_id
                             "liked_by_user": None,
                             "likes_count": likes_count,
                         }
@@ -161,13 +170,15 @@ class SongQueries:
                         album=song_data.album,
                         genre=song_data.genre,
                         release_date=song_data.release_date,
-                        length=int(song_data.length)
-                        if song_data.length
-                        else None,
+                        length=int(song_data.length) if song_data.length else None,
                         bpm=str(song_data.bpm)[:4],
                         rating=song_data.rating,
                         account_id=account_id,
+                        url=song_data.url,
+                        lyrics=song_data.lyrics,  # Include lyrics
+                        image_url=song_data.image_url,  # Include image_url
                     )
+                    print(f'URL before saving to database: {song_data.url}')
 
                     cur.execute(
                         """
@@ -180,9 +191,12 @@ class SongQueries:
                             length,
                             bpm,
                             rating,
-                            account_id
-                            )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            account_id,
+                            url,
+                            lyrics,
+                            image_url
+                        )
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         RETURNING song_id
                         """,
                         (
@@ -195,6 +209,9 @@ class SongQueries:
                             modified_song_data.bpm,
                             modified_song_data.rating,
                             modified_song_data.account_id,
+                            modified_song_data.url,
+                            modified_song_data.lyrics,  # Insert lyrics
+                            modified_song_data.image_url,  # Insert image_url
                         ),
                     )
 
@@ -214,6 +231,9 @@ class SongQueries:
                         "rating": modified_song_data.rating,
                         "liked_by_user": False,
                         "account_id": modified_song_data.account_id,
+                        "url": modified_song_data.url,
+                        "lyrics": modified_song_data.lyrics,  # Include lyrics
+                        "image_url": modified_song_data.image_url,
                     }
 
                     return JSONResponse(content=response_data)
@@ -272,7 +292,7 @@ class SongQueries:
                         """
                         SELECT s.song_id, s.name, s.artist, s.album, s.genre,
                         s.release_date,
-                        s.length, s.bpm, s.rating
+                        s.length, s.bpm, s.rating, s.url
                         FROM songs s
                         INNER JOIN liked_songs ls ON s.song_id = ls.song_id
                         WHERE ls.account_id = %s
@@ -292,6 +312,7 @@ class SongQueries:
                             "length": row[6],
                             "bpm": row[7],
                             "rating": row[8],
+                            "url": row[9],
                         }
                         liked_songs.append(song)
                     return {"songs": liked_songs}

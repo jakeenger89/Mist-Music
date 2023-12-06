@@ -2,23 +2,110 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 function OrderForm() {
+    const[email, setEmail] = useState('')
     const[first_name, setFirstName] = useState('')
     const[last_name, setLastName] = useState('')
     const[address, setAddress] = useState('')
     const[city, setCity] = useState('')
     const[zipcode, setZipcode] = useState('')
     const[state, setState] = useState('')
+    const[userCurrency, setUserCurrency] = useState(0)
+
+    const authToken = localStorage.getItem('yourAuthToken');
+    const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
+    const currentUser = decodedToken.account.account_id;
+
+    useEffect(() => {
+        const getCurrency = async () => {
+            const currencyURL = `http://localhost:8000/api/account/${currentUser}`;
+            try {
+                    const response = await fetch(currencyURL, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUserCurrency(data.currency);
+                } else {
+                    throw new Error('Failed to fetch user currency');
+                }
+            } catch (error) {
+                console.error('Error fetching user currency:', error);
+            }
+        };
+        getCurrency();
+    }, []);
+
+
+    const [item, setItem] = useState('');
+    const { item_id } = useParams();
+        const fetchData = async () => {
+            const url = `http://localhost:8000/api/merch/${item_id}`;
+            console.log(url)
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setItem(data);
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        useEffect(() => {
+            fetchData();
+        }, [authToken, item_id]);
+
+    const deductCurrency = async (account_id, amount) => {
+        const url = `http://localhost:8000/api/currency/${account_id}?amount=${amount}`;
+        const fetchOptions = {
+            method: 'PUT',
+            body: JSON.stringify({ amount }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`,
+            },
+        };
+        try {
+            const response = await fetch(url, fetchOptions);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Currency deducted successfully', data); //Remove after deploy
+            } else {
+                console.error('Failed to deduct currency'); //Remove after deploy
+            }
+        } catch (error) {
+            console.error('Error deducting currency:', error); //Remove after deploy
+        }
+    }
 
     async function handleSubmit(event) {
-        event.preventDefault()
-        const data = {
-            first_name,
-            last_name,
-            address,
-            city,
-            zipcode,
-            state
-        }
+            event.preventDefault()
+    if (item && item.price) {
+            const totalPrice = item.price;
+            if (userCurrency >= totalPrice) {
+                const data = {
+                    email,
+                    first_name,
+                    last_name,
+                    address,
+                    city,
+                    zipcode,
+                    state,
+                    item_id
+                };
 
 
         const orderURL = "http://localhost:8000/api/customer"
@@ -26,12 +113,15 @@ function OrderForm() {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
             }
         }
+    try {
         const response = await fetch(orderURL, fetchOptions)
         if(response.ok) {
-            // const newOrder = await response.json();
+            await deductCurrency(currentUser, totalPrice);
+            setEmail('')
             setFirstName('')
             setLastName('')
             setAddress('')
@@ -39,9 +129,22 @@ function OrderForm() {
             setZipcode('')
             setState('')
             window.location.reload()
+        } else {
+            console.error('Failed to submit order');
         }
-    };
+    } catch(error) {
+        console.error('Error submitting order:', error);
+    }
+        } else {
+        console.error('Insufficient currency');
+    }
+}
+    }
 
+    const handleEmailChange = async (event) => {
+        const { value } = event.target;
+        setEmail(value);
+    }
 
     const handleFirstNameChange = async (event) => {
         const { value } = event.target;
@@ -68,27 +171,7 @@ function OrderForm() {
         setState(value);
     }
 
-    const [item, setItem] = useState('');
-    const { item_id } = useParams();
-        const fetchData = async () => {
-            const url = `http://localhost:8000/api/merch/${item_id}`;
-            console.log(url)
-            try {
-                const response = await fetch(url);
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setItem(data);
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        useEffect(() => {
-            fetchData();
-        }, [item_id])
 
 
 
@@ -111,13 +194,21 @@ function OrderForm() {
                     </li>
                 </ul>
             </div>
-
+            <div>
+                <h3>
+                    Your Currency: {userCurrency}
+                </h3>
+            </div>
 
             <div className="row">
                 <div className="offset-3 col-6">
                     <div className="shadow p-4 mt-4">
                         <h1>Checkout</h1>
                         <form onSubmit={handleSubmit} id="checkout-form">
+                        <div className="form-floating mb-3">
+                                <input value={email} onChange={handleEmailChange} placeholder="Email" required type="email" name="Email" id="Email" className="form-control" />
+                                <label htmlFor="Email">Email</label>
+                        </div>
                         <div className="form-floating mb-3">
                                 <input value={first_name} onChange={handleFirstNameChange} placeholder="First Name" required type="text" name="First Name" id="First Name" className="form-control" />
                                 <label htmlFor="First Name">First Name</label>

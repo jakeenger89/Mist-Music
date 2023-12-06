@@ -31,7 +31,10 @@ steps = [
             length INTEGER,
             bpm VARCHAR(4),
             rating INTEGER,
-            account_id INTEGER REFERENCES account(account_id) ON DELETE CASCADE
+            url VARCHAR(1000),
+            account_id INTEGER REFERENCES account(account_id) ON DELETE CASCADE,
+            lyrics TEXT,
+            image_url VARCHAR(1000)
         );
 
         """,
@@ -88,12 +91,14 @@ steps = [
         """
         CREATE TABLE customer (
             order_id SERIAL PRIMARY KEY NOT NULL,
+            email VARCHAR(200) NOT NULL,
             first_name VARCHAR(100) NOT NULL,
             last_name VARCHAR(100),
             address VARCHAR(150) NOT NULL,
             city VARCHAR(100) NOT NULL,
             zipcode INT NOT NULL,
             state VARCHAR(20) NOT NULL,
+            item_id INTEGER REFERENCES merchandise(item_id),
             fulfilled BOOL DEFAULT FALSE
         );
         """,
