@@ -65,11 +65,29 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           <p>This is a placeholder for your home page content.</p>
 
           <h2>
+            <Link to={`/account/liked-songs/${account_id}`}>Your Liked Songs</Link>
+          </h2>
+
+          <Routes>
+            <Route
+              path="liked-songs/:account_id"
+              element={<UserLikedSongs account_id={account_id} />}
+            />
+          </Routes>
+
+          <h2>
             <Link to={`/account/all-songs/${account_id}`}>Your Songs</Link>
             <Link to={`/account/liked-songs/${account_id}`}>Your Liked Songs</Link>
           </h2>
 
           {/* Existing code... */}
+
+          <Routes>
+            <Route
+              path="all-songs/:account_id"
+              element={<AllAccountSongs />}
+            />
+          </Routes>
 
           <button className="btn btn-danger" onClick={handleLogout}>
             Logout

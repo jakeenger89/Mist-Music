@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import AllAccountSongs from './allAccountSongs';
+import { useParams } from 'react-router-dom';
 
-const UserLikedSongs = ({ account_id }) => {
+const UserLikedSongs = () => {
+  const { account_id } = useParams();
   const [likedSongs, setLikedSongs] = useState([]);
 
   useEffect(() => {
@@ -12,6 +12,12 @@ const UserLikedSongs = ({ account_id }) => {
 
         if (!authToken) {
           console.error('Authentication token not found');
+          return;
+        }
+
+        // Check if account_id is undefined
+        if (!account_id) {
+          console.error('Account ID is undefined');
           return;
         }
 
@@ -27,8 +33,7 @@ const UserLikedSongs = ({ account_id }) => {
         }
 
         const data = await response.json();
-
-        setLikedSongs(data.songs || []);  // Add a nullish coalescing operator to handle undefined or null
+        setLikedSongs(data.songs || []);
       } catch (error) {
         console.error('Error fetching liked songs:', error);
       }
@@ -40,11 +45,34 @@ const UserLikedSongs = ({ account_id }) => {
   return (
     <div>
       <h2>Your Liked Songs</h2>
-      <ul>
-        {likedSongs.map((song) => (
-          <li key={song.song_id}>{song.name}</li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Song Name</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th>Release Date</th>
+            <th>Length</th>
+            <th>BPM</th>
+            <th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          {likedSongs.map((song) => (
+            <tr key={song.song_id}>
+              <td>{song.name}</td>
+              <td>{song.artist}</td>
+              <td>{song.album}</td>
+              <td>{song.genre}</td>
+              <td>{song.release_date}</td>
+              <td>{song.length}</td>
+              <td>{song.bpm}</td>
+              <td>{song.rating}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
