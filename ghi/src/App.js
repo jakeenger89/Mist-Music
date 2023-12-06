@@ -14,6 +14,7 @@ import AllAccountSongs from "./allAccountSongs";
 import UpdateSongForm from "./updateSongForm";
 import AboutUs from "./aboutUs";
 import UserLikedSongs from "./UserLikedSongs";
+import Profile from "./profilepage"
 
 
 function App() {
