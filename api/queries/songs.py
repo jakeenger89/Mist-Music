@@ -485,3 +485,33 @@ class SongQueries:
                     raise HTTPException(
                         status_code=500, detail="Error retrieving user's songs"
                     )
+    # def search_songs(self, search_term: str) -> List[SongOut]:
+    #     try:
+    #         with pool.connection() as conn:
+    #             with conn.cursor() as db:
+    #                 db.execute(
+    #                     """
+    #                     SELECT song_id,
+    #                         name,
+    #                         artist,
+    #                         album,
+    #                         genre
+    #                     FROM songs
+    #                     WHERE name LIKE %s
+    #                     ORDER BY name
+    #                     """,
+    #                     [f"%{search_term}%"],
+    #                 )
+    #                 records = db.fetchall()
+    #                 songs = [
+    #                     SongOut(
+    #                         song_id=record[0],
+    #                         name=record[1],
+    #                         artist=record[2],
+    #                     )
+    #                     for record in records
+    #                 ]
+    #                 return songs
+    #     except Exception as e:
+    #         print(f"Error in search_songs: {e}")
+    #         return []
