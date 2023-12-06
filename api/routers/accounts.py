@@ -158,3 +158,14 @@ def update_currency(
     queries: AccountQueries = Depends(),
 ) -> Union[CurrencyChangeOut, IDError]:
     return queries.update_currency(account_id, account)
+
+@router.get("/api/search", response_model=List[AccountOut])
+async def search_accounts(
+    search_term: str,  # Assuming the search term is provided as a query parameter
+    response: Response,
+    queries: AccountQueries = Depends(),
+):
+    record = queries.search_accounts(search_term)
+    if record is None:
+        response.status.code = 404
+    return record
