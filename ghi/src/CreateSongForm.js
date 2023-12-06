@@ -7,6 +7,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   const [genre, setGenre] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
   const [bpm, setBpm] = useState('');
+  const [url, setUrl] = useState('');
   const [albums, setAlbums] = useState([]);
 
   useEffect(() => {
@@ -61,6 +62,7 @@ const handleSubmit = async (event) => {
   console.log(account_id)
 
   // Prepare the data to be sent in the request
+  console.log('URL value:', url);
   const data = {
     name,
     artist,
@@ -69,7 +71,9 @@ const handleSubmit = async (event) => {
     release_date: releaseDate,
     bpm,
     account_id: decodedToken.account.account_id,
+    url,
   };
+  console.log('Data to be sent:', data);
 
   // Optionally, add 'length' and 'rating' to data if they are needed with default values
   // You can adjust the default values as needed
@@ -203,6 +207,17 @@ const handleSubmit = async (event) => {
                 className="form-control"
               />
               <label htmlFor="bpm">BPM</label>
+            </div>
+            <div className="form-floating mb-3">
+              <input
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="URL (Optional)"
+                type="text"
+                name="url"
+                className="form-control"
+                />
+              <label className="url">URL</label>
             </div>
 
             <button type="submit" className="btn btn-primary">

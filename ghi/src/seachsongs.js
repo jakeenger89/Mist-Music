@@ -129,6 +129,17 @@ const handleLike = async (songId) => {
                   </>
                 )}
               </td>
+                <td>
+                {/* Display audio player and download link */}
+                <figure>
+                  <audio controls>
+                    <source src={song.url} type="audio/mpeg" />
+                    Your browser does not support the audio tag.
+                  </audio>
+                  <a href={song.url} download>
+                  </a>
+                </figure>
+              </td>
             </tr>
           ))}
         </tbody>
