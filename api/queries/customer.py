@@ -8,16 +8,19 @@ class Error(BaseModel):
 
 
 class CustomerIn(BaseModel):
+    email: str
     first_name: str
     last_name: str
     address: str
     city: str
     zipcode: int
     state: str
+    item_id: int
 
 
 class CustomerOut(BaseModel):
     order_id: int
+    email: str
     first_name: str
     last_name: str
     address: str
@@ -25,9 +28,11 @@ class CustomerOut(BaseModel):
     zipcode: int
     state: str
     fulfilled: bool
+    item_id: int
 
 
 class OrderIn(BaseModel):
+    email: str
     first_name: str
     last_name: str
     address: str
@@ -35,16 +40,19 @@ class OrderIn(BaseModel):
     zipcode: int
     state: str
     fulfilled: bool
+    item_id: int
 
 
 class OrderOut(BaseModel):
     order_id: int
+    email: str
     first_name: str
     last_name: str
     address: str
     city: str
     zipcode: int
     state: str
+    item_id: int
 
 
 class CustomerQuery:
@@ -57,22 +65,26 @@ class CustomerQuery:
                     db.execute(
                         """
                         UPDATE customer
-                        SET first_name = %s
+                        SET email = %s
+                            , first_name = %s
                             , last_name = %s
                             , address = %s
                             , city = %s
                             , zipcode = %s
                             , state = %s
+                            , item_id = %s
                             , fulfilled = %s
                         WHERE order_id = %s
                         """,
                         [
+                            order.email,
                             order.first_name,
                             order.last_name,
                             order.address,
                             order.city,
                             order.zipcode,
                             order.state,
+                            order.item_id,
                             order.fulfilled,
                             cust_id,
                         ],
@@ -127,23 +139,27 @@ class CustomerQuery:
                 result = db.execute(
                     """
                     INSERT INTO customer(
+                        email,
                         first_name,
                         last_name,
                         address,
                         city,
                         zipcode,
-                        state
+                        state,
+                        item_id
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING order_id;
                     """,
                     [
+                        order.email,
                         order.first_name,
                         order.last_name,
                         order.address,
                         order.city,
                         order.zipcode,
                         order.state,
+                        order.item_id
                     ],
                 )
                 id = result.fetchone()[0]
@@ -169,11 +185,13 @@ class CustomerQuery:
     def record_to_customer_out(self, record):
         return CustomerOut(
             order_id=record[0],
-            first_name=record[1],
-            last_name=record[2],
-            address=record[3],
-            city=record[4],
-            zipcode=record[5],
-            state=record[6],
-            fulfilled=record[7],
+            email=record[1],
+            first_name=record[2],
+            last_name=record[3],
+            address=record[4],
+            city=record[5],
+            zipcode=record[6],
+            state=record[7],
+            item_id=record[8],
+            fulfilled=record[9],
         )

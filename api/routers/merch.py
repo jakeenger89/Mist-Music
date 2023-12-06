@@ -5,7 +5,6 @@ from jwtdown_fastapi.authentication import Token
 from routers.authenticator import authenticator
 
 
-
 router = APIRouter()
 
 
