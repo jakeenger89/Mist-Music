@@ -38,6 +38,7 @@ function App() {
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
+          <Route index path="profile/:account_id" element={<Profile />} />
           <Route
             index
             path="account/*"
