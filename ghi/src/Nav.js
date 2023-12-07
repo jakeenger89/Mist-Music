@@ -21,11 +21,10 @@ function Nav({ isAuthenticated, onLogout }) {
                 <NavLink className={"navbar-brand"} to="/allsongs">Search Songs</NavLink>
                 {!isAuthenticated && <NavLink className="navbar-brand" to="/signupform">Sign Up Form</NavLink>}
                 <NavLink className="navbar-brand" to="/merch">Merchandise</NavLink>
-                {isAuthenticated && <NavLink className="navbar-brand" to='/profile'>Profile</NavLink>}
+                {isAuthenticated && <NavLink className="navbar-brand" to='/account'>Profile</NavLink>}
                 {!isAuthenticated && <NavLink className="navbar-brand" to="/loginform">Login</NavLink>}
-                {isAuthenticated && <button className="navbar-brand" onClick={handleLogout}>Logout</button>}
                 <NavLink className={"navbar-brand"} to="/aboutus">About Us</NavLink>
-
+                {isAuthenticated && <button className="navbar-brand" onClick={handleLogout}>Logout</button>}
             </div>
         </nav>
     )
