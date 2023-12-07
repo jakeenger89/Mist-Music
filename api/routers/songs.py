@@ -148,14 +148,14 @@ def get_user_songs(
     return queries.get_user_songs(account_id)
 
 
-# @router.get("/api/search_songs", response_model=List[SongOut])
-# async def search_songs(
-#     search_term: str,
-#     response: Response,
-#     queries: SongQueries = Depends(),
-# ):
-#     record = queries.search_songs(search_term)
-#     if len(record) == 0:
-#         response.status_code = 404
-#         return []
-#     return record
+@router.get("/api/search_songs", response_model=List[SongOut])
+async def search_songs(
+    search_term: str,
+    response: Response,
+    queries: SongQueries = Depends(),
+):
+    record = queries.search_songs(search_term)
+    if len(record) == 0:
+        response.status_code = 404
+        return []
+    return record
