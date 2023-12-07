@@ -2,9 +2,9 @@ from queries.songs import SongIn, SongsOut, SongQueries, Like, SongOut
 from queries.accounts import (
     AccountQueries,
 )
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from routers.authenticator import authenticator
-
+from typing import List
 
 router = APIRouter()
 song_queries = SongQueries()
@@ -146,3 +146,16 @@ def get_user_songs(
     queries: SongQueries = Depends(),
 ):
     return queries.get_user_songs(account_id)
+
+
+@router.get("/api/search_songs", response_model=List[SongOut])
+async def search_songs(
+    search_term: str,
+    response: Response,
+    queries: SongQueries = Depends(),
+):
+    record = queries.search_songs(search_term)
+    if len(record) == 0:
+        response.status_code = 404
+        return []
+    return record
