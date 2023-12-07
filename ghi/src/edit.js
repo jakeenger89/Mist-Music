@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 
-const EditAccout = ({}) => {
+const EditAccount = ({}) => {
     const [username, setUsername] = useState("")
     const [first_name, setFirstName] = useState("")
     const [last_name, setLastName] = useState("")
@@ -55,4 +55,4 @@ return (
     )
 }
 
-export default EditAccout
+export default EditAccount
