@@ -14,8 +14,8 @@ import AllAccountSongs from "./allAccountSongs";
 import UpdateSongForm from "./updateSongForm";
 import AboutUs from "./aboutUs";
 import UserLikedSongs from "./UserLikedSongs";
-import Profile from "./profilepage"
 import SongPage from "./songpage";
+import EditAccount from "./edit"
 
 
 function App() {
@@ -39,12 +39,14 @@ function App() {
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
+          <Route path="account/:account_id" element={<Account />} />
           <Route
             index
             path="account/*"
             element={<Account isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}
           />
           <Route index path="signupform" element={<SignUpForm />} />
+          <Route path="edit-account" element={<EditAccount/>}/>
           <Route
             index
             path="loginform"

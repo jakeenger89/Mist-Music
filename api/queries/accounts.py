@@ -19,7 +19,12 @@ class AccountOut(BaseModel):
     account_id: int
     email: str
     username: str
-    currency: Optional[int]
+    currency: Optional[int] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    profile_picture_url: Optional[str] = None
+    banner_url: Optional[str] = None
+    signup_date: Optional[datetime] = None
 
 
 class AccountOutWithPassword(AccountOut):
@@ -125,7 +130,8 @@ class AccountQueries:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        SELECT account_id,
+                        SELECT
+                            account_id,
                             username,
                             email,
                             currency,
@@ -177,7 +183,12 @@ class AccountQueries:
                             account_id,
                             email,
                             username,
-                            currency
+                            currency,
+                            first_name,
+                            last_name,
+                            profile_picture_url,
+                            banner_url,
+                            signup_date
                         FROM account
                         ORDER BY username
                         """
@@ -190,6 +201,11 @@ class AccountQueries:
                             email=record[1],
                             username=record[2],
                             currency=record[3],
+                            first_name=record[4],
+                            last_name=record[5],
+                            profile_picture_url=record[6],
+                            banner_url=record[7],
+                            signup_date=record[8],
                         )
                         result.append(account_out)
                     return result
