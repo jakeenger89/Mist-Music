@@ -19,7 +19,7 @@ const AccountForm = ({ setIsAuthenticated, setUserId }) => {
     const data = { username: email, password };
 
     try {
-      const response = await fetch("http://localhost:8000/token", {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/token`, {
         method: "POST",
         body: new URLSearchParams(data),
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
