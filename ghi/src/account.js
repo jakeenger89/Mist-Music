@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Routes, Route, useNavigate } from 'react-router-dom';
-// import AllAccountSongs from './allAccountSongs';
 import UserLikedSongs from './UserLikedSongs';
 import FollowedUsersList from './FollowedUsersList';
 import './account.css'
@@ -12,8 +11,8 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const [account_id, setAccountId] = useState(null);
   const [searchUsername, setSearchUsername] = useState('');
   const [searchedUserData, setSearchedUserData] = useState(null);
-  const [profile_picture_url, setProfilePic] = useState('');
-  const [banner_url, setBannerPic] = useState('');
+  const [profile_picture_url] = useState('');
+  const [banner_url] = useState('');
   const [dropdownOptions, setDropdownOptions] = useState([]);
 
   const handleEditClick = () => {
@@ -38,9 +37,8 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           setAccountId(account_id);
           setUsername(username);
 
-          console.log("Account ID:", account_id);
 
-          const response = await fetch(`http://localhost:8000/user-songs/${account_id}`);
+          const response = await fetch(`${process.env.REACT_APP_API_HOST}/user-songs/${account_id}`);
           const data = await response.json();
 
           setAccountSongs(data.songs);
@@ -57,15 +55,9 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
     }
   }, [isAuthenticated]);
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem('yourAuthToken');
-  //   setIsAuthenticated(false);
-  //   navigate('/loginform');
-  // };
-
 const handleSearchUser = async () => {
   try {
-    const response = await fetch(`http://localhost:8000/api/account?username=${searchUsername}`);
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/account?username=${searchUsername}`);
     if (response.ok) {
       const userData = await response.json();
       setSearchedUserData(userData);
@@ -85,7 +77,7 @@ const handleSearchUser = async () => {
     setSearchUsername(term);
 
     try {
-      const response = await fetch('http://localhost:8000/api/accounts');
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/accounts`);
       if (response.ok) {
         const userData = await response.json();
         const allUsernames = userData.map(user => user.username);

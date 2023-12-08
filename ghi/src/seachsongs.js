@@ -15,7 +15,7 @@ const handleLike = async (songId) => {
     }
 
     // Make a POST request to like the song
-    const response = await fetch(`http://localhost:8000/songs/${songId}/like`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}/songs/${songId}/like`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ const handleLike = async (songId) => {
   const handleUnlike = async (songId) => {
     try {
       // Make a DELETE request to unlike the song
-      const response = await fetch(`http://localhost:8000/api/songs/${songId}/unlike`, {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${songId}/unlike`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -64,9 +64,10 @@ const handleLike = async (songId) => {
   };
 
 
+
   const fetchSongs = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/songs', {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -112,6 +113,7 @@ const handleLike = async (songId) => {
 
   useEffect(() => {
     fetchSongs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -133,7 +135,6 @@ const handleLike = async (songId) => {
             <th>Genre</th>
             <th>Release Date</th>
             <th>BPM</th>
-            <th>Rating</th>
             <th>Likes</th>
           </tr>
         </thead>
@@ -148,7 +149,6 @@ const handleLike = async (songId) => {
               <td>{song.genre}</td>
               <td>{song.release_date}</td>
               <td>{song.bpm}</td>
-              <td>{song.rating}</td>
               <td>{song.likes_count}</td>
               <td>
                 {account_id && (
@@ -166,8 +166,8 @@ const handleLike = async (songId) => {
                     <source src={song.url} type="audio/mpeg" />
                     Your browser does not support the audio tag.
                   </audio>
-                  <a href={song.url} download>
-                  </a>
+                  <Link to={song.url} download>
+                  </Link>
                 </figure>
               </td>
             </tr>
