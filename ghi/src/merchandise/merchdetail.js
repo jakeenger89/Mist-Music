@@ -14,6 +14,7 @@ function OrderForm() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [item, setItem] = useState('');
     const[quantityStatus, setQuantityStatus] = useState('')
+    const { item_id } = useParams();
 
 
         const authToken = localStorage.getItem('yourAuthToken');
@@ -26,7 +27,7 @@ function OrderForm() {
         }
 
 
-
+useEffect(() => {
     const calculateQuantityStatus = () => {
         if (itemQuantity >= 10) {
         setQuantityStatus(`${itemQuantity} in stock`);
@@ -37,14 +38,13 @@ function OrderForm() {
         }
     };
 
-    useEffect(() => {
         calculateQuantityStatus();
     }, [itemQuantity]);
 
 
     useEffect(() => {
         setIsAuthenticated(!!authToken);
-    }, []);
+    }, [authToken]);
 
 
     useEffect(() => {
@@ -64,7 +64,7 @@ function OrderForm() {
             }
         };
         fetchData();
-    }, []);
+    }, [item_id]);
 
 
     useEffect(() => {
@@ -89,10 +89,9 @@ function OrderForm() {
             }
         };
         getCurrency();
-    }, [authToken]);
+    }, [authToken, currentUser]);
 
-
-    const { item_id } = useParams();
+    useEffect(() => {
         const fetchData = async () => {
             const url = `http://localhost:8000/api/merch/${item_id}`;
             console.log(url)
@@ -113,9 +112,10 @@ function OrderForm() {
                 console.error('Error fetching data:', error);
             }
         };
-        useEffect(() => {
+
             fetchData();
-        }, []);
+        }, [item_id]);
+
 
     const deductCurrency = async (account_id, currency) => {
         const url = `http://localhost:8000/api/currency/${account_id}`;
@@ -278,7 +278,7 @@ function OrderForm() {
                     </li>
                 </ul>
             </div>
-    {quantityStatus != "Sorry, we're sold out!" && (
+    {quantityStatus !== "Sorry, we're sold out!" && (
         <>
         {isAuthenticated ? (
             <div className="row">
