@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, HTTPException
+from fastapi import APIRouter, Depends, Response
 from queries.merch import (
     MerchIn,
     MerchOut,
@@ -8,8 +8,6 @@ from queries.merch import (
     QuantityChangeOut,
 )
 from typing import List, Union, Optional
-from jwtdown_fastapi.authentication import Token
-from routers.authenticator import authenticator
 
 
 router = APIRouter()

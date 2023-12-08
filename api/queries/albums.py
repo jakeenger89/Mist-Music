@@ -204,6 +204,7 @@ class AlbumQueries:
 
         except Exception as e:
             raise Exception(str(e))
+
     def search_albums(self, search_term: str) -> List[AlbumOut]:
         try:
             with pool.connection() as conn:

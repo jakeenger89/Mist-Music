@@ -76,11 +76,7 @@ class MerchQueries:
                         SET quantity = quantity - %s
                         WHERE item_id = %s
                         """,
-                        [
-                            merch.quantity,
-                            item_id
-                        ],
-
+                        [merch.quantity, item_id],
                     )
                     old_data = merch.dict()
                     return QuantityChangeOut(item_id=item_id, **old_data)

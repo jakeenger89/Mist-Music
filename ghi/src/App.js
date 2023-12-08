@@ -18,6 +18,8 @@ import SongPage from "./songpage";
 import UserProfile from "./UserProfile";
 import FollowedUsersList from "./FollowedUsersList";
 import EditAccount from "./edit"
+import HomePage from "./homePage/homePage";
+import HomePageAuth from "./homePage/homePageAuth";
 
 
 function App() {
@@ -41,6 +43,7 @@ function App() {
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
+          <Route index path="/" element={isAuthenticated ? <HomePageAuth /> : <HomePage />}/>
           <Route path="account/:account_id" element={<Account />} />
           <Route
             index
