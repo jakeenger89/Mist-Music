@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Routes, Route, useNavigate } from 'react-router-dom';
-import AllAccountSongs from './allAccountSongs';
+// import AllAccountSongs from './allAccountSongs';
 import UserLikedSongs from './UserLikedSongs';
 import FollowedUsersList from './FollowedUsersList';
 import './account.css'
@@ -14,7 +14,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const [searchedUserData, setSearchedUserData] = useState(null);
   const [profile_picture_url, setProfilePic] = useState('');
   const [banner_url, setBannerPic] = useState('');
-   const [dropdownOptions, setDropdownOptions] = useState([]);
+  const [dropdownOptions, setDropdownOptions] = useState([]);
 
   const handleEditClick = () => {
     navigate('/edit-account', {
@@ -57,11 +57,11 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
     }
   }, [isAuthenticated]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('yourAuthToken');
-    setIsAuthenticated(false);
-    navigate('/loginform');
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem('yourAuthToken');
+  //   setIsAuthenticated(false);
+  //   navigate('/loginform');
+  // };
 
 const handleSearchUser = async () => {
   try {

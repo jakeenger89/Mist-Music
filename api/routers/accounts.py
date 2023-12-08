@@ -82,8 +82,7 @@ async def create_account(
     except DuplicateAccountError:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return HttpError(
-            detail="Cannot create an account with\
-                          those credentials"
+            detail="Cannot create an account with those credentials"
         )
 
 

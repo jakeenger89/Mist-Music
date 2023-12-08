@@ -58,16 +58,6 @@ const AccountForm = ({ setIsAuthenticated, setUserId }) => {
     }
   }
 
-  const handleChangeEmail = (event) => {
-    const { value } = event.target;
-    setEmail(value);
-  };
-
-  const handleChangePassword = (event) => {
-    const { value } = event.target;
-    setPassword(value);
-  };
-
   return (
     <MDBContainer fluid className="h-100">
       <MDBRow className="d-flex justify-content-center align-items-center h-100">
