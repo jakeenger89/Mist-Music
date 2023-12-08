@@ -64,6 +64,7 @@ const handleLike = async (songId) => {
   };
 
 
+
   const fetchSongs = async () => {
     try {
       const response = await fetch('http://localhost:8000/api/songs', {
@@ -112,6 +113,7 @@ const handleLike = async (songId) => {
 
   useEffect(() => {
     fetchSongs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
