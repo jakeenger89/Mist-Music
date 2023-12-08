@@ -15,6 +15,8 @@ import UpdateSongForm from "./updateSongForm";
 import AboutUs from "./aboutUs";
 import UserLikedSongs from "./UserLikedSongs";
 import SongPage from "./songpage";
+import UserProfile from "./UserProfile";
+import FollowedUsersList from "./FollowedUsersList";
 import EditAccount from "./edit"
 
 
@@ -73,7 +75,7 @@ function App() {
           <Route
             index
             path="account/liked-songs/:account_id"
-            element={<UserLikedSongs />}
+            element={<UserLikedSongs account_data={{ username: 'your_username_here' }} />}
           />
           <Route
             index
@@ -82,6 +84,10 @@ function App() {
           />
           <Route index path="aboutus" element={<AboutUs />} />
           <Route index path="songs/:song_id" element={<SongPage />} />
+          <Route index path="user-profile/:account_id" element={<UserProfile />} />
+          <Route path="/user-liked-songs/:account_id" element={<UserLikedSongs />} />
+          <Route index path="/followed-users-list/:account_id" element={<FollowedUsersList />}
+          />
         </Routes>
       </div>
     </BrowserRouter>

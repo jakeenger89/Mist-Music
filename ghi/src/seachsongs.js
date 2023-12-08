@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 
 function AllSongs() {
   const [songs, setSongs] = useState([]);
+  const [filteredSongs, setFilteredSongs] = useState([]);
   const [account_id, setAccountId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
 const handleLike = async (songId) => {
   try {
@@ -61,6 +63,7 @@ const handleLike = async (songId) => {
     }
   };
 
+
   const fetchSongs = async () => {
     try {
       const response = await fetch('http://localhost:8000/api/songs', {
@@ -73,12 +76,29 @@ const handleLike = async (songId) => {
       if (response.ok) {
         const songData = await response.json();
         setSongs(songData.songs);
+        // Filter songs based on the search term
+        filterSongs(songData.songs, searchTerm);
       } else {
         console.error('Failed to fetch songs');
       }
     } catch (error) {
       console.error('Error fetching songs:', error);
     }
+  };
+
+  const filterSongs = (allSongs, term) => {
+    const filtered = allSongs.filter(
+      (song) =>
+        song.name.toLowerCase().includes(term.toLowerCase())
+    );
+    setFilteredSongs(filtered);
+  };
+
+  const handleSearchChange = (event) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+    // Filter songs based on the updated search term
+    filterSongs(songs, term);
   };
 
   useEffect(() => {
@@ -97,6 +117,13 @@ const handleLike = async (songId) => {
   return (
     <div>
       <h1>All Songs</h1>
+      {/* Search bar */}
+      <input
+        type="text"
+        placeholder="Search by song name"
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
       <table>
         <thead>
           <tr>
@@ -111,7 +138,7 @@ const handleLike = async (songId) => {
           </tr>
         </thead>
         <tbody>
-          {songs.map((song) => (
+          {filteredSongs.map((song) => (
             <tr key={song.song_id}>
               <td>
                 <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
@@ -126,13 +153,13 @@ const handleLike = async (songId) => {
               <td>
                 {account_id && (
                   <>
-                  {!song.isOwner}
+                    {/* You might want to add a condition for song.isOwner here */}
                     <button onClick={() => handleLike(song.song_id)}>Like</button>
                     <button onClick={() => handleUnlike(song.song_id)}>Unlike</button>
                   </>
                 )}
               </td>
-                <td>
+              <td>
                 {/* Display audio player and download link */}
                 <figure>
                   <audio controls>

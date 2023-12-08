@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Routes, Route, useNavigate } from 'react-router-dom';
 import AllAccountSongs from './allAccountSongs';
 import UserLikedSongs from './UserLikedSongs';
+import FollowedUsersList from './FollowedUsersList';
 import './account.css'
 
 const Account = ({ isAuthenticated, setIsAuthenticated }) => {
@@ -9,6 +10,8 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [accountSongs, setAccountSongs] = useState([]);
   const [account_id, setAccountId] = useState(null);
+  const [searchUsername, setSearchUsername] = useState('');
+  const [searchedUserData, setSearchedUserData] = useState(null);
   const [profile_picture_url, setProfilePic] = useState('');
   const [banner_url, setBannerPic] = useState('')
 
@@ -34,6 +37,8 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           setAccountId(account_id);
           setUsername(username);
 
+          console.log("Account ID:", account_id);
+
           const response = await fetch(`http://localhost:8000/user-songs/${account_id}`);
           const data = await response.json();
 
@@ -51,18 +56,28 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
     }
   }, [isAuthenticated]);
 
-  if (!isAuthenticated) {
-    return (
-      <div className="row">
-        <div className="offset-3 col-6">
-          <div className="shadow p-4 mt-4">
-            <h1>Login Required</h1>
-            <p>Please <Link to="/loginform">log in</Link> to access this page.</p>
-          </div>
-        </div>
-      </div>
-    );
+  const handleLogout = () => {
+    localStorage.removeItem('yourAuthToken');
+    setIsAuthenticated(false);
+    navigate('/loginform');
+  };
+
+const handleSearchUser = async () => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/account?username=${searchUsername}`);
+    if (response.ok) {
+      const userData = await response.json();
+      setSearchedUserData(userData);
+
+      // Programmatically navigate to UserProfile component
+      navigate(`/user-profile/${userData.account_id}`);
+    } else {
+      console.error('Failed to fetch user data');
+    }
+  } catch (error) {
+    console.error('Error searching for user:', error);
   }
+};
 
   return (
     <div className="profile">
@@ -75,6 +90,18 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
       <div className="shadow p-4 mt-4">
           <h1>Welcome {username}, to Mist Music!</h1>
           <p>This is a placeholder for your home page content.</p>
+
+           <h2>
+            <Link to={`/followed-users-list/${account_id}`}>Followed Users List</Link>
+          </h2>
+
+          <Routes>
+            <Route
+              path="followed-users-list/:account_id"
+              element={<FollowedUsersList />}
+            />
+          </Routes>
+
           <h2>
             <Link to={`/account/liked-songs/${account_id}`}>Your Liked Songs</Link>
           </h2>
@@ -95,12 +122,26 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
             ))}
           </ul>
 
-          <Routes>
-            <Route
-              path="all-songs/:account_id"
-              element={<AllAccountSongs />}
-            />
-          </Routes>
+          <h2>Search for other users</h2>
+          <input
+            type="text"
+            placeholder="Enter username"
+            value={searchUsername}
+            onChange={(e) => setSearchUsername(e.target.value)}
+          />
+          <button onClick={handleSearchUser}>Search User</button>
+
+          {searchedUserData && (
+            <div>
+              <h3>User Information</h3>
+              <p>Account ID: {searchedUserData.account_id}</p>
+              <p>Email: {searchedUserData.email}</p>
+              <p>Username: {searchedUserData.username}</p>
+              <p>Currency: {searchedUserData.currency}</p>
+              <Link to={`/account/liked-songs/${searchedUserData.account_id}`}>View Liked Songs</Link>
+              <Link to={`/account/all-songs/${searchedUserData.account_id}`}>View Posted Songs</Link>
+            </div>
+          )}
 
 
         </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 const UserLikedSongs = () => {
-  const { account_id } = useParams();
+  const { account_id, username } = useParams();
   const [likedSongs, setLikedSongs] = useState([]);
 
   useEffect(() => {
@@ -40,11 +40,11 @@ const UserLikedSongs = () => {
     };
 
     fetchData();
-  }, [account_id]);
+  }, [account_id, username]);
 
   return (
     <div>
-      <h2>Your Liked Songs</h2>
+      <h2>Liked Songs</h2>
       <table>
         <thead>
           <tr>
