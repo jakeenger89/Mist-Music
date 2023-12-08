@@ -1,6 +1,5 @@
 from fastapi.testclient import TestClient
 from main import app
-from queries.songs import SongQueries
 
 client = TestClient(app)
 
