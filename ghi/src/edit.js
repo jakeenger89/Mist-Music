@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 
-const EditAccount = ({}) => {
+const EditAccount = () => {
     const [username, setUsername] = useState("")
     const [first_name, setFirstName] = useState("")
     const [last_name, setLastName] = useState("")
