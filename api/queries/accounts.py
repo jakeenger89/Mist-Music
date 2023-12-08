@@ -309,7 +309,7 @@ class AccountQueries:
                             email,
                             password
                         FROM account
-                        WHERE username LIKE %s
+                        WHERE LOWER (username) LIKE LOWER (%s)
                         ORDER BY username
                         """,
                         [f"%{search_term}%"],
