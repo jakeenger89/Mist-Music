@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from .pool import pool
 from typing import List, Union, Optional
+import random
 
 
 class Error(BaseModel):
@@ -26,11 +27,67 @@ class MerchOut(BaseModel):
     quantity: int
 
 
+class QuantityChangeIn(BaseModel):
+    quantity: int
+
+
+class QuantityChangeOut(BaseModel):
+    item_id: int
+    quantity: int
+
+
 class CurrencyChangeOut(BaseModel):
     account_id: int
 
 
 class MerchQueries:
+    def get_random_merch(self) -> Union[MerchOut, Error]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    result = db.execute(
+                        """
+                        SELECT *
+                        FROM merchandise
+                        """
+                    )
+
+                    merch_list = []
+                    for record in result:
+                        merch = self.record_to_merch_out(record)
+                        merch_list.append(merch)
+                    random_item = random.choice(merch_list)
+                    print("merchlist", merch_list)
+                    print("random item", random_item)
+                    return random_item
+        except Exception as e:
+            print(e)
+            return {"message": "Could not get random item"}
+
+    def subtract_quantity(
+        self, item_id: int, merch: QuantityChangeIn
+    ) -> Union[QuantityChangeOut, Error]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        UPDATE merchandise
+                        SET quantity = quantity - %s
+                        WHERE item_id = %s
+                        """,
+                        [
+                            merch.quantity,
+                            item_id
+                        ],
+
+                    )
+                    old_data = merch.dict()
+                    return QuantityChangeOut(item_id=item_id, **old_data)
+        except Exception as e:
+            print(e)
+            return {"message": "Could not update quantity"}
+
     def get_one_merch(self, merch_id: int) -> Optional[MerchOut]:
         try:
             with pool.connection() as conn:
