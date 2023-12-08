@@ -54,6 +54,11 @@ class IDError(BaseModel):
     message: str
 
 
+class Follow(BaseModel):
+    follower_id: int
+    following_id: int
+
+
 class AccountQueries:
     def update_currency(
         self, account_id: int, amount: int
@@ -313,8 +318,10 @@ class AccountQueries:
             print(e)
             return False
 
+    def search_accounts(
+        self, search_term: str
+    ) -> List[AccountOutWithPassword]:
 
-    def search_accounts(self, search_term: str) -> List[AccountOutWithPassword]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -345,3 +352,145 @@ class AccountQueries:
         except Exception as e:
             print(f"Error in search_accounts: {e}")
             return []
+
+    def get_account_by_username(self, username: str) -> AccountOutWithPassword:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        SELECT account_id,
+                            username,
+                            email,
+                            currency,
+                            password
+                        FROM account
+                        WHERE username = %s
+                        ORDER BY username
+                        """,
+                        [username],
+                    )
+                    record = db.fetchone()
+                    if record:
+                        account_out = AccountOutWithPassword(
+                            account_id=record[0],
+                            username=record[1],
+                            email=record[2],
+                            currency=record[3],
+                            password=record[4],
+                            hashed_password=record[4],
+                        )
+                        return account_out
+                    else:
+                        return AccountOutWithPassword(
+                            account_id="",
+                            username="",
+                            email="",
+                            currency="",
+                            password="",
+                            hashed_password="",
+                        )
+        except Exception as e:
+            print(e)
+            return AccountOutWithPassword(
+                account_id="",
+                username="",
+                email="",
+                currency="",
+                password="",
+                hashed_password="",
+            )
+
+    def follow_account(self, follower_id, following_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                try:
+                    # Check if the user is already following the account
+                    if self.is_account_following(follower_id, following_id):
+                        return False  # User is already following the account
+
+                    # Follow the account
+                    cur.execute(
+                        """
+                        INSERT INTO following (follower_id, following_id)
+                        VALUES (%s, %s)
+                        """,
+                        [follower_id, following_id],
+                    )
+                    return True
+                except Exception as e:
+                    # Handle errors (e.g., duplicate follows)
+                    print(e)
+                    return False
+
+    def is_account_following(self, follower_id, following_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT 1
+                    FROM following
+                    WHERE follower_id = %s AND following_id = %s
+                    """,
+                    [follower_id, following_id],
+                )
+                return cur.fetchone() is not None
+
+    def unfollow_account(self, follower_id, following_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                try:
+                    # Unfollow the account
+                    cur.execute(
+                        """
+                        DELETE FROM following
+                        WHERE follower_id = %s AND following_id = %s
+                        """,
+                        [follower_id, following_id],
+                    )
+                    return True
+                except Exception as e:
+                    print(e)
+                    return False
+
+    def get_followed_accounts(self, account_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                try:
+                    cur.execute(
+                        """
+                        SELECT following_id
+                        FROM following
+                        WHERE follower_id = %s
+                        """,
+                        [account_id],
+                    )
+                    followed_accounts = [row[0] for row in cur.fetchall()]
+                    return {"followed_accounts": followed_accounts}
+                except Exception as e:
+                    print(f"Error in get_followed_accounts: {e}")
+                    raise HTTPException(
+                        status_code=500, detail="Error retrieving followed acc"
+                    )
+
+    def save_follow_relationship(self, follower_id, following_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                try:
+                    # Check if the user is already following the account
+                    if self.is_account_following(follower_id, following_id):
+                        return False  # User is already following the account
+
+                    # Follow the account
+                    cur.execute(
+                        """
+                        INSERT INTO following (follower_id, following_id)
+                        VALUES (%s, %s)
+                        """,
+                        [follower_id, following_id],
+                    )
+                    return True
+                except Exception as e:
+                    # Handle errors (e.g., duplicate follows)
+                    print(e)
+                    return False

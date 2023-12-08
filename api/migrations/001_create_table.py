@@ -106,17 +106,16 @@ steps = [
         DROP TABLE customer;
         """,
     ],
-
     [
         """
-        CREATE TABLE song_files (
-            file_id SERIAL PRIMARY KEY,
-            song_id INTEGER REFERENCES songs(song_id) ON DELETE CASCADE,
-            file_path VARCHAR(1000) NOT NULL
+        CREATE TABLE following (
+            follower_id INTEGER REFERENCES account(account_id) ON DELETE CASCADE,
+            following_id INTEGER REFERENCES account(account_id) ON DELETE CASCADE,
+            PRIMARY KEY (follower_id, following_id)
         );
         """,
         """
-        DROP TABLE song_files;
+        DROP TABLE following;
         """,
     ],
 ]

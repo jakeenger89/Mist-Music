@@ -10,6 +10,7 @@ from queries.accounts import (
     AccountQueries,
     AccountIn,
     AccountOut,
+    Follow,
     DuplicateAccountError,
     AccountUpdateIn,
     AccountOutWithPassword,
@@ -173,3 +174,89 @@ async def search_accounts(
         response.status_code = 404
         return []
     return record
+
+
+@router.get("/api/account", response_model=AccountOutWithPassword)
+def get_account_by_username(
+    username: str,
+    queries: AccountQueries = Depends(),
+):
+    account = queries.get_account_by_username(username)
+    if account is None:
+        raise HTTPException(status_code=404, detail="Account not found")
+    return account
+
+
+@router.post("/accounts/{account_id}/follow", response_model=bool)
+def follow_account(
+    account_id: int,
+    follow: Follow,
+    queries: AccountQueries = Depends(),
+):
+    print(f"Follower ID (from request): {follow.follower_id}")
+    print(f"Following ID (from request): {follow.following_id}")
+
+    return queries.follow_account(follow.follower_id, follow.following_id)
+
+
+@router.delete("/accounts/{account_id}/unfollow", response_model=bool)
+def unfollow_account(
+    account_id: int,
+    unfollow: Follow,
+    queries: AccountQueries = Depends(),
+):
+    queries.unfollow_account(account_id, unfollow.following_id)
+    return True
+
+
+@router.get(
+    "/followed-accounts/{account_id}", operation_id="get_followed_accounts"
+)
+def get_followed_accounts(
+    account_id: int,
+    queries: AccountQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data),
+):
+    if account_data:
+        try:
+            followed_accounts_response = queries.get_followed_accounts(
+                account_id
+            )
+            return followed_accounts_response
+        except HTTPException as e:
+            # Handle specific exceptions if needed
+            raise e
+        except Exception as e:
+            print(f"Error in get_followed_accounts_route: {e}")
+            raise HTTPException(
+                status_code=500, detail="Error retrieving followed accounts"
+            )
+    else:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+
+@router.get(
+    "/following-status/{follower_id}/{following_id}", response_model=dict
+)
+def get_following_status(
+    follower_id: int,
+    following_id: int,
+    queries: AccountQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data),
+):
+    if account_data:
+        try:
+            is_following = queries.is_account_following(
+                follower_id, following_id
+            )
+            return {"is_following": is_following}
+        except HTTPException as e:
+            # Handle specific exceptions if needed
+            raise e
+        except Exception as e:
+            print(f"Error in get_following_status: {e}")
+            raise HTTPException(
+                status_code=500, detail="Error retrieving following status"
+            )
+    else:
+        raise HTTPException(status_code=401, detail="Not authenticated")
