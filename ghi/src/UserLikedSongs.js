@@ -21,7 +21,7 @@ const UserLikedSongs = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:8000/liked-songs/${account_id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_HOST}/liked-songs/${account_id}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -74,8 +74,8 @@ const UserLikedSongs = () => {
                       <source src={song.url} type="audio/mpeg" />
                       Your browser does not support the audio tag.
                     </audio>
-                    <a href={song.url} download>
-                    </a>
+                    <Link to ={song.url} download>
+                    </Link>
                   </figure>
               </td>
             </tr>

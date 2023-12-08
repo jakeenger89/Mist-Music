@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "./SongPage.css";
 
 function SongPage() {
@@ -11,7 +11,7 @@ function SongPage() {
   useEffect(() => {
     const fetchSong = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/songs/${song_id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${song_id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ function SongPage() {
           <source src={song.url} type="audio/mpeg" />
           Your browser does not support the audio tag.
         </audio>
-        <a href={song.url} download className="visually-hidden">Download</a>
+        <Link to={song.url} download className="visually-hidden">Download</Link>
       </div>
 
       {/* Display the lyrics if available */}
