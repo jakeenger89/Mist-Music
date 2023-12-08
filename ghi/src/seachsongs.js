@@ -153,7 +153,7 @@ const handleLike = async (songId) => {
               <td>
                 {account_id && (
                   <>
-                    {/* You might want to add a condition for song.isOwner here */}
+                    {/* Display both buttons without checking user_has_liked */}
                     <button onClick={() => handleLike(song.song_id)}>Like</button>
                     <button onClick={() => handleUnlike(song.song_id)}>Unlike</button>
                   </>

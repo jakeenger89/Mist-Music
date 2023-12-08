@@ -13,7 +13,8 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const [searchUsername, setSearchUsername] = useState('');
   const [searchedUserData, setSearchedUserData] = useState(null);
   const [profile_picture_url, setProfilePic] = useState('');
-  const [banner_url, setBannerPic] = useState('')
+  const [banner_url, setBannerPic] = useState('');
+   const [dropdownOptions, setDropdownOptions] = useState([]);
 
   const handleEditClick = () => {
     navigate('/edit-account', {
@@ -79,37 +80,54 @@ const handleSearchUser = async () => {
   }
 };
 
+  const handleSearchInputChange = async (event) => {
+    const term = event.target.value;
+    setSearchUsername(term);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/accounts');
+      if (response.ok) {
+        const userData = await response.json();
+        const allUsernames = userData.map(user => user.username);
+        const filteredUsernames = allUsernames.filter(username =>
+          username.toLowerCase().includes(term.toLowerCase())
+        );
+        setDropdownOptions(filteredUsernames);
+      } else {
+        console.error('Failed to fetch usernames');
+        setDropdownOptions([]);
+      }
+    } catch (error) {
+      console.error('Error fetching usernames:', error);
+      setDropdownOptions([]);
+    }
+  };
+
   return (
     <div className="profile">
       <div className="col-12">
-        <img src={banner_url} alt="banner" className="banner-image"/>
+        <img src={banner_url} alt="banner" className="banner-image" />
         <button onClick={handleEditClick}>Edit</button>
       </div>
       <div className="offset-3 col-6">
-        <img src={profile_picture_url} alt="Profile" className="profile-image"/>
-      <div className="shadow p-4 mt-4">
+        <img src={profile_picture_url} alt="Profile" className="profile-image" />
+        <div className="shadow p-4 mt-4">
           <h1>Welcome {username}, to Mist Music!</h1>
           <p>This is a placeholder for your home page content.</p>
 
-           <h2>
+          <h2>
             <Link to={`/followed-users-list/${account_id}`}>Followed Users List</Link>
           </h2>
 
           <Routes>
-            <Route
-              path="followed-users-list/:account_id"
-              element={<FollowedUsersList />}
-            />
+            <Route path="followed-users-list/:account_id" element={<FollowedUsersList />} />
           </Routes>
 
           <h2>
             <Link to={`/account/liked-songs/${account_id}`}>Your Liked Songs</Link>
           </h2>
           <Routes>
-            <Route
-              path="liked-songs/:account_id"
-              element={<UserLikedSongs account_id={account_id} />}
-            />
+            <Route path="liked-songs/:account_id" element={<UserLikedSongs account_id={account_id} />} />
           </Routes>
 
           <h2>
@@ -123,13 +141,30 @@ const handleSearchUser = async () => {
           </ul>
 
           <h2>Search for other users</h2>
-          <input
-            type="text"
-            placeholder="Enter username"
-            value={searchUsername}
-            onChange={(e) => setSearchUsername(e.target.value)}
-          />
-          <button onClick={handleSearchUser}>Search User</button>
+          <div className="search-container">
+            {/* Controlled input for search bar */}
+            <input
+              type="text"
+              placeholder="Start typing a username"
+              value={searchUsername}
+              onChange={handleSearchInputChange}
+            />
+            {/* Suggestions list */}
+            {searchUsername && dropdownOptions.length > 0 && (
+              <div className="suggestions-list">
+                {dropdownOptions.slice(0, 5).map((username) => (
+                  <div
+                    key={username}
+                    className="suggestion-item"
+                    onClick={() => setSearchUsername(username)}
+                  >
+                    {username}
+                  </div>
+                ))}
+              </div>
+            )}
+            <button onClick={handleSearchUser}>Search User</button>
+          </div>
 
           {searchedUserData && (
             <div>
@@ -142,8 +177,6 @@ const handleSearchUser = async () => {
               <Link to={`/account/all-songs/${searchedUserData.account_id}`}>View Posted Songs</Link>
             </div>
           )}
-
-
         </div>
       </div>
     </div>
