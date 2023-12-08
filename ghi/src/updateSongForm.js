@@ -13,7 +13,6 @@ const UpdateSongForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Received state in UpdateSongForm:', state?.account_id);
 
     const fetchSongData = async () => {
       try {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const UserLikedSongs = () => {
   const { account_id, username } = useParams();
@@ -54,24 +54,22 @@ const UserLikedSongs = () => {
             <th>Genre</th>
             <th>Release Date</th>
             <th>BPM</th>
-            <th>Rating</th>
-            <th>Player</th>
           </tr>
         </thead>
         <tbody>
           {likedSongs.map((song) => (
             <tr key={song.song_id}>
-              <td>{song.name}</td>
+              <td>
+                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+              </td>
               <td>{song.artist}</td>
               <td>{song.album}</td>
               <td>{song.genre}</td>
               <td>{song.release_date}</td>
               <td>{song.bpm}</td>
-              <td>{song.rating}</td>
               <td>
                 {/* Display audio player and download link */}
                   <figure>
-                    <figcaption>Listen to the song:</figcaption>
                     <audio controls>
                       <source src={song.url} type="audio/mpeg" />
                       Your browser does not support the audio tag.

@@ -133,7 +133,6 @@ const handleLike = async (songId) => {
             <th>Genre</th>
             <th>Release Date</th>
             <th>BPM</th>
-            <th>Rating</th>
             <th>Likes</th>
           </tr>
         </thead>
@@ -148,7 +147,6 @@ const handleLike = async (songId) => {
               <td>{song.genre}</td>
               <td>{song.release_date}</td>
               <td>{song.bpm}</td>
-              <td>{song.rating}</td>
               <td>{song.likes_count}</td>
               <td>
                 {account_id && (

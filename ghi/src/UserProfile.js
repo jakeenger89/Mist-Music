@@ -5,7 +5,7 @@ const UserProfile = () => {
   const { account_id } = useParams();
   const following_id = account_id;
   const [userData, setUserData] = useState(null);
-  const [likedSongs, setLikedSongs] = useState([]);
+  const [likedSongs] = useState([]);
   const [postedSongs, setPostedSongs] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const [loggedInUserId, setLoggedInUserId] = useState(null);

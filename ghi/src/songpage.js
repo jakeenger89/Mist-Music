@@ -11,7 +11,6 @@ function SongPage() {
   useEffect(() => {
     const fetchSong = async () => {
       try {
-        console.log("Fetching song with song_id:", song_id);
         const response = await fetch(`http://localhost:8000/api/songs/${song_id}`, {
           method: 'GET',
           headers: {
@@ -19,11 +18,9 @@ function SongPage() {
           },
         });
 
-        console.log('Response:', response);
 
         if (response.ok) {
           const songData = await response.json();
-          console.log('Song Data:', songData);
           setSong(songData);
         } else {
           console.error('Failed to fetch song');
@@ -61,13 +58,12 @@ function SongPage() {
           <p>Genre: {song.genre}</p>
           <p>Release Date: {song.release_date}</p>
           <p>BPM: {song.bpm}</p>
-          <p>Rating: {song.rating}</p>
         </div>
 
         {/* Display the image if available */}
         {song.image_url && (
           <div className="SongPage-info-right">
-            <img src={song.image_url} alt="Song Image" style={{ maxWidth: '300px', maxHeight: '300px' }} />
+            <img src={song.image_url} alt={song.name} style={{ maxWidth: '300px', maxHeight: '300px' }} />
           </div>
         )}
       </div>
@@ -78,7 +74,7 @@ function SongPage() {
           <source src={song.url} type="audio/mpeg" />
           Your browser does not support the audio tag.
         </audio>
-        <a href={song.url} download></a>
+        <a href={song.url} download className="visually-hidden">Download</a>
       </div>
 
       {/* Display the lyrics if available */}
