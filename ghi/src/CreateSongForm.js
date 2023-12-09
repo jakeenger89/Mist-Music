@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "./CreateSongForm.css";
 
 const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   const [name, setName] = useState('');
@@ -143,7 +144,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   };
 
   return (
-    <div className="row">
+    <div className="CreateSongForm-container">
       <div className="col-2" style={{ marginTop: '25px' }}>
         {randomImage && (
           <img

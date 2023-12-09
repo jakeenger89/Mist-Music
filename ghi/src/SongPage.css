@@ -1,13 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
 .SongPage-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  border: 2px solid #1a202c;
+  border-radius: 8px;
+  background-color: #2d3748;
+  min-height: 100vh;
 }
 
 .SongPage-name {
-  font-size: 36px;
+  font-size: 40px; /* Increase font size */
   margin-bottom: 10px;
+  font-weight: bold; /* Make the font bolder */
+  font-family: 'Arial', sans-serif; /* Change font family if desired */
+  color: #a0aec0; /* Light gray text color */
 }
 
 .SongPage-info-container {
@@ -15,6 +29,11 @@
   justify-content: space-between;
   width: 100%;
   max-width: 600px;
+  border: 4px solid #1a202c; /* Dark blue border with more thickness */
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+  padding: 20px; /* Increase padding */
+  margin-top: 20px;
 }
 
 .SongPage-info-left {
@@ -23,7 +42,9 @@
 }
 
 .SongPage-info-left p {
-  margin-bottom: 8px; /* Adjust the value to your preference */
+  margin-bottom: 8px;
+  font-weight: bold; /* Make the font bolder */
+  color: #a0aec0;
 }
 
 .SongPage-info-right {
@@ -37,20 +58,59 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background-size: 80%; /* Adjust the value to your preference */
+  background-size: 100%; /* Adjust the value to your preference */
   z-index: -1;
 }
 
+.SongPage-info-right img {
+  max-width: 100%;
+  border: 4px solid #1a202c; /* Dark blue border with more thickness */
+  border-radius: 12px; /* Round the corners more */
+}
+
 .SongPage-player-container {
-  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #1a202c;
+  width: 48%;
+  margin-left: auto;
+  margin-right: auto;
+  border-top: none;
 }
 
 .SongPage-lyrics-container {
-  margin-top: 20px;
   width: 100%;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
   white-space: pre-line;
+  border: 4px solid #1a202c;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  padding: 30px;
+  border-top: none;
+  background-color: #2d3748;
+}
+
+.SongPage-lyrics-container h2 {
+  cursor: pointer;
+  font-size: 24px; /* Increase font size */
+  font-weight: bold; /* Make the font bolder */
+  margin-bottom: 15px; /* Adjust margin */
+  color: #a0aec0;
+}
+
+.SongPage-lyrics-container p {
+  font-size: 18px; /* Increase font size */
+  font-weight: bold; /* Make the font bolder */
+  color: #a0aec0;
+}
+
+.OuterContainer {
+  border: 2px solid #1a202c; /* Dark blue border */
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #2d3748; /* Dark blue background */
 }
