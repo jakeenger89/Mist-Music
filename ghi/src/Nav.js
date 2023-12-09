@@ -10,6 +10,7 @@ function Nav({ isAuthenticated, onLogout }) {
       onLogout();
     }
     navigate("/loginform");
+    window.location.reload()
   };
   return (
     <nav className="nav">
