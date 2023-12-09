@@ -11,8 +11,9 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const [account_id, setAccountId] = useState(null);
   const [searchUsername, setSearchUsername] = useState('');
   const [searchedUserData, setSearchedUserData] = useState(null);
-  const [profile_picture_url] = useState('');
-  const [banner_url] = useState('');
+  const [profile_picture_url, setProfilePicture] = useState('');
+  const [banner_url, setBannerUrl] = useState('');
+  const [currentUser, setCurrentUser] = useState('');
   const [dropdownOptions, setDropdownOptions] = useState([]);
 
   const handleEditClick = () => {
@@ -32,13 +33,42 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
 
         if (authToken) {
           const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
+          const { account: { account_id } } = decodedToken;
+
+          setAccountId(account_id);
+
+          const response = await fetch(`http://localhost:8000/api/account/${account_id}`);
+          const data = await response.json();
+
+          setCurrentUser(data);
+        } else {
+          console.error('Authentication token not found');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    console.log(currentUser)
+    fetchData();
+
+  }, []);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const authToken = localStorage.getItem('yourAuthToken');
+
+        if (authToken) {
+          const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
           const { account: { account_id, username } } = decodedToken;
 
           setAccountId(account_id);
           setUsername(username);
 
 
-          const response = await fetch(`${process.env.REACT_APP_API_HOST}/user-songs/${account_id}`);
+          const response = await fetch(`http://localhost:8000/user-songs/${account_id}`);
           const data = await response.json();
 
           setAccountSongs(data.songs);
@@ -57,7 +87,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
 
 const handleSearchUser = async () => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/account?username=${searchUsername}`);
+    const response = await fetch("http://localhost:8000/api/account?username=${searchUsername}");
     if (response.ok) {
       const userData = await response.json();
       setSearchedUserData(userData);
@@ -77,7 +107,7 @@ const handleSearchUser = async () => {
     setSearchUsername(term);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/accounts`);
+      const response = await fetch("http://localhost:8000/api/accounts");
       if (response.ok) {
         const userData = await response.json();
         const allUsernames = userData.map(user => user.username);
@@ -97,41 +127,35 @@ const handleSearchUser = async () => {
 
   return (
     <div className="profile">
-      <div className="col-12">
-        <img src={banner_url} alt="banner" className="banner-image" />
-        <button onClick={handleEditClick}>Edit</button>
+      <div className="container">
+        <img src={currentUser.banner_url} alt="banner" className="banner-image" />
+        <img src={currentUser.profile_picture_url} alt="Profile" className="profile-image" />
+        <button onClick={handleEditClick}>Edit Profile</button>
       </div>
       <div className="offset-3 col-6">
-        <img src={profile_picture_url} alt="Profile" className="profile-image" />
         <div className="shadow p-4 mt-4">
           <h1>Welcome {username}, to Mist Music!</h1>
           <p>This is a placeholder for your home page content.</p>
-
           <h2>
-            <Link to={`/followed-users-list/${account_id}`}>Followed Users List</Link>
+            <Link to={`/followed-users-list/${account_id}`}>Following</Link>
           </h2>
-
           <Routes>
             <Route path="followed-users-list/:account_id" element={<FollowedUsersList />} />
           </Routes>
-
           <h2>
-            <Link to={`/account/liked-songs/${account_id}`}>Your Liked Songs</Link>
+            <Link to={`/account/liked-songs/${account_id}`}>Liked Songs</Link>
           </h2>
           <Routes>
             <Route path="liked-songs/:account_id" element={<UserLikedSongs account_id={account_id} />} />
           </Routes>
-
           <h2>
             <Link to={`/account/all-songs/${account_id}`}>Your Songs</Link>
           </h2>
-
           <ul>
             {accountSongs.map((song) => (
               <li key={song.song_id}>{song.name}</li>
             ))}
           </ul>
-
           <h2>Search for other users</h2>
           <div className="search-container">
             {/* Controlled input for search bar */}
@@ -157,7 +181,6 @@ const handleSearchUser = async () => {
             )}
             <button onClick={handleSearchUser}>Search User</button>
           </div>
-
           {searchedUserData && (
             <div>
               <h3>User Information</h3>
