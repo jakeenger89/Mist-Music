@@ -87,7 +87,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
 
 const handleSearchUser = async () => {
   try {
-    const response = await fetch("http://localhost:8000/api/account?username=${searchUsername}");
+    const response = await fetch(`http://localhost:8000/api/account?username=${searchUsername}`);
     if (response.ok) {
       const userData = await response.json();
       setSearchedUserData(userData);

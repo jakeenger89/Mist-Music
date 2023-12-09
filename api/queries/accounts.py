@@ -451,3 +451,42 @@ class AccountQueries:
                     # Handle errors (e.g., duplicate follows)
                     print(e)
                     return False
+
+    def get_recent_uploads_for_followed_acc(self, account_id):
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        SELECT s.song_id, s.name, s.artist, s.album, s.genre,
+                            s.release_date, s.length, s.bpm, s.rating, s.url
+                        FROM songs s
+                        JOIN following f ON s.account_id = f.following_id
+                        WHERE f.follower_id = %s
+                        ORDER BY s.release_date DESC
+                        LIMIT 5
+                        """,
+                        [account_id],
+                    )
+                    records = db.fetchall()
+
+                    recent_uploads = [
+                        {
+                            "song_id": record[0],
+                            "name": record[1],
+                            "artist": record[2],
+                            "album": record[3],
+                            "genre": record[4],
+                            "release_date": record[5],
+                            "length": record[6],
+                            "bpm": record[7],
+                            "rating": record[8],
+                            "url": record[9],
+                            # Add other fields as needed
+                        }
+                        for record in records
+                    ]
+                    return recent_uploads
+        except Exception as e:
+            print(f"Error in get_recent_uploads_for_followed_accounts: {e}")
+            return []

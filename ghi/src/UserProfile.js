@@ -25,8 +25,8 @@ const UserProfile = () => {
     const fetchData = async () => {
       try {
         const [userDataResponse, postedSongsResponse] = await Promise.all([
-          fetch(`${process.env.REACT_APP_API_HOST}/api/account/${account_id}`),
-          fetch(`${process.env.REACT_APP_API_HOST}/user-songs/${account_id}`),
+          fetch(`http://localhost:8000/api/account/${account_id}`),
+          fetch(`http://localhost:8000/user-songs/${account_id}`),
         ]);
 
         if (userDataResponse.ok) {
@@ -58,7 +58,7 @@ const UserProfile = () => {
           const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
           const follower_id = decodedToken.account.account_id;
 
-          const response = await fetch(`${process.env.REACT_APP_API_HOST}/following-status/${follower_id}/${following_id}`, {
+          const response = await fetch(`http://localhost:8000/following-status/${follower_id}/${following_id}`, {
             headers: {
               'Authorization': `Bearer ${authToken}`,
             },
@@ -97,7 +97,7 @@ const UserProfile = () => {
         following_id: parseInt(account_id, 10),
       };
 
-      const response = await fetch(`${process.env.REACT_APP_API_HOST}/accounts/${account_id}/follow`, {
+      const response = await fetch(`http://localhost:8000/accounts/${account_id}/follow`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

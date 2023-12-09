@@ -160,3 +160,31 @@ async def search_songs(
         response.status_code = 404
         return []
     return record
+
+
+@router.get("/api/random-recent-uploads", response_model=List[SongOut])
+def get_random_recent_uploads(
+    account_data: dict = Depends(authenticator.get_current_account_data),
+    queries: AccountQueries = Depends(),
+):
+    if account_data:
+        try:
+            # Get the account ID
+            account_id = account_data["account_id"]
+
+            # Get the random recent uploads using AccountQueries method
+            random_recent_uploads = (
+                queries.get_recent_uploads_for_followed_acc(account_id)
+            )
+            return random_recent_uploads
+        except HTTPException as e:
+            # Handle specific exceptions if needed
+            raise e
+        except Exception as e:
+            print(f"Error in get_random_recent_uploads: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail="Error retrieving random recent uploads",
+            )
+    else:
+        raise HTTPException(status_code=401, detail="Not authenticated")
