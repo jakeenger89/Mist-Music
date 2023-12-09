@@ -43,9 +43,9 @@ class SongOut(BaseModel):
         "Classical",
     ]
     release_date: str
-    length: int
+    length: Optional[int]
     bpm: str
-    rating: str
+    rating: Optional[str]
     liked_by_user: Optional[bool] = None  # Make it optional
     likes_count: Optional[int] = None
     account_id: Optional[int]

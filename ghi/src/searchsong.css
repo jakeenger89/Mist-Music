@@ -1,0 +1,38 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+}
+
+.table th,
+.table td {
+  padding: 0.75em;
+  text-align: left;
+  border-bottom: 1px solid #73F8FF; /* Blue border color */
+}
+
+.table th {
+  background-color: #73F8FF; /* Blue background color */
+  color: white;
+}
+
+/* Button Styles */
+.btn-like,
+.btn-unlike {
+  padding: 0.5em 1em;
+  margin-right: 0.5em;
+  background-color: #73F8FF; /* Blue background color */
+  color: white;
+  border: none;
+  border-radius: 0.25em;
+  cursor: pointer;
+}
+
+/* Audio Player Styles */
+.audio-player {
+  width: 100%;
+  background-color: #73F8FF; /* Blue background color */
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}

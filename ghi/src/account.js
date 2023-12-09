@@ -38,7 +38,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           setUsername(username);
 
 
-          const response = await fetch(`${process.env.REACT_APP_API_HOST}/user-songs/${account_id}`);
+          const response = await fetch(`http://localhost:8000/user-songs/${account_id}`);
           const data = await response.json();
 
           setAccountSongs(data.songs);
@@ -57,7 +57,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
 
 const handleSearchUser = async () => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/account?username=${searchUsername}`);
+    const response = await fetch(`http://localhost:8000/api/account?username=${searchUsername}`);
     if (response.ok) {
       const userData = await response.json();
       setSearchedUserData(userData);
@@ -77,7 +77,7 @@ const handleSearchUser = async () => {
     setSearchUsername(term);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/accounts`);
+      const response = await fetch(`http://localhost:8000/api/accounts`);
       if (response.ok) {
         const userData = await response.json();
         const allUsernames = userData.map(user => user.username);

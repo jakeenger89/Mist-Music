@@ -20,9 +20,9 @@ function Nav({ isAuthenticated, onLogout }) {
             alt="Logo"
             className="navbar-logo"
           />
+        </NavLink>
         <NavLink className="navbar-brand" to="/merch">
           Merchandise
-        </NavLink>
         </NavLink>
         {isAuthenticated && (
           <NavLink className="navbar-brand" to="/createsongform">

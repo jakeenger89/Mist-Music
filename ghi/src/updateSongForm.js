@@ -23,7 +23,7 @@ const UpdateSongForm = () => {
           return;
         }
 
-        const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${song_id}`, {
+        const response = await fetch(`http://localhost:8000/api/songs/${song_id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
