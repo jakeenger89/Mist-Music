@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function MerchList() {
     const [merchs, setMerchs] = useState([]);
@@ -6,7 +7,7 @@ function MerchList() {
 
     const getData = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/merch/')
+            const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/merch/`)
             if (response.ok) {
                 const data = await response.json();
                 setMerchs(data)
@@ -28,7 +29,7 @@ function MerchList() {
           {merchs && merchs.map(merch => (
             <div key={merch.item_id} className="col-lg-4 col-md-6">
               <div className="card" style={{ width: '24rem' }}>
-                <a href= {`/merch/${merch.item_id}`} ><img src={merch.image_url} className="card-img-top" alt="Merch" style={{ height: '360px', width: '100%', objectFit: 'cover' }} /></a>
+                <Link to={`/merch/${merch.item_id}`} ><img src={merch.image_url} className="card-img-top" alt="Merch" style={{ height: '360px', width: '100%', objectFit: 'cover' }} /></Link>
                 <div className="card-body">
                   <h5 className="card-title">{`${merch.name}`}</h5>
                   <h5 className="card-title">{`$${merch.price}`}</h5>

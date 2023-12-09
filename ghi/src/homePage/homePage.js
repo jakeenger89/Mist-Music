@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { Link } from "react-router-dom"
 
 const HomePage = () => {
     const [randomMerch, setRandomMerch] = useState(null);
@@ -7,7 +7,7 @@ const HomePage = () => {
 
 
         const fetchRandomMerch = async () => {
-            const url = "http://localhost:8000/api/merch/random"
+            const url = `${process.env.REACT_APP_API_HOST}/api/merch/random`
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {
@@ -30,14 +30,13 @@ return (
     <div>
         {randomMerch && (
             <div>
-                <a href={`/merch/${randomMerch.item_id}`}><img src={randomMerch.image_url} alt={randomMerch.name} style={{ maxWidth: '200px'}} /></a>
+                <Link to={`/merch/${randomMerch.item_id}`}><img src={randomMerch.image_url} alt={randomMerch.name} style={{ maxWidth: '200px'}} /></Link>
                 <p>{randomMerch.name}</p>
             </div>
         )}
         <p>I'm not signed in</p>
     </div>
-)
-
+    )
 }
 
 export default HomePage
