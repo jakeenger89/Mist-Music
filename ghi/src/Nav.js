@@ -20,26 +20,36 @@ function Nav({ isAuthenticated, onLogout }) {
             alt="Logo"
             className="navbar-logo"
           />
+        <NavLink className="navbar-brand" to="/merch">
+          Merchandise
+        </NavLink>
         </NavLink>
         {isAuthenticated && (
           <NavLink className="navbar-brand" to="/createsongform">
             Upload Song
           </NavLink>
         )}
+        {isAuthenticated && (
+        <NavLink className="navbar-brand" to="/createalbumform">
+          Create Album
+        </NavLink>
+        )}
         <NavLink className={"navbar-brand"} to="/allsongs">
           Search Songs
         </NavLink>
+        <NavLink className="navbar-brand" to="/allalbums">
+          All Albums
+        </NavLink>
+        {isAuthenticated && (
+          <NavLink className={"navbar-brand"} to="/account">
+            My Profile
+          </NavLink>
+        )}
         {!isAuthenticated && (
           <NavLink className="navbar-brand" to="/signupform">
             Sign Up Form
           </NavLink>
         )}
-        <NavLink className="navbar-brand" to="/merch">
-          Merchandise
-        </NavLink>
-        <NavLink className="navbar-brand" to="/createalbumform">
-          Create Album
-        </NavLink>
         {!isAuthenticated && (
           <NavLink className="navbar-brand" to="/loginform">
             Login
@@ -52,9 +62,6 @@ function Nav({ isAuthenticated, onLogout }) {
         )}
         <NavLink className={"navbar-brand"} to="/aboutus">
           About Us
-        </NavLink>
-        <NavLink className="navbar-brand" to="/allalbums">
-          All Albums
         </NavLink>
       </div>
     </nav>
