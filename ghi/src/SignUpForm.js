@@ -23,7 +23,7 @@ const SignUpForm = () => {
       password,
     };
 
-    const MistURL = "http://localhost:8000/api/create_account/";
+    const MistURL = `${process.env.REACT_APP_API_HOST}/api/create_account/`;
     const fetchOptions = {
       method: "post",
       body: JSON.stringify(data),
