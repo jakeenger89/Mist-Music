@@ -15,7 +15,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   useEffect(() => {
     const fetchAlbums = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/albums', {
+        const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/albums`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -35,6 +35,16 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
 
     fetchAlbums();
   }, []);
+
+    const genreOptions = [
+    "Rock",
+    "Pop",
+    "Hip Hop",
+    "Jazz",
+    "Country",
+    "Electronic",
+    "Classical",
+  ];
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -91,7 +101,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
 
     try {
       // Use authToken in the headers for authentication
-      const response = await fetch('http://localhost:8000/api/songs', {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -183,18 +193,25 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
               </select>
               <label htmlFor="album">Album</label>
             </div>
+
             <div className="form-floating mb-3">
-              <input
+              <select
                 value={genre}
                 onChange={(e) => setGenre(e.target.value)}
-                placeholder="Genre"
-                required
-                type="text"
-                name="genre"
-                className="form-control"
-              />
+                className="form-select"
+              >
+                <option value="" disabled>
+                  Select Genre
+                </option>
+                {genreOptions.map((genreOption) => (
+                  <option key={genreOption} value={genreOption}>
+                    {genreOption}
+                  </option>
+                ))}
+              </select>
               <label htmlFor="genre">Genre</label>
             </div>
+
             <div className="form-floating mb-3">
               <input
                 value={releaseDate}
@@ -206,6 +223,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
               />
               <label htmlFor="releaseDate">Release Date</label>
             </div>
+
             <div className="form-floating mb-3">
               <input
                 value={bpm}
@@ -219,6 +237,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
               />
               <label htmlFor="bpm">BPM</label>
             </div>
+
             <div className="form-floating mb-3">
               <input
                 value={url}
@@ -231,7 +250,6 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
               <label className="url">Song URL</label>
             </div>
 
-            {/* New input fields for lyrics and imageUrl */}
             <div className="form-floating mb-3">
               <textarea
                 value={lyrics}
@@ -240,7 +258,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
                 type="text"
                 name="lyrics"
                 className="form-control"
-                rows ="50"
+                rows="5"  // Adjusted the number of rows for better visibility
               />
               <label htmlFor="lyrics">Lyrics (Optional)</label>
             </div>

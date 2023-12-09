@@ -204,3 +204,38 @@ class AlbumQueries:
 
         except Exception as e:
             raise Exception(str(e))
+
+    def search_albums(self, search_term: str) -> List[AlbumOut]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        SELECT album_id,
+                            name,
+                            artist,
+                            genre,
+                            release_date,
+                            cover_image_url
+                        FROM albums
+                        WHERE LOWER (name) LIKE LOWER (%s)
+                        ORDER BY name
+                        """,
+                        [f"%{search_term}%"],
+                    )
+                    records = db.fetchall()
+                    songs = [
+                        AlbumOut(
+                            album_id=record[0],
+                            name=record[1],
+                            artist=record[2],
+                            genre=record[3],
+                            release_date=record[4],
+                            cover_image_url=record[5]
+                        )
+                        for record in records
+                    ]
+                    return songs
+        except Exception as e:
+            print(f"Error in search_songs: {e}")
+            return []

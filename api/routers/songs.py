@@ -50,6 +50,7 @@ def create_song(
             detail=f"Could not add the song. Error: {e}",
         )
 
+
 @router.delete("/api/songs/{song_id}", response_model=bool)
 def delete_song(
     song_id: int,
@@ -82,11 +83,11 @@ def get_liked_songs_by_account(
         try:
             liked_songs_response = (
                 queries.get_liked_songs_by_account(account_id)
-                )
+            )
 
-            # Update the response structure to include account_id for each song
             for song in liked_songs_response["songs"]:
                 song["account_id"] = account_id
+                song["username"] = account_data["username"]
 
             return liked_songs_response
         except HTTPException as e:

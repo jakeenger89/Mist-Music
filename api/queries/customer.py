@@ -55,7 +55,60 @@ class OrderOut(BaseModel):
     item_id: int
 
 
+class CurrencyChangeIn(BaseModel):
+    currency: int
+
+
+class CurrencyChangeOut(BaseModel):
+    account_id: int
+    currency: int
+
+
 class CustomerQuery:
+    def get_currency(self, account_id: int) -> Optional[CurrencyChangeOut]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    result = db.execute(
+                        """
+                        SELECT account_id, currency
+                        FROM account
+                        WHERE account_id = %s
+                        """,
+                        [account_id],
+                    )
+                    record = result.fetchone()
+                    if record is None:
+                        return None
+                    curr = CurrencyChangeOut(
+                        account_id=record[0],
+                        currency=record[1],
+                    )
+                    return curr
+        except Exception as e:
+            print(e)
+            return {"message": "Could not get currency"}
+
+    def update_currency(
+        self, account_id: int, acc: CurrencyChangeIn
+    ) -> Union[CurrencyChangeOut, Error]:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        UPDATE account
+                        SET currency = currency - %s
+                        WHERE account_id = %s
+                        """,
+                        [acc.currency, account_id],
+                    )
+                    old_data = acc.dict()
+                    return CurrencyChangeOut(account_id=account_id, **old_data)
+        except Exception as e:
+            print(e)
+            return {"message": "Could not update currency"}
+
     def update_order(
         self, cust_id: int, order: OrderIn
     ) -> Union[CustomerOut, Error]:

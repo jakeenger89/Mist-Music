@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 
 function AllSongs() {
   const [songs, setSongs] = useState([]);
+  const [filteredSongs, setFilteredSongs] = useState([]);
   const [account_id, setAccountId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
 const handleLike = async (songId) => {
   try {
@@ -13,7 +15,7 @@ const handleLike = async (songId) => {
     }
 
     // Make a POST request to like the song
-    const response = await fetch(`http://localhost:8000/songs/${songId}/like`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}/songs/${songId}/like`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,7 +41,7 @@ const handleLike = async (songId) => {
   const handleUnlike = async (songId) => {
     try {
       // Make a DELETE request to unlike the song
-      const response = await fetch(`http://localhost:8000/api/songs/${songId}/unlike`, {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${songId}/unlike`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -61,9 +63,11 @@ const handleLike = async (songId) => {
     }
   };
 
+
+
   const fetchSongs = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/songs', {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -73,12 +77,29 @@ const handleLike = async (songId) => {
       if (response.ok) {
         const songData = await response.json();
         setSongs(songData.songs);
+        // Filter songs based on the search term
+        filterSongs(songData.songs, searchTerm);
       } else {
         console.error('Failed to fetch songs');
       }
     } catch (error) {
       console.error('Error fetching songs:', error);
     }
+  };
+
+  const filterSongs = (allSongs, term) => {
+    const filtered = allSongs.filter(
+      (song) =>
+        song.name.toLowerCase().includes(term.toLowerCase())
+    );
+    setFilteredSongs(filtered);
+  };
+
+  const handleSearchChange = (event) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+    // Filter songs based on the updated search term
+    filterSongs(songs, term);
   };
 
   useEffect(() => {
@@ -92,11 +113,19 @@ const handleLike = async (songId) => {
 
   useEffect(() => {
     fetchSongs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div>
       <h1>All Songs</h1>
+      {/* Search bar */}
+      <input
+        type="text"
+        placeholder="Search by song name"
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
       <table>
         <thead>
           <tr>
@@ -106,12 +135,11 @@ const handleLike = async (songId) => {
             <th>Genre</th>
             <th>Release Date</th>
             <th>BPM</th>
-            <th>Rating</th>
             <th>Likes</th>
           </tr>
         </thead>
         <tbody>
-          {songs.map((song) => (
+          {filteredSongs.map((song) => (
             <tr key={song.song_id}>
               <td>
                 <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
@@ -121,26 +149,25 @@ const handleLike = async (songId) => {
               <td>{song.genre}</td>
               <td>{song.release_date}</td>
               <td>{song.bpm}</td>
-              <td>{song.rating}</td>
               <td>{song.likes_count}</td>
               <td>
                 {account_id && (
                   <>
-                  {!song.isOwner}
+                    {/* Display both buttons without checking user_has_liked */}
                     <button onClick={() => handleLike(song.song_id)}>Like</button>
                     <button onClick={() => handleUnlike(song.song_id)}>Unlike</button>
                   </>
                 )}
               </td>
-                <td>
+              <td>
                 {/* Display audio player and download link */}
                 <figure>
                   <audio controls>
                     <source src={song.url} type="audio/mpeg" />
                     Your browser does not support the audio tag.
                   </audio>
-                  <a href={song.url} download>
-                  </a>
+                  <Link to={song.url} download>
+                  </Link>
                 </figure>
               </td>
             </tr>

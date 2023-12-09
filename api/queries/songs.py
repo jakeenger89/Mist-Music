@@ -100,7 +100,7 @@ class SongQueries:
                         rating=row[8],
                         url=row[9],
                         lyrics=row[10],
-                        image_url=row[11]
+                        image_url=row[11],
                     )
                 else:
                     return None
@@ -126,7 +126,8 @@ class SongQueries:
                         FROM songs s
                         LEFT JOIN liked_songs l ON s.song_id = l.song_id
                         GROUP BY s.song_id, s.name, s.artist, s.album, s.genre,
-                                s.release_date, s.length, s.bpm, s.rating, s.url,
+                                s.release_date, s.length,
+                                s.bpm, s.rating, s.url,
                                 s.account_id
                         """
                     )
@@ -170,15 +171,17 @@ class SongQueries:
                         album=song_data.album,
                         genre=song_data.genre,
                         release_date=song_data.release_date,
-                        length=int(song_data.length) if song_data.length else None,
+                        length=int(song_data.length)
+                        if song_data.length
+                        else None,
                         bpm=str(song_data.bpm)[:4],
                         rating=song_data.rating,
                         account_id=account_id,
                         url=song_data.url,
-                        lyrics=song_data.lyrics,  # Include lyrics
-                        image_url=song_data.image_url,  # Include image_url
+                        lyrics=song_data.lyrics,
+                        image_url=song_data.image_url,
                     )
-                    print(f'URL before saving to database: {song_data.url}')
+                    print(f"URL before saving to database: {song_data.url}")
 
                     cur.execute(
                         """
@@ -210,8 +213,8 @@ class SongQueries:
                             modified_song_data.rating,
                             modified_song_data.account_id,
                             modified_song_data.url,
-                            modified_song_data.lyrics,  # Insert lyrics
-                            modified_song_data.image_url,  # Insert image_url
+                            modified_song_data.lyrics,
+                            modified_song_data.image_url,
                         ),
                     )
 
@@ -232,7 +235,7 @@ class SongQueries:
                         "liked_by_user": False,
                         "account_id": modified_song_data.account_id,
                         "url": modified_song_data.url,
-                        "lyrics": modified_song_data.lyrics,  # Include lyrics
+                        "lyrics": modified_song_data.lyrics,
                         "image_url": modified_song_data.image_url,
                     }
 
@@ -312,7 +315,7 @@ class SongQueries:
                             "length": row[6],
                             "bpm": row[7],
                             "rating": row[8],
-                            "url": row[9],
+                            "url": row[9],  # Add the URL to the response
                         }
                         liked_songs.append(song)
                     return {"songs": liked_songs}
@@ -506,6 +509,7 @@ class SongQueries:
                     raise HTTPException(
                         status_code=500, detail="Error retrieving user's songs"
                     )
+
     def search_songs(self, search_term: str) -> List[SongOut]:
         try:
             with pool.connection() as conn:
@@ -538,7 +542,7 @@ class SongQueries:
                             release_date=record[5],
                             length=record[6],
                             bpm=record[7],
-                            rating=record[8]
+                            rating=record[8],
                         )
                         for record in records
                     ]

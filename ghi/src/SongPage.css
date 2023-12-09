@@ -37,7 +37,6 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background: url('') center/cover no-repeat; /* Add your image URL here */
   background-size: 80%; /* Adjust the value to your preference */
   z-index: -1;
 }

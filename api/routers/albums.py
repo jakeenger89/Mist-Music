@@ -74,3 +74,16 @@ def delete_album(
             raise HTTPException(status_code=404, detail="Album not found")
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
+
+
+@router.get("/api/search_albums", response_model=List[AlbumOut])
+async def search_albums(
+    search_term: str,
+    response: Response,
+    queries: AlbumQueries = Depends(),
+):
+    record = queries.search_albums(search_term)
+    if len(record) == 0:
+        response.status_code = 404
+        return []
+    return record

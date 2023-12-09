@@ -1,6 +1,7 @@
+// App.js
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import './index.css';
+import "./index.css";
 import Nav from "./Nav";
 import AccountForm from "./LoginForm";
 import CreateSongForm from "./CreateSongForm";
@@ -15,8 +16,13 @@ import UpdateSongForm from "./updateSongForm";
 import AboutUs from "./aboutUs";
 import UserLikedSongs from "./UserLikedSongs";
 import SongPage from "./songpage";
-import EditAccount from "./edit"
-
+import CreateAlbumForm from "./CreateAlbumForm";
+import AllAlbums from "./AllAlbums";
+import UserProfile from "./UserProfile";
+import FollowedUsersList from "./FollowedUsersList";
+import EditAccount from "./edit";
+import HomePage from "./homePage/homePage";
+import HomePageAuth from "./homePage/homePageAuth";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -24,7 +30,7 @@ function App() {
   );
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('yourAuthToken');
+    const storedToken = localStorage.getItem("yourAuthToken");
     if (storedToken) {
       // You may want to validate the token on the server side as well
       setIsAuthenticated(true);
@@ -32,21 +38,41 @@ function App() {
   }, []);
 
   const domain = /https:\/\/[^/]+/;
-  const basename = process.env.PUBLIC_URL.replace(domain, '');
+  const basename = process.env.PUBLIC_URL.replace(domain, "");
 
   return (
     <BrowserRouter basename={basename}>
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
+          <Route
+            index
+            path="/"
+            element={isAuthenticated ? <HomePageAuth /> : <HomePage />}
+          />
           <Route path="account/:account_id" element={<Account />} />
           <Route
             index
             path="account/*"
-            element={<Account isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}
+            element={
+              <Account
+                isAuthenticated={isAuthenticated}
+                setIsAuthenticated={setIsAuthenticated}
+              />
+            }
           />
           <Route index path="signupform" element={<SignUpForm />} />
-          <Route path="edit-account" element={<EditAccount/>}/>
+          <Route path="edit-account" element={<EditAccount />} />
+          <Route
+            index
+            path="createalbumform"
+            element={
+              <AuthenticatedRoute
+                element={<CreateAlbumForm isAuthenticated={isAuthenticated} />}
+                isAuthenticated={isAuthenticated}
+              />
+            }
+          />
           <Route
             index
             path="loginform"
@@ -63,8 +89,10 @@ function App() {
             }
           />
           <Route index path="merch" element={<MerchList />} />
-          <Route index path="allsongs" element={<AllSongs />} /> {/* Add this line */}
+          <Route index path="allsongs" element={<AllSongs />} />
           <Route index path="merch/:item_id" element={<OrderForm />} />
+          <Route index path="allalbums" element={<AllAlbums />} />
+
           <Route
             index
             path="account/all-songs/:account_id"
@@ -73,7 +101,11 @@ function App() {
           <Route
             index
             path="account/liked-songs/:account_id"
-            element={<UserLikedSongs />}
+            element={
+              <UserLikedSongs
+                account_data={{ username: "your_username_here" }}
+              />
+            }
           />
           <Route
             index
@@ -82,6 +114,20 @@ function App() {
           />
           <Route index path="aboutus" element={<AboutUs />} />
           <Route index path="songs/:song_id" element={<SongPage />} />
+          <Route
+            index
+            path="user-profile/:account_id"
+            element={<UserProfile />}
+          />
+          <Route
+            path="/user-liked-songs/:account_id"
+            element={<UserLikedSongs />}
+          />
+          <Route
+            index
+            path="/followed-users-list/:account_id"
+            element={<FollowedUsersList />}
+          />
         </Routes>
       </div>
     </BrowserRouter>
