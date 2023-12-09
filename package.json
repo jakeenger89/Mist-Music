@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "tailwindcss": "3.3.5",
     "@headlessui/react": "^1.7.17",
     "@headlessui/vue": "^1.7.16",
     "@heroicons/react": "^2.0.18",

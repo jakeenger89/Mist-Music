@@ -130,27 +130,22 @@ const handleSearchUser = async () => {
       <div className="container">
         <img src={currentUser.banner_url} alt="banner" className="banner-image" />
         <img src={currentUser.profile_picture_url} alt="Profile" className="profile-image" />
-        <button onClick={handleEditClick}>Edit Profile</button>
+        <button onClick={handleEditClick} className="edit-profile-button">Edit Profile</button>
       </div>
       <div className="offset-3 col-6">
         <div className="shadow p-4 mt-4">
+          <div className='link-container'>
+            <Link className="profile-link" to={`/account/liked-songs/${account_id}`}>Liked Songs</Link>
+            <Routes>
+              <Route path="liked-songs/:account_id" element={<UserLikedSongs account_id={account_id} />} />
+            </Routes>
+            <Link className="profile-link" to={`/followed-users-list/${account_id}`}>Following</Link>
+            <Routes>
+              <Route path="followed-users-list/:account_id" element={<FollowedUsersList />} />
+            </Routes>
+            <Link className="profile-link" to={`/account/all-songs/${account_id}`}>Your Songs</Link>
+          </div>
           <h1>Welcome {username}, to Mist Music!</h1>
-          <p>This is a placeholder for your home page content.</p>
-          <h2>
-            <Link to={`/followed-users-list/${account_id}`}>Following</Link>
-          </h2>
-          <Routes>
-            <Route path="followed-users-list/:account_id" element={<FollowedUsersList />} />
-          </Routes>
-          <h2>
-            <Link to={`/account/liked-songs/${account_id}`}>Liked Songs</Link>
-          </h2>
-          <Routes>
-            <Route path="liked-songs/:account_id" element={<UserLikedSongs account_id={account_id} />} />
-          </Routes>
-          <h2>
-            <Link to={`/account/all-songs/${account_id}`}>Your Songs</Link>
-          </h2>
           <ul>
             {accountSongs.map((song) => (
               <li key={song.song_id}>{song.name}</li>

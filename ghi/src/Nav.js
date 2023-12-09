@@ -16,22 +16,13 @@ function Nav({ isAuthenticated, onLogout }) {
     <nav className="nav">
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/">
-          <img
-            src="https://i.imgur.com/oGvU6bt.png"
-            alt="Logo"
-            className="navbar-logo"
-          />
+          <img src="https://i.imgur.com/oGvU6bt.png" alt="Logo" className="navbar-logo"/>
         </NavLink>
         <NavLink className="navbar-brand" to="/merch">
           Merchandise
         </NavLink>
         {isAuthenticated && (
-          <NavLink className="navbar-brand" to="/createsongform">
-            Upload Song
-          </NavLink>
-        )}
-        {isAuthenticated && (
-        <NavLink className="navbar-brand" to="/createalbumform">
+          <NavLink className="navbar-brand" to="/createalbumform">
           Create Album
         </NavLink>
         )}
@@ -41,6 +32,11 @@ function Nav({ isAuthenticated, onLogout }) {
         <NavLink className="navbar-brand" to="/allalbums">
           All Albums
         </NavLink>
+        {isAuthenticated && (
+          <NavLink className="navbar-brand" to="/createsongform">
+            Upload Song
+          </NavLink>
+        )}
         {isAuthenticated && (
           <NavLink className={"navbar-brand"} to="/account">
             My Profile
@@ -56,14 +52,14 @@ function Nav({ isAuthenticated, onLogout }) {
             Login
           </NavLink>
         )}
-        {isAuthenticated && (
-          <button className="navbar-brand" onClick={handleLogout}>
-            Logout
-          </button>
-        )}
         <NavLink className={"navbar-brand"} to="/aboutus">
           About Us
         </NavLink>
+        {isAuthenticated && (
+          <button className="navbar-brand logout-button" onClick={handleLogout}>
+          Logout
+        </button>
+        )}
       </div>
     </nav>
   );
