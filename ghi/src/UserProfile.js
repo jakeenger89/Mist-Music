@@ -97,7 +97,7 @@ const UserProfile = () => {
         following_id: parseInt(account_id, 10),
       };
 
-      const response = await fetch(`http://localhost:8000/accounts/${account_id}/follow`, {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/accounts/${account_id}/follow`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
