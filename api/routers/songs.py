@@ -5,6 +5,7 @@ from queries.accounts import (
 from fastapi import APIRouter, Depends, HTTPException, Response
 from routers.authenticator import authenticator
 from typing import List
+import random
 
 router = APIRouter()
 song_queries = SongQueries()
@@ -185,6 +186,51 @@ def get_random_recent_uploads(
             raise HTTPException(
                 status_code=500,
                 detail="Error retrieving random recent uploads",
+            )
+    else:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+
+@router.get(
+    "/liked-songs/random/{account_id}",
+    response_model=SongsOut,
+    operation_id="get_random_liked_songs_by_account",
+)
+def get_random_liked_songs_by_account(
+    account_id: int,
+    queries: SongQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data),
+):
+    if account_data:
+        try:
+            # Get liked songs response
+            liked_songs_response = queries.get_liked_songs_by_account(
+                account_id
+            )
+
+            # Extract all liked songs
+            all_liked_songs = liked_songs_response["songs"]
+
+            # Shuffle the list and take the first 3 songs
+            random_liked_songs = random.sample(
+                all_liked_songs,
+                min(3, len(all_liked_songs))
+            )
+
+            # Add account_id and username to each random liked song
+            for s in random_liked_songs:
+                s["account_id"] = account_id
+                s["username"] = account_data["username"]
+
+            # Return the response with random liked songs
+            return {"songs": random_liked_songs}
+        except HTTPException as e:
+            # Handle specific exceptions if needed
+            raise e
+        except Exception as e:
+            print(f"Error in get_random_liked_songs_by_account: {e}")
+            raise HTTPException(
+                status_code=500, detail="Error retrieving random liked songs"
             )
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")
