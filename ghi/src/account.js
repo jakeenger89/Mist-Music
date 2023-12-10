@@ -15,6 +15,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const [banner_url] = useState('https://cdn.pixabay.com/photo/2016/02/03/08/32/banner-1176676_1280.jpg');
   const [currentUser, setCurrentUser] = useState('');
   const [dropdownOptions, setDropdownOptions] = useState([]);
+  const [topRecentUploads, setTopRecentUploads] = useState([]);
 
   const handleEditClick = () => {
     navigate('/edit-account', {
@@ -26,6 +27,32 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
 
         }}})
   }
+
+  const fetchTopRecentUploads = async () => {
+    try {
+      const authToken = localStorage.getItem('yourAuthToken');
+
+      const response = await fetch('http://localhost:8000/api/random-recent-uploads', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Shuffle the array and take the first 3 elements
+        const shuffledSongs = data.sort(() => Math.random() - 0.5).slice(0, 3);
+        setTopRecentUploads(shuffledSongs); // Set the shuffled data to topRecentUploads
+      } else {
+        console.error('Failed to fetch random recent uploads');
+      }
+    } catch (error) {
+      console.error('Error fetching random recent uploads:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,6 +68,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           const data = await response.json();
 
           setCurrentUser(data);
+          fetchTopRecentUploads();
         } else {
           console.error('Authentication token not found');
         }
@@ -130,20 +158,28 @@ const handleSearchUser = async () => {
       <div className="container">
         <img src={currentUser.banner_url || banner_url} alt="banner" className="banner-image" />
         <img src={currentUser.profile_picture_url || profile_picture_url} alt="Profile" className="profile-image" />
-        <button onClick={handleEditClick} className="edit-profile-button">Edit Profile</button>
+        <button onClick={handleEditClick} className="edit-profile-button">
+          Edit Profile
+        </button>
       </div>
       <div className="offset-3 col-6">
         <div className="shadow p-4 mt-4">
-          <div className='link-container'>
-            <Link className="profile-link" to={`/account/liked-songs/${account_id}`}>Liked Songs</Link>
+          <div className="link-container">
+            <Link className="profile-link" to={`/account/liked-songs/${account_id}`}>
+              Liked Songs
+            </Link>
             <Routes>
               <Route path="liked-songs/:account_id" element={<UserLikedSongs account_id={account_id} />} />
             </Routes>
-            <Link className="profile-link" to={`/followed-users-list/${account_id}`}>Following</Link>
+            <Link className="profile-link" to={`/followed-users-list/${account_id}`}>
+              Following
+            </Link>
             <Routes>
               <Route path="followed-users-list/:account_id" element={<FollowedUsersList />} />
             </Routes>
-            <Link className="profile-link" to={`/account/all-songs/${account_id}`}>Your Songs</Link>
+            <Link className="profile-link" to={`/account/all-songs/${account_id}`}>
+              Your Songs
+            </Link>
           </div>
           <h1>Welcome {username}, to Mist Music!</h1>
           <ul className="song-list">
@@ -165,11 +201,7 @@ const handleSearchUser = async () => {
             {searchUsername && dropdownOptions.length > 0 && (
               <div className="suggestions-list">
                 {dropdownOptions.slice(0, 5).map((username) => (
-                  <div
-                    key={username}
-                    className="suggestion-item"
-                    onClick={() => setSearchUsername(username)}
-                  >
+                  <div key={username} className="suggestion-item" onClick={() => setSearchUsername(username)}>
                     {username}
                   </div>
                 ))}
@@ -188,6 +220,24 @@ const handleSearchUser = async () => {
               <Link to={`/account/all-songs/${searchedUserData.account_id}`}>View Posted Songs</Link>
             </div>
           )}
+
+          <h2>Top Recent Uploads</h2>
+          {topRecentUploads.map((song) => (
+            <div key={song.song_id}>
+              <p>
+                {song.name} by {song.artist}
+              </p>
+              <div className="SongPage-player-container">
+                <audio controls>
+                  <source src={song.url} type="audio/mpeg" />
+                  Your browser does not support the audio tag.
+                </audio>
+                <a href={song.url} download className="visually-hidden">
+                  Download
+                </a>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
