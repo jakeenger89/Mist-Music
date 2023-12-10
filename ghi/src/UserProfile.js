@@ -129,10 +129,10 @@ const UserProfile = () => {
             <div className="banner-image">
               <img src={userData.banner_url} alt="Banner" className="banner-image" />
             </div>
-            <img src={userData.profile_picture_url} alt="Profile" className="profile-image" />
+            <img src={userData.profile_picture_url} alt="Profile" className="profile-pic" style={{ marginTop: '50px' }}/>
             <h1>{userData.username}'s Profile</h1>
             <Link to={`/user-liked-songs/${account_id}`}>
-              <h2>Liked Songs</h2>
+              <h4>Liked Songs</h4>
             </Link>
             <ul>
               {likedSongs.map((song) => (
@@ -142,7 +142,7 @@ const UserProfile = () => {
               ))}
             </ul>
 
-            <h2>Posted Songs</h2>
+            <h4>Posted Songs</h4>
             <ul>
               {postedSongs.map((song) => (
                 <li key={song.song_id}>

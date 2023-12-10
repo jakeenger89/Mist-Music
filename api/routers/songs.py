@@ -5,6 +5,7 @@ from queries.accounts import (
 from fastapi import APIRouter, Depends, HTTPException, Response
 from routers.authenticator import authenticator
 from typing import List
+import random
 
 router = APIRouter()
 song_queries = SongQueries()
@@ -81,22 +82,26 @@ def get_liked_songs_by_account(
 ):
     if account_data:
         try:
-            liked_songs_response = (
-                queries.get_liked_songs_by_account(account_id)
-            )
+            liked_songs_response = queries.get_liked_songs_by_account(account_id)
 
-            for song in liked_songs_response["songs"]:
+            # Get all liked songs
+            all_liked_songs = liked_songs_response["songs"]
+
+            # Shuffle the list and take the first 3 elements as random liked songs
+            random_liked_songs = random.sample(all_liked_songs, min(3, len(all_liked_songs)))
+
+            for song in random_liked_songs:
                 song["account_id"] = account_id
                 song["username"] = account_data["username"]
 
-            return liked_songs_response
+            return {"songs": random_liked_songs}
         except HTTPException as e:
             # Handle specific exceptions if needed
             raise e
         except Exception as e:
             print(f"Error in get_liked_songs_by_account: {e}")
             raise HTTPException(
-                status_code=500, detail="Error retrieving liked songs"
+                status_code=500, detail="Error retrieving random liked songs"
             )
     else:
         raise HTTPException(status_code=401, detail="Not authenticated")

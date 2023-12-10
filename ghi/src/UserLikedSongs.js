@@ -77,7 +77,7 @@ const UserLikedSongs = () => {
 
   return (
     <div className="AllSongs-container">
-      <h2 className="AllSongs-header">Liked Songs</h2>
+      <h3 className="AllSongs-header">Liked Songs</h3>
       <table className="table">
         <thead>
           <tr>
