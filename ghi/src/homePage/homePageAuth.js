@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+//import { Link } from 'react-router-dom'
 
 const HomePageAuth = () => {
     const [randomMerch, setRandomMerch] = useState(null);
@@ -66,7 +67,7 @@ const HomePageAuth = () => {
             {recentUploads.map((song) => (
                 <div key={song.name}>
                     <p>{song.name} by {song.artist}</p>
-                    <div className="SongPage-player-container">
+                    <div className="SongPage-player-contain">
                         <audio controls>
                             <source src={song.url} type="audio/mpeg" />
                             Your browser does not support the audio tag.

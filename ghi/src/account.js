@@ -162,7 +162,7 @@ const handleSearchUser = async () => {
           Edit Profile
         </button>
       </div>
-      <div className="offset-3 col-6">
+      <div className="offset-3 col-6" style={{ marginLeft: '-10px' }}>
         <div className="shadow p-4 mt-4">
           <div className="link-container">
             <Link className="profile-link" to={`/account/liked-songs/${account_id}`}>
@@ -182,7 +182,7 @@ const handleSearchUser = async () => {
             </Link>
           </div>
           <h1>Welcome {username}, to Mist Music!</h1>
-          <ul>
+          <ul className="song-list">
             {accountSongs.map((song) => (
               <li key={song.song_id}>{song.name}</li>
             ))}
@@ -220,13 +220,13 @@ const handleSearchUser = async () => {
             </div>
           )}
 
-          <h3>Top Recent Uploads</h3>
+          <h4>Top Recent Uploads</h4>
           {topRecentUploads.map((song) => (
-            <div key={song.song_id}>
+            <div className="song-player" key={song.song_id}>
               <p>
                 {song.name} by {song.artist}
               </p>
-              <div className="SongPage-player-container">
+              <div className="SongPage-player-contain">
                 <audio controls>
                   <source src={song.url} type="audio/mpeg" />
                   Your browser does not support the audio tag.

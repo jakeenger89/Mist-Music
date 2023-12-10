@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import './searchsong.css';
+import './following.css';
+
 
 const FollowedUsersList = () => {
   const { account_id } = useParams();
@@ -101,12 +102,12 @@ const FollowedUsersList = () => {
 
   return (
     <div className="AllSongs-container">
-      <h2>Followed Users List</h2>
+      <h2 style={{ color: 'white'}}>Following</h2>
       {followedAccounts.length > 0 ? (
         <table className="table">
           <thead>
             <tr>
-              <th className="border-b">Username</th>
+              <th className="border-b" style={{ color: 'white'}}>Username(s)</th>
               <th className="border-b"></th>
             </tr>
           </thead>
