@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./AllAlbums.css";
 import {
   MDBContainer,
   MDBRow,
@@ -43,8 +44,8 @@ const AllAlbums = () => {
   }, []);
 
   return (
-    <MDBContainer className="AllAlbum-container">
-      <MDBCard className="text-black m-5" style={{ borderRadius: "25px" }}>
+    <MDBContainer className="AllSongs-container">
+      <MDBCard className="text-black m-5 AlbumForm" style={{ borderRadius: "25px" }}>
         <MDBCardBody>
           <MDBRow>
             <MDBCol md="12">
@@ -58,7 +59,7 @@ const AllAlbums = () => {
             <MDBRow key={album.id} className="mb-4">
               <MDBCol md="6">
                 <div className="d-flex flex-row align-items-center mb-4">
-                  <MDBIcon fas icon="compact-disc me-3" size="lg" />
+                  <MDBIcon fas icon="compact-disc" size="lg" />
                   <div className="d-flex flex-column">
                     <strong>Album Name:</strong> {album.name}
                     <strong>Artist:</strong> {album.artist}

@@ -1,0 +1,97 @@
+.AllAlbums-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 2px solid #1a202c;
+  border-radius: 8px;
+  background-color: #2d3748;
+  color: #a0aec0 !important;
+}
+
+.AllAlbums-heading {
+  font-size: 40px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
+  color: #a0aec0 !important;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+}
+
+.table th,
+.table td {
+  padding: 1em;
+  text-align: left;
+  border-bottom: 1px solid #a0aec0; /* Match text color (#a0aec0) */
+  font-size: 16px; /* Adjust the font size for table data */
+  font-weight: bold; /* Make text bolder */
+}
+
+.table th {
+  background-color: #a0aec0; /* Match text color (#a0aec0) */
+  color: #475569;
+  font-size: 18px; /* Adjust the font size for table headers */
+}
+
+.table tbody tr {
+  background-color: #475569; /* Change to the color you want for table rows */
+}
+
+/* Alternate row color (optional) */
+.table tbody tr:nth-child(even) {
+  background-color: #2d3748; /* Change to the color you want for even rows */
+}
+
+/* Button Styles */
+.btn-like,
+.btn-unlike,
+.btn-delete,
+.btn-update,
+.btn-unfollow {
+  padding: 0.5em 1em;
+  margin-right: 0.5em;
+  background-color: #6693ce; /* Match text color (#a0aec0) */
+  color: white;
+  border: none;
+  border-radius: 0.25em;
+  cursor: pointer;
+}
+
+.MDBCard {
+  border: 1px solid #a0aec0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px soild #a0aec0;
+}
+
+.MDBCardBody {
+  padding: 20px;
+}
+
+.MDBRow {
+  margin-bottom: 15px;
+}
+
+.MDBCol {
+  padding: 0 15px;
+}
+
+.MDBIcon {
+  margin-right: 10px;
+}
+
+.AlbumForm {
+  width: auto; /* You can adjust this value to make the form wider */
+  margin: 0 auto; /* Center the form on the page */
+}
+
+.MDBRow {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #a0aec0; /* Add this line to create a border between albums */
+  padding-bottom: 15px; /* Optional: Add some padding for better visual separation */
+}
