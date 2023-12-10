@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Routes, Route, useNavigate } from 'react-router-dom';
 import UserLikedSongs from './UserLikedSongs';
 import FollowedUsersList from './FollowedUsersList';
-import './account.css'
+import './account.css';
 
 const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const [currentUser, setCurrentUser] = useState('');
   const [dropdownOptions, setDropdownOptions] = useState([]);
   const [topRecentUploads, setTopRecentUploads] = useState([]);
+  const [topRandomLikedSongs, setTopRandomLikedSongs] = useState([]);
 
   const handleEditClick = () => {
     navigate('/edit-account', {
@@ -24,9 +25,10 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           username,
           profile_picture_url: profile_picture_url,
           banner_url: banner_url,
-
-        }}})
-  }
+        },
+      },
+    });
+  };
 
   const fetchTopRecentUploads = async () => {
     try {
@@ -42,14 +44,44 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
 
       if (response.ok) {
         const data = await response.json();
-        // Shuffle the array and take the first 3 elements
         const shuffledSongs = data.sort(() => Math.random() - 0.5).slice(0, 3);
-        setTopRecentUploads(shuffledSongs); // Set the shuffled data to topRecentUploads
+        setTopRecentUploads(shuffledSongs);
       } else {
         console.error('Failed to fetch random recent uploads');
       }
     } catch (error) {
       console.error('Error fetching random recent uploads:', error);
+    }
+  };
+
+  const fetchRandomLikedSongs = async (account_id) => {
+    try {
+      const authToken = localStorage.getItem('yourAuthToken');
+
+      if (!account_id) {
+        console.error('Account ID is null or undefined');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8000/liked-songs/random/${account_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      console.log('Response from server:', response);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Random liked songs:', data.songs);
+        setTopRandomLikedSongs(data.songs);
+      } else {
+        console.error('Failed to fetch random liked songs');
+      }
+    } catch (error) {
+      console.error('Error fetching random liked songs:', error);
     }
   };
 
@@ -62,13 +94,18 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
           const { account: { account_id } } = decodedToken;
 
-          setAccountId(account_id);
+          if (account_id) {
+            setAccountId(account_id);
 
-          const response = await fetch(`http://localhost:8000/api/account/${account_id}`);
-          const data = await response.json();
+            const response = await fetch(`http://localhost:8000/api/account/${account_id}`);
+            const data = await response.json();
 
-          setCurrentUser(data);
-          fetchTopRecentUploads();
+            setCurrentUser(data);
+            fetchTopRecentUploads();
+            fetchRandomLikedSongs(account_id); // Pass account_id to the function
+          } else {
+            console.error('Account ID is null or undefined');
+          }
         } else {
           console.error('Authentication token not found');
         }
@@ -77,69 +114,34 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
       }
     };
 
-    console.log(currentUser)
     fetchData();
-
   }, []);
 
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const authToken = localStorage.getItem('yourAuthToken');
-
-        if (authToken) {
-          const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
-          const { account: { account_id, username } } = decodedToken;
-
-          setAccountId(account_id);
-          setUsername(username);
-
-
-          const response = await fetch(`http://localhost:8000/user-songs/${account_id}`);
-          const data = await response.json();
-
-          setAccountSongs(data.songs);
-        } else {
-          console.error('Authentication token not found');
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+  const handleSearchUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/account?username=${searchUsername}`);
+      if (response.ok) {
+        const userData = await response.json();
+        setSearchedUserData(userData);
+        navigate(`/user-profile/${userData.account_id}`);
+      } else {
+        console.error('Failed to fetch user data');
       }
-    };
-
-    if (isAuthenticated) {
-      fetchData();
+    } catch (error) {
+      console.error('Error searching for user:', error);
     }
-  }, [isAuthenticated]);
-
-const handleSearchUser = async () => {
-  try {
-    const response = await fetch(`http://localhost:8000/api/account?username=${searchUsername}`);
-    if (response.ok) {
-      const userData = await response.json();
-      setSearchedUserData(userData);
-
-      // Programmatically navigate to UserProfile component
-      navigate(`/user-profile/${userData.account_id}`);
-    } else {
-      console.error('Failed to fetch user data');
-    }
-  } catch (error) {
-    console.error('Error searching for user:', error);
-  }
-};
+  };
 
   const handleSearchInputChange = async (event) => {
     const term = event.target.value;
     setSearchUsername(term);
 
     try {
-      const response = await fetch("http://localhost:8000/api/accounts");
+      const response = await fetch('http://localhost:8000/api/accounts');
       if (response.ok) {
         const userData = await response.json();
-        const allUsernames = userData.map(user => user.username);
-        const filteredUsernames = allUsernames.filter(username =>
+        const allUsernames = userData.map((user) => user.username);
+        const filteredUsernames = allUsernames.filter((username) =>
           username.toLowerCase().includes(term.toLowerCase())
         );
         setDropdownOptions(filteredUsernames);
@@ -189,14 +191,12 @@ const handleSearchUser = async () => {
           </ul>
           <h2>Search Users</h2>
           <div className="search-container">
-            {/* Controlled input for search bar */}
             <input
               type="text"
               placeholder="Start typing a username"
               value={searchUsername}
               onChange={handleSearchInputChange}
             />
-            {/* Suggestions list */}
             {searchUsername && dropdownOptions.length > 0 && (
               <div className="suggestions-list">
                 {dropdownOptions.slice(0, 5).map((username) => (
@@ -222,6 +222,24 @@ const handleSearchUser = async () => {
 
           <h4>Top Recent Uploads</h4>
           {topRecentUploads.map((song) => (
+            <div className="song-player" key={song.song_id}>
+              <p>
+                {song.name} by {song.artist}
+              </p>
+              <div className="SongPage-player-contain">
+                <audio controls>
+                  <source src={song.url} type="audio/mpeg" />
+                  Your browser does not support the audio tag.
+                </audio>
+                <a href={song.url} download className="visually-hidden">
+                  Download
+                </a>
+              </div>
+            </div>
+          ))}
+
+          <h4>Random Liked Songs</h4>
+          {topRandomLikedSongs.map((song) => (
             <div className="song-player" key={song.song_id}>
               <p>
                 {song.name} by {song.artist}

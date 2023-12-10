@@ -102,7 +102,7 @@ const FollowedUsersList = () => {
 
   return (
     <div className="AllSongs-container">
-      <h2 style={{ color: 'white'}}>Following</h2>
+      <h3 style={{ color: 'white'}}>Following</h3>
       {followedAccounts.length > 0 ? (
         <table className="table">
           <thead>
