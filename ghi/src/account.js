@@ -182,11 +182,12 @@ const handleSearchUser = async () => {
             </Link>
           </div>
           <h1>Welcome {username}, to Mist Music!</h1>
-          <ul>
+          <ul className="song-list">
             {accountSongs.map((song) => (
               <li key={song.song_id}>{song.name}</li>
             ))}
           </ul>
+
           <h2>Search for other users</h2>
           <div className="search-container">
             {/* Controlled input for search bar */}

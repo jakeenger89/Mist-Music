@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import "./searchsong.css";
+import './allaccount.css'
 
 const AllAccountSongs = () => {
   const [accountSongs, setAccountSongs] = useState([]);
@@ -80,7 +80,7 @@ const handleDelete = async (songId) => {
 
   return (
     <div className="AllSongs-container">
-      <h1 className="AllSongs-heading text-3xl font-bold mt-4">All Account Songs</h1>
+      <h1 className="AllSongs-heading text-3xl font-bold mt-4">Uploaded Songs</h1>
       <table className="table">
         <thead>
           <tr>
