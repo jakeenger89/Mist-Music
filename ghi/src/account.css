@@ -45,3 +45,15 @@
     margin-top: 30px;
     margin-left: 650px;
 }
+
+.full-width-line {
+    width: 187%;
+    border: 0;
+    height: 1px;
+    background-color: white;
+    margin: 0;
+}
+
+.welcome-link {
+    margin-right: 100px;
+}
