@@ -11,7 +11,7 @@ import {
 // Function to fetch all albums from the server
 const fetchAllAlbums = async () => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/albums`);
+    const response = await fetch(`http://localhost:8000/api/albums`);
     if (response.ok) {
       const albums = await response.json();
       return albums;
@@ -43,7 +43,7 @@ const AllAlbums = () => {
   }, []);
 
   return (
-    <MDBContainer fluid>
+    <MDBContainer className="AllAlbum-container">
       <MDBCard className="text-black m-5" style={{ borderRadius: "25px" }}>
         <MDBCardBody>
           <MDBRow>

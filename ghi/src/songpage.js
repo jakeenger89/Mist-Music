@@ -49,7 +49,7 @@ function SongPage() {
 
   return (
     <div className="SongPage-container">
-      <h1 className="SongPage-name">{song.name}</h1>
+      <h1 className="SongPage-name mt-4">{song.name}</h1>
 
       <div className="SongPage-info-container">
         <div className="SongPage-info-left">

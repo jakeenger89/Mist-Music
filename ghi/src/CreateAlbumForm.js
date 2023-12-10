@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./CreateAlbum.css";
 import {
   MDBContainer,
   MDBRow,
@@ -116,7 +117,7 @@ const CreateAlbumForm = ({ isAuthenticated, onSubmit }) => {
   };
 
   return (
-    <MDBContainer fluid>
+    <MDBContainer className="CreateAlbum-container">
       <MDBCard className="text-black m-5" style={{ borderRadius: "25px" }}>
         <MDBCardBody>
           <MDBRow>

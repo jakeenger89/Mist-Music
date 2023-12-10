@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import './CreateSongForm.css';
 
 const UpdateSongForm = () => {
   const { song_id } = useParams();
@@ -105,7 +106,7 @@ const UpdateSongForm = () => {
   };
 
   return (
-    <div className="row">
+    <div className="CreateSongForm-container">
       <div className="offset-3 col-6">
         <div className="shadow p-4 mt-4">
           <h1>Update Song</h1>

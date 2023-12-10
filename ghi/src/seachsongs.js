@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "./searchsong.css";
 
 function AllSongs() {
   const [songs, setSongs] = useState([]);
@@ -115,8 +116,8 @@ const handleLike = async (songId) => {
   }, []);
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-4">All Songs</h1>
+    <div className="AllSongs-container">
+      <h1 className="AllSongs-heading text-3xl font-bold mt-4">All Songs</h1>
       {/* Search bar */}
       <input
         type="text"
@@ -135,6 +136,8 @@ const handleLike = async (songId) => {
             <th className="border-b">Release Date</th>
             <th className="border-b">BPM</th>
             <th className="border-b">Likes</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
