@@ -32,6 +32,7 @@ class AccountOutWithPassword(AccountOut):
 
 
 class AccountUpdateIn(BaseModel):
+    username: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     profile_picture_url: Optional[str] = None
@@ -222,7 +223,7 @@ class AccountQueries:
                     db.execute(
                         """
                         UPDATE account
-                        SET first_name = %s, last_name = %s,
+                        SET username = %s, first_name = %s, last_name = %s,
                             profile_picture_url = %s, banner_url = %s,
                             signup_date = %s
                         WHERE account_id = %s
@@ -231,6 +232,7 @@ class AccountQueries:
                             banner_url, signup_date
                         """,
                         [
+                            info.username,
                             info.first_name,
                             info.last_name,
                             info.profile_picture_url,

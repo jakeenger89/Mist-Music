@@ -52,6 +52,10 @@ const AccountForm = ({ setIsAuthenticated, setUserId }) => {
       } else {
         // Handle login failure
         setLoginError("Cannot find username & password")
+        const timer = setTimeout(() => {
+                setLoginError('');
+            }, 5000)
+            return () => clearTimeout(timer)
       }
     } catch (error) {
       // Handle fetch error
