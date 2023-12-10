@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import './following.css';
+
 
 const FollowedUsersList = () => {
   const { account_id } = useParams();
@@ -99,27 +101,33 @@ const FollowedUsersList = () => {
   };
 
   return (
-    <div>
-      <h2>Followed Users List</h2>
+    <div className="AllSongs-container">
+      <h2 style={{ color: 'white'}}>Following</h2>
       {followedAccounts.length > 0 ? (
-        <ul>
-          {followedAccounts.map((account) => (
-            <li key={account.account_id}>
-              <p>
-                {/* Non-clickable part */}
-                Username: {' '}
-                {/* Clickable part */}
-                <Link to={`/user-profile/${account.account_id}`}>
-                  {account.username}
-                </Link>
-                {' '}
-                <button onClick={() => handleUnfollow(account.account_id)}>
-                  Unfollow
-                </button>
-              </p>
-            </li>
-          ))}
-        </ul>
+        <table className="table">
+          <thead>
+            <tr>
+              <th className="border-b" style={{ color: 'white'}}>Username(s)</th>
+              <th className="border-b"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {followedAccounts.map((account) => (
+              <tr key={account.account_id}>
+                <td className="border-b">
+                  <Link to={`/user-profile/${account.account_id}`} className="text-blue-500 hover:underline">
+                    {account.username}
+                  </Link>
+                </td>
+                <td className="border-b">
+                  <button className="btn-unfollow" onClick={() => handleUnfollow(account.account_id)}>
+                    Unfollow
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       ) : (
         <p>No followed accounts found.</p>
       )}

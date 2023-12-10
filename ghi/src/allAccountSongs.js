@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import './allaccount.css'
 
 const AllAccountSongs = () => {
   const [accountSongs, setAccountSongs] = useState([]);
@@ -78,36 +79,43 @@ const handleDelete = async (songId) => {
 };
 
   return (
-    <div>
-      <h1>All Account Songs</h1>
-      <table>
+    <div className="AllSongs-container">
+      <h1 className="AllSongs-heading text-3xl font-bold mt-4">Uploaded Songs</h1>
+      <table className="table">
         <thead>
           <tr>
-            <th>Song Name</th>
-            <th>Artist</th>
-            <th>Album</th>
-            <th>Genre</th>
-            <th>Release Date</th>
-            <th>Length</th>
-            <th>BPM</th>
-            <th>Rating</th>
+            <th className="border-b">Song Name</th>
+            <th className="border-b">Artist</th>
+            <th className="border-b">Album</th>
+            <th className="border-b">Genre</th>
+            <th className="border-b">Release Date</th>
+            <th className="border-b">BPM</th>
+            <th className="border-b"></th>
+            <th className="border-b"></th>
           </tr>
         </thead>
         <tbody>
           {accountSongs.map((song) => (
             <tr key={song.song_id}>
-              <td>{song.name}</td>
-              <td>{song.artist}</td>
-              <td>{song.album}</td>
-              <td>{song.genre}</td>
-              <td>{song.release_date}</td>
-              <td>{song.length}</td>
-              <td>{song.bpm}</td>
-              <td>{song.rating}</td>
-              <td>
+              <td className="border-b">
+                {/* Make the song name clickable */}
+                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+              </td>
+              <td className="border-b">{song.artist}</td>
+              <td className="border-b">{song.album}</td>
+              <td className="border-b">{song.genre}</td>
+              <td className="border-b">{song.release_date}</td>
+              <td className="border-b">{song.bpm}</td>
+              <td className="border-b">
                 {/* Add buttons for update and delete */}
-                <button onClick={() => handleUpdate(song.song_id)}>Update</button>
-                <button onClick={() => handleDelete(song.song_id)}>Delete</button>
+                <button className="btn-update" onClick={() => handleUpdate(song.song_id)}>
+                  Update
+                </button>
+              </td>
+              <td className="border-b">
+                <button className="btn-delete" onClick={() => handleDelete(song.song_id)}>
+                  Delete
+                </button>
               </td>
             </tr>
           ))}

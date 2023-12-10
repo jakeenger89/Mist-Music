@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import "./account.css";
 
 const UserProfile = () => {
   const { account_id } = useParams();
@@ -121,41 +122,47 @@ const UserProfile = () => {
   };
 
   return (
-    <div>
-      {userData && (
-        <div>
-          <h1>{userData.username}'s Profile</h1>
-          <Link to={`/user-liked-songs/${account_id}`}>
-            <h2>Liked Songs</h2>
-          </Link>
-          <ul>
-            {likedSongs.map((song) => (
-              <li key={song.song_id}>
-                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
-              </li>
-            ))}
-          </ul>
+    <div className="profile">
+      <div className="container">
+        {userData && (
+          <div>
+            <div className="banner-image">
+              <img src={userData.banner_url} alt="Banner" className="banner-image" />
+            </div>
+            <img src={userData.profile_picture_url} alt="Profile" className="profile-image" />
+            <h1>{userData.username}'s Profile</h1>
+            <Link to={`/user-liked-songs/${account_id}`}>
+              <h2>Liked Songs</h2>
+            </Link>
+            <ul>
+              {likedSongs.map((song) => (
+                <li key={song.song_id}>
+                  <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+                </li>
+              ))}
+            </ul>
 
-          <h2>Posted Songs</h2>
-          <ul>
-            {postedSongs.map((song) => (
-              <li key={song.song_id}>
-                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
-              </li>
-            ))}
-          </ul>
+            <h2>Posted Songs</h2>
+            <ul>
+              {postedSongs.map((song) => (
+                <li key={song.song_id}>
+                  <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+                </li>
+              ))}
+            </ul>
 
-          {!isFollowing && (
-            <button onClick={handleFollow} disabled={followedOnce}>
-              Follow
-            </button>
-          )}
+            {!isFollowing && (
+              <button onClick={handleFollow} disabled={followedOnce}>
+                Follow
+              </button>
+            )}
 
-          {isFollowing && (
-            <p>Following</p>
-          )}
-        </div>
-      )}
+            {isFollowing && (
+              <p>Following</p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
