@@ -39,3 +39,18 @@
 .profile-link:hover{
     color:aqua
 }
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: 1100px;
+    width: 120px;
+}
+
+
+h2 {
+    margin-left: 920px;
+    width: 300px;
+    text-align: right;
+}

@@ -187,7 +187,7 @@ const handleSearchUser = async () => {
               <li key={song.song_id}>{song.name}</li>
             ))}
           </ul>
-          <h2>Search for other users</h2>
+          <h2>Search Users</h2>
           <div className="search-container">
             {/* Controlled input for search bar */}
             <input
@@ -220,7 +220,7 @@ const handleSearchUser = async () => {
             </div>
           )}
 
-          <h2>Top Recent Uploads</h2>
+          <h3>Top Recent Uploads</h3>
           {topRecentUploads.map((song) => (
             <div key={song.song_id}>
               <p>
