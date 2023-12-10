@@ -51,7 +51,8 @@ class AccountQueries:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        SELECT account_id,
+                        SELECT
+                            account_id,
                             username,
                             email,
                             password
@@ -99,6 +100,8 @@ class AccountQueries:
                             account_id,
                             username,
                             email,
+                            profile_picture_url,
+                            banner_url,
                             password
                         FROM account
                         WHERE account_id = %s
@@ -112,8 +115,10 @@ class AccountQueries:
                             account_id=record[0],
                             username=record[1],
                             email=record[2],
-                            password=record[3],
-                            hashed_password=record[3],
+                            profile_picture_url=record[3],
+                            banner_url=record[4],
+                            password=record[5],
+                            hashed_password=record[5],
                         )
                         return account_out
                     else:
@@ -121,6 +126,8 @@ class AccountQueries:
                             account_id="",
                             username="",
                             email="",
+                            profile_picture_url="",
+                            banner_url="",
                             password="",
                             hashed_password="",
                         )
@@ -130,6 +137,8 @@ class AccountQueries:
                 account_id="",
                 username="",
                 email="",
+                profile_picture_url="",
+                banner_url="",
                 password="",
                 hashed_password="",
             )

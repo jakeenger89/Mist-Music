@@ -6,6 +6,7 @@
     justify-content: center;
     height: 70px;
     padding: 20px 0;
+    border-bottom: 2px solid aqua;
 }
 
 .nav a {
@@ -17,7 +18,7 @@
 }
 
 .nav a:hover {
-    color:rgb(26, 123, 138)
+    color: aqua
 }
 
 .nav a:active {
@@ -27,4 +28,14 @@
 .nav img.navbar-logo {
     width: 70px;
     height: auto;
+}
+
+.logout-button{
+    background-color: black;
+    color: white;
+    border: none;
+}
+
+.logout-button:hover{
+    background-color: #cc0000;
 }
