@@ -51,7 +51,6 @@ const AccountForm = ({ setIsAuthenticated, setUserId }) => {
         setPassword("");
       } else {
         // Handle login failure
-        const errorResponse = await response.json();
         setLoginError("Cannot find username & password")
       }
     } catch (error) {
