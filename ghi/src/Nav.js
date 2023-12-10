@@ -1,6 +1,6 @@
 // Nav.js
 import { NavLink, useNavigate } from "react-router-dom";
-import "./style.css";
+import "./navstyle.css";
 
 function Nav({ isAuthenticated, onLogout }) {
   const navigate = useNavigate();

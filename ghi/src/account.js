@@ -11,8 +11,8 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const [account_id, setAccountId] = useState(null);
   const [searchUsername, setSearchUsername] = useState('');
   const [searchedUserData, setSearchedUserData] = useState(null);
-  const [profile_picture_url, setProfilePicture] = useState('');
-  const [banner_url, setBannerUrl] = useState('');
+  const [profile_picture_url, setProfilePicture] = useState('https://img.freepik.com/free-photo/user-profile-icon-front-side-with-white-background_187299-40010.jpg?size=626&ext=jpg&ga=GA1.1.733290954.1702167185&semt=ais');
+  const [banner_url, setBannerUrl] = useState('https://cdn.pixabay.com/photo/2016/02/03/08/32/banner-1176676_1280.jpg');
   const [currentUser, setCurrentUser] = useState('');
   const [dropdownOptions, setDropdownOptions] = useState([]);
 
@@ -128,8 +128,8 @@ const handleSearchUser = async () => {
   return (
     <div className="profile">
       <div className="container">
-        <img src={currentUser.banner_url} alt="banner" className="banner-image" />
-        <img src={currentUser.profile_picture_url} alt="Profile" className="profile-image" />
+        <img src={currentUser.banner_url || banner_url} alt="banner" className="banner-image" />
+        <img src={currentUser.profile_picture_url || profile_picture_url} alt="Profile" className="profile-image" />
         <button onClick={handleEditClick} className="edit-profile-button">Edit Profile</button>
       </div>
       <div className="offset-3 col-6">
