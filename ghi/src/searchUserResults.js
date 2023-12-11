@@ -39,7 +39,7 @@ const SearchUserResults = () => {
     }, [searchQuery]);
 
 return (
-        <div className="container mt-5">
+        <div className="searchBar-container mt-4">
             <h1>Search Results</h1>
             <p>Showing results for: {searchQuery}</p>
             <ul>
