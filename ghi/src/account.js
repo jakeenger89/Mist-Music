@@ -96,7 +96,6 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
 
           if (account_id) {
             setAccountId(account_id);
-
             const response = await fetch(`http://localhost:8000/api/account/${account_id}`);
             const data = await response.json();
 
@@ -159,6 +158,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
     <div className="profile">
       <div className="container">
         <img src={currentUser.banner_url || banner_url} alt="banner" className="banner-image" />
+        <h4 className="name-text">{currentUser.first_name} {currentUser.last_name}</h4>
         <img src={currentUser.profile_picture_url || profile_picture_url} alt="Profile" className="profile-image" />
         <button onClick={handleEditClick} className="edit-profile-button">
           Edit Profile
@@ -183,7 +183,10 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
               Your Songs
             </Link>
           </div>
-          <h1>Welcome {username}, to Mist Music!</h1>
+          <div className='welcome-link'>
+            <h1>Welcome {currentUser.username}, to Mist Music!</h1>
+            <hr className="full-width-line" />
+          </div>
           <ul className="song-list">
             {accountSongs.map((song) => (
               <li key={song.song_id}>{song.name}</li>
@@ -219,8 +222,8 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
               <Link to={`/account/all-songs/${searchedUserData.account_id}`}>View Posted Songs</Link>
             </div>
           )}
-
-          <h4>Top Recent Uploads</h4>
+          <div className="top-recent">
+          <h4 style={{color: "white"}}>Top Recent Uploads</h4>
           {topRecentUploads.map((song) => (
             <div className="song-player" key={song.song_id}>
               <p>
@@ -237,8 +240,9 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
               </div>
             </div>
           ))}
-
-          <h4>Random Liked Songs</h4>
+          </div>
+          <div className="top-liked">
+          <h4 style={{color: "white"}}>Random Liked Songs</h4>
           {topRandomLikedSongs.map((song) => (
             <div className="song-player" key={song.song_id}>
               <p>
@@ -255,6 +259,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
               </div>
             </div>
           ))}
+          </div>
         </div>
       </div>
     </div>

@@ -11,6 +11,8 @@ const UserProfile = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [loggedInUserId, setLoggedInUserId] = useState(null);
   const [followedOnce, setFollowedOnce] = useState(false);
+  const [profile_picture_url] = useState('https://img.freepik.com/free-photo/user-profile-icon-front-side-with-white-background_187299-40010.jpg?size=626&ext=jpg&ga=GA1.1.733290954.1702167185&semt=ais');
+  const [banner_url] = useState('https://cdn.pixabay.com/photo/2016/02/03/08/32/banner-1176676_1280.jpg')
 
   useEffect(() => {
     const storedToken = localStorage.getItem('yourAuthToken');
@@ -29,14 +31,12 @@ const UserProfile = () => {
           fetch(`http://localhost:8000/api/account/${account_id}`),
           fetch(`http://localhost:8000/user-songs/${account_id}`),
         ]);
-
         if (userDataResponse.ok) {
           const userData = await userDataResponse.json();
           setUserData(userData);
         } else {
           console.error('Failed to fetch user data');
         }
-
         if (postedSongsResponse.ok) {
           const data = await postedSongsResponse.json();
           setPostedSongs(data.songs);
@@ -106,7 +106,6 @@ const UserProfile = () => {
         },
         body: JSON.stringify(requestBody),
       });
-
       if (response.ok) {
         setIsFollowing(true);
         setFollowedOnce(true);
@@ -123,11 +122,12 @@ const UserProfile = () => {
 
   return (
     <div className="profile">
-      <div className="container">
+      <div className="profile">
         {userData && (
-          <div>
+          <div className="container">
             <div className="banner-image">
-              <img src={userData.banner_url} alt="Banner" className="banner-image" />
+              <img src={userData.banner_url || banner_url} alt="Banner" className="banner-image" />
+              <img src={userData.profile_picture_url || profile_picture_url} alt="Profile" className="profile-image" />
             </div>
             <img src={userData.profile_picture_url} alt="Profile" className="profile-pic" style={{ marginTop: '50px' }}/>
             <h1>{userData.username}'s Profile</h1>
@@ -150,13 +150,11 @@ const UserProfile = () => {
                 </li>
               ))}
             </ul>
-
             {!isFollowing && (
               <button onClick={handleFollow} disabled={followedOnce}>
                 Follow
               </button>
             )}
-
             {isFollowing && (
               <p>Following</p>
             )}
