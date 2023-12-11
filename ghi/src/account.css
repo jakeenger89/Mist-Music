@@ -21,9 +21,9 @@
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    position: fixed;
-    bottom: 700px; /* Adjust this value to move it up */
-    left: 900px;
+    position: absolute;
+    bottom: 200px; /* Adjust this value to move it up */
+    left: 20px;
     border: 5px solid black;
 }
 

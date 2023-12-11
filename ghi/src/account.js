@@ -92,11 +92,10 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
 
         if (authToken) {
           const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
-          const { account: { account_id, username } } = decodedToken;
+          const { account: { account_id } } = decodedToken;
 
           if (account_id) {
             setAccountId(account_id);
-            setUsername(username);
 
             const response = await fetch(`http://localhost:8000/api/account/${account_id}`);
             const data = await response.json();
