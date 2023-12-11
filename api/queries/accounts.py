@@ -101,6 +101,8 @@ class AccountQueries:
                             account_id,
                             username,
                             email,
+                            first_name,
+                            last_name,
                             profile_picture_url,
                             banner_url,
                             password
@@ -116,10 +118,12 @@ class AccountQueries:
                             account_id=record[0],
                             username=record[1],
                             email=record[2],
-                            profile_picture_url=record[3],
-                            banner_url=record[4],
-                            password=record[5],
-                            hashed_password=record[5],
+                            first_name=record[3],
+                            last_name=record[4],
+                            profile_picture_url=record[5],
+                            banner_url=record[6],
+                            password=record[7],
+                            hashed_password=record[7],
                         )
                         return account_out
                     else:
@@ -127,6 +131,8 @@ class AccountQueries:
                             account_id="",
                             username="",
                             email="",
+                            first_name="",
+                            last_name="",
                             profile_picture_url="",
                             banner_url="",
                             password="",
@@ -138,6 +144,8 @@ class AccountQueries:
                 account_id="",
                 username="",
                 email="",
+                first_name="",
+                last_name="",
                 profile_picture_url="",
                 banner_url="",
                 password="",

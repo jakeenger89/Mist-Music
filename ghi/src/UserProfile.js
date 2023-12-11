@@ -64,7 +64,7 @@ const UserProfile = () => {
               'Authorization': `Bearer ${authToken}`,
             },
           });
-          
+
           if (response.ok) {
             const data = await response.json();
             setIsFollowing(data.is_following);
@@ -121,7 +121,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="user-profile">
+    <div className="profile">
       <div className="profile">
         {userData && (
           <div className="container">
@@ -129,9 +129,10 @@ const UserProfile = () => {
               <img src={userData.banner_url || banner_url} alt="Banner" className="banner-image" />
               <img src={userData.profile_picture_url || profile_picture_url} alt="Profile" className="profile-image" />
             </div>
+            <img src={userData.profile_picture_url} alt="Profile" className="profile-pic" style={{ marginTop: '50px' }}/>
             <h1>{userData.username}'s Profile</h1>
             <Link to={`/user-liked-songs/${account_id}`}>
-              <h2>Liked Songs</h2>
+              <h4>Liked Songs</h4>
             </Link>
             <ul>
               {likedSongs.map((song) => (
@@ -140,7 +141,8 @@ const UserProfile = () => {
                 </li>
               ))}
             </ul>
-            <h2>Posted Songs</h2>
+
+            <h4>Posted Songs</h4>
             <ul>
               {postedSongs.map((song) => (
                 <li key={song.song_id}>
