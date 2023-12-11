@@ -12,6 +12,12 @@ import AllSongs from "./seachsongs";
 import OrderForm from "./merchandise/merchdetail";
 import AllAccountSongs from "./allAccountSongs";
 import UpdateSongForm from "./updateSongForm";
+import SearchUserPage from "./searchUserPage";
+import SearchUserResults from "./searchUserResults";
+import SearchSongsPage from "./searchSongsPage";
+import SearchSongsResults from "./searchSongsResults";
+import SearchAlbumPage from "./searchAlbumPage"
+import SearchAlbumResults from "./searchAlbumResults"
 import AboutUs from "./aboutUs";
 import UserLikedSongs from "./UserLikedSongs";
 import SongPage from "./songpage";
@@ -36,11 +42,11 @@ function App() {
     }
   }, []);
 
-  const domain = /https:\/\/[^/]+/;
-  const basename = process.env.PUBLIC_URL.replace(domain, "");
 
+const domain = /https:\/\/[^/]+/;
+const basename = process.env.PUBLIC_URL.replace(domain, '');
   return (
-    <BrowserRouter basename={basename}>
+    <BrowserRouter basename ={basename}>
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
@@ -76,6 +82,36 @@ function App() {
             index
             path="loginform"
             element={<AccountForm setIsAuthenticated={setIsAuthenticated} />}
+          />
+          <Route
+            index
+            path="search_user"
+            element={<SearchUserPage/>}
+          />
+          <Route
+            index
+            path="search_accounts"
+            element={<SearchUserResults/>}
+          />
+          <Route
+            index
+            path="search_song"
+            element={<SearchSongsPage/>}
+          />
+          <Route
+            index
+            path="search_songs"
+            element={<SearchSongsResults/>}
+          />
+          <Route
+            index
+            path="search_album"
+            element={<SearchAlbumPage/>}
+          />
+          <Route
+            index
+            path="search_albums"
+            element={<SearchAlbumResults/>}
           />
           <Route
             index
