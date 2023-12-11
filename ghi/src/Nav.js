@@ -37,21 +37,6 @@ function Nav({ isAuthenticated, onLogout }) {
             Upload Song
           </NavLink>
         )}
-        {isAuthenticated && (
-          <NavLink className={"navbar-brand"} to="/account">
-            My Profile
-          </NavLink>
-        )}
-        {!isAuthenticated && (
-          <NavLink className="navbar-brand" to="/signupform">
-            Sign Up Form
-          </NavLink>
-        )}
-        {!isAuthenticated && (
-          <NavLink className="navbar-brand" to="/loginform">
-            Login
-          </NavLink>
-        )}
           <NavLink className={"navbar-brand"} to="/search_user">
           Search Users
         </NavLink>
@@ -61,6 +46,21 @@ function Nav({ isAuthenticated, onLogout }) {
         <NavLink className={"navbar-brand"} to="/search_album">
           Search Albums
         </NavLink>
+        {!isAuthenticated && (
+          <NavLink className="navbar-brand" to="/signupform">
+            Sign Up Form
+          </NavLink>
+        )}
+        {isAuthenticated && (
+          <NavLink className={"navbar-brand"} to="/account">
+            My Profile
+          </NavLink>
+        )}
+        {!isAuthenticated && (
+          <NavLink className="navbar-brand" to="/loginform">
+            Login
+          </NavLink>
+        )}
         <NavLink className={"navbar-brand"} to="/aboutus">
           About Us
         </NavLink>
