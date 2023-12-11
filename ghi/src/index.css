@@ -1,6 +1,6 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
 h1 {
     color: white;
@@ -15,5 +15,3 @@ body {
 p {
     color: white
 }
-
-

@@ -60,6 +60,10 @@ const AccountForm = ({ setIsAuthenticated, setUserId }) => {
     } catch (error) {
       // Handle fetch error
       setLoginError("An error occured while logging in")
+      const timer = setTimeout(() => {
+                setLoginError('');
+            }, 5000)
+            return () => clearTimeout(timer)
     }
   }
 
