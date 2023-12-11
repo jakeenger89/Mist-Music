@@ -12,3 +12,6 @@ class TestSongQueries:
         response = client.get(f"/api/songs/{song_id}")
 
         assert response.status_code == 200
+
+class TestAccountUpdates:
+    def test_update_account(self)
