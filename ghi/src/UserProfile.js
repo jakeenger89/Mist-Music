@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import "./account.css";
+import "./UserProfile.css";
 
 const UserProfile = () => {
   const { account_id } = useParams();
@@ -120,20 +120,22 @@ const UserProfile = () => {
     }
   };
 
-  return (
-    <div className="profile">
-      <div className="profile">
-        {userData && (
-          <div className="container">
-            <div className="banner-image">
-              <img src={userData.banner_url || banner_url} alt="Banner" className="banner-image" />
-              <img src={userData.profile_picture_url || profile_picture_url} alt="Profile" className="profile-image" />
-            </div>
-            <img src={userData.profile_picture_url} alt="Profile" className="profile-pic" style={{ marginTop: '50px' }}/>
-            <h1>{userData.username}'s Profile</h1>
-            <Link to={`/user-liked-songs/${account_id}`}>
-              <h4>Liked Songs</h4>
-            </Link>
+return (
+  <div className="profile">
+    {userData && (
+      <div className="containerz">
+        <div className="banner-image">
+          <img src={userData.banner_url || banner_url} alt="Banner" />
+        </div>
+        <div className="className">
+          <img src={userData.profile_picture_url || profile_picture_url} alt="Profile" className="profile-pic" />
+        </div>
+        <h1>{userData.username}'s Profile</h1>
+        <Link to={`/user-liked-songs/${account_id}`}>
+          <h4>Liked Songs</h4>
+        </Link>
+        <div className="UserProfile">
+          <div>
             <ul>
               {likedSongs.map((song) => (
                 <li key={song.song_id}>
@@ -141,28 +143,32 @@ const UserProfile = () => {
                 </li>
               ))}
             </ul>
-
-            <h4>Posted Songs</h4>
-            <ul>
-              {postedSongs.map((song) => (
-                <li key={song.song_id}>
-                  <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
-                </li>
-              ))}
-            </ul>
-            {!isFollowing && (
-              <button onClick={handleFollow} disabled={followedOnce}>
-                Follow
-              </button>
-            )}
-            {isFollowing && (
-              <p>Following</p>
-            )}
           </div>
-        )}
+          <div>
+          <h4>Posted Songs</h4>
+          <ul>
+            {postedSongs.map((song) => (
+              <li key={song.song_id}>
+                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+              </li>
+            ))}
+          </ul>
+          </div>
+            <div className="follow-button">
+              {!isFollowing && (
+                <button onClick={handleFollow} disabled={followedOnce}>
+                  Follow
+                </button>
+              )}
+              {isFollowing && (
+                <p>Following</p>
+              )}
+            </div>
+        </div>
       </div>
-    </div>
-  );
+    )}
+  </div>
+);
 };
 
 export default UserProfile;

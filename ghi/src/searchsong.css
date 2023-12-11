@@ -6,7 +6,7 @@
   border: 2px solid #1a202c;
   border-radius: 8px;
   background-color: #2d3748;
-  color: #a0aec0 !important;
+  color: white !important;
 }
 
 .AllSongs-heading {
@@ -14,7 +14,7 @@
   margin-bottom: 10px;
   font-weight: bold;
   font-family: 'Arial', sans-serif;
-  color: #a0aec0 !important;
+  color: white !important;
 }
 
 .table {

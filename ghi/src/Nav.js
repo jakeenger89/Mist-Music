@@ -15,9 +15,15 @@ function Nav({ isAuthenticated, onLogout }) {
   return (
     <nav className="nav">
       <div className="container-fluid">
-        <NavLink className="navbar-brand" to="/">
-          <img src="https://i.imgur.com/oGvU6bt.png" alt="Logo" className="navbar-logo"/>
-        </NavLink>
+        {isAuthenticated ? (
+          <NavLink className="navbar-brand" to="/account">
+            <img src="https://i.imgur.com/oGvU6bt.png" alt="Logo" className="navbar-logo"/>
+          </NavLink>
+        ) : (
+          <NavLink className="navbar-brand" to="/signupform">
+            <img src="https://i.imgur.com/oGvU6bt.png" alt="Logo" className="navbar-logo"/>
+          </NavLink>
+        )}
         <NavLink className="navbar-brand" to="/merch">
           Merchandise
         </NavLink>
