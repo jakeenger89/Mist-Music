@@ -79,7 +79,7 @@ function SongPage() {
 
       {/* Display the lyrics if available */}
       <div className="SongPage-lyrics-container">
-        <h2 onClick={toggleLyrics}>Lyrics</h2>
+        <h3 onClick={toggleLyrics}>Lyrics</h3>
         {showLyrics && <p>{song.lyrics}</p>}
       </div>
     </div>

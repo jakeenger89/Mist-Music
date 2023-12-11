@@ -120,49 +120,48 @@ const UserProfile = () => {
     }
   };
 
-  return (
-    <div className="profile">
-      <div className="profile">
-        {userData && (
-          <div className="container">
-            <div className="banner-image">
-              <img src={userData.banner_url || banner_url} alt="Banner" className="banner-image" />
-              <img src={userData.profile_picture_url || profile_picture_url} alt="Profile" className="profile-image" />
-            </div>
-            <img src={userData.profile_picture_url} alt="Profile" className="profile-pic" style={{ marginTop: '50px' }}/>
-            <h1>{userData.username}'s Profile</h1>
-            <Link to={`/user-liked-songs/${account_id}`}>
-              <h4>Liked Songs</h4>
-            </Link>
-            <ul>
-              {likedSongs.map((song) => (
-                <li key={song.song_id}>
-                  <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
-                </li>
-              ))}
-            </ul>
+return (
+  <div className="profile">
+    {userData && (
+      <div className="container">
+        <div className="banner-image">
+          <img src={userData.banner_url || banner_url} alt="Banner" />
+        </div>
+        <div className="profile-image-container">
+          <img src={userData.profile_picture_url || profile_picture_url} alt="Profile" className="profile-pic" />
+        </div>
+        <h1>{userData.username}'s Profile</h1>
+        <Link to={`/user-liked-songs/${account_id}`}>
+          <h4>Liked Songs</h4>
+        </Link>
+        <ul>
+          {likedSongs.map((song) => (
+            <li key={song.song_id}>
+              <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+            </li>
+          ))}
+        </ul>
 
-            <h4>Posted Songs</h4>
-            <ul>
-              {postedSongs.map((song) => (
-                <li key={song.song_id}>
-                  <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
-                </li>
-              ))}
-            </ul>
-            {!isFollowing && (
-              <button onClick={handleFollow} disabled={followedOnce}>
-                Follow
-              </button>
-            )}
-            {isFollowing && (
-              <p>Following</p>
-            )}
-          </div>
+        <h4>Posted Songs</h4>
+        <ul>
+          {postedSongs.map((song) => (
+            <li key={song.song_id}>
+              <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+            </li>
+          ))}
+        </ul>
+        {!isFollowing && (
+          <button onClick={handleFollow} disabled={followedOnce}>
+            Follow
+          </button>
+        )}
+        {isFollowing && (
+          <p>Following</p>
         )}
       </div>
-    </div>
-  );
+    )}
+  </div>
+);
 };
 
 export default UserProfile;
