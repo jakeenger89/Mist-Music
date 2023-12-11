@@ -85,36 +85,49 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const authToken = localStorage.getItem('yourAuthToken');
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const authToken = localStorage.getItem('yourAuthToken');
 
-        if (authToken) {
-          const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
-          const { account: { account_id } } = decodedToken;
+      if (authToken) {
+        const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
+        const { account: { account_id } } = decodedToken;
 
-          if (account_id) {
-            setAccountId(account_id);
-            const response = await fetch(`http://localhost:8000/api/account/${account_id}`);
-            const data = await response.json();
+        if (account_id) {
+          setAccountId(account_id);
 
-            setCurrentUser(data);
-            fetchTopRecentUploads();
-            fetchRandomLikedSongs(account_id); // Pass account_id to the function
+          const userDataResponse = await fetch(`http://localhost:8000/api/account/${account_id}`);
+          if (userDataResponse.ok) {
+            const userData = await userDataResponse.json();
+            setCurrentUser(userData);
           } else {
-            console.error('Account ID is null or undefined');
+            console.error('Failed to fetch user data');
           }
-        } else {
-          console.error('Authentication token not found');
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
 
-    fetchData();
-  }, []);
+          const userSongsResponse = await fetch(`http://localhost:8000/user-songs/${account_id}`);
+          if (userSongsResponse.ok) {
+            const userSongsData = await userSongsResponse.json();
+            setAccountSongs(userSongsData.songs);
+          } else {
+            console.error('Failed to fetch user songs');
+          }
+
+          fetchTopRecentUploads();
+          fetchRandomLikedSongs(account_id);
+        } else {
+          console.error('Account ID is null or undefined');
+        }
+      } else {
+        console.error('Authentication token not found');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchData();
+}, []);
 
   const handleSearchUser = async () => {
     try {
