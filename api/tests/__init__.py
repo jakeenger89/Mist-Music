@@ -1,5 +1,8 @@
-from fastapi.testclient import TestClient
-from main import app
-from queries.accounts import AccountQueries
+# from fastapi.testclient import TestClient
+# from main import app
+# from queries.accounts import AccountQueries
 
-cilent = TestClient(app)
+# cilent = TestClient(app)
+
+
+# class TestAccount
