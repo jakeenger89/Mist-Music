@@ -16,8 +16,8 @@ import SearchUserPage from "./searchUserPage";
 import SearchUserResults from "./searchUserResults";
 import SearchSongsPage from "./searchSongsPage";
 import SearchSongsResults from "./searchSongsResults";
-import SearchAlbumPage from "./searchAlbumPage"
-import SearchAlbumResults from "./searchAlbumResults"
+import SearchAlbumPage from "./searchAlbumPage";
+import SearchAlbumResults from "./searchAlbumResults";
 import AboutUs from "./aboutUs";
 import UserLikedSongs from "./UserLikedSongs";
 import SongPage from "./songpage";
@@ -29,6 +29,7 @@ import EditAccount from "./edit";
 import HomePage from "./homePage/homePage";
 import HomePageAuth from "./homePage/homePageAuth";
 import ThankYouPage from "./merchandise/purchaseTrue";
+import AlbumEdit from "./albumEdit";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -43,11 +44,10 @@ function App() {
     }
   }, []);
 
-
-const domain = /https:\/\/[^/]+/;
-const basename = process.env.PUBLIC_URL.replace(domain, '');
+  const domain = /https:\/\/[^/]+/;
+  const basename = process.env.PUBLIC_URL.replace(domain, "");
   return (
-    <BrowserRouter basename ={basename}>
+    <BrowserRouter basename={basename}>
       <Nav isAuthenticated={isAuthenticated} />
       <div className="container">
         <Routes>
@@ -84,36 +84,12 @@ const basename = process.env.PUBLIC_URL.replace(domain, '');
             path="loginform"
             element={<AccountForm setIsAuthenticated={setIsAuthenticated} />}
           />
-          <Route
-            index
-            path="search_user"
-            element={<SearchUserPage/>}
-          />
-          <Route
-            index
-            path="search_accounts"
-            element={<SearchUserResults/>}
-          />
-          <Route
-            index
-            path="search_song"
-            element={<SearchSongsPage/>}
-          />
-          <Route
-            index
-            path="search_songs"
-            element={<SearchSongsResults/>}
-          />
-          <Route
-            index
-            path="search_album"
-            element={<SearchAlbumPage/>}
-          />
-          <Route
-            index
-            path="search_albums"
-            element={<SearchAlbumResults/>}
-          />
+          <Route index path="search_user" element={<SearchUserPage />} />
+          <Route index path="search_accounts" element={<SearchUserResults />} />
+          <Route index path="search_song" element={<SearchSongsPage />} />
+          <Route index path="search_songs" element={<SearchSongsResults />} />
+          <Route index path="search_album" element={<SearchAlbumPage />} />
+          <Route index path="search_albums" element={<SearchAlbumResults />} />
           <Route
             index
             path="createsongform"
@@ -129,6 +105,10 @@ const basename = process.env.PUBLIC_URL.replace(domain, '');
           <Route index path="merch/:item_id" element={<OrderForm />} />
           <Route index path="merch/thankyou" element={<ThankYouPage />} />
           <Route index path="allalbums" element={<AllAlbums />} />
+          <Route
+            path="albums/:albumId/edit"
+            element={<AlbumEdit isAuthenticated={isAuthenticated} />}
+          />
 
           <Route
             index
