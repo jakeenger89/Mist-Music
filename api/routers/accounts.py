@@ -145,7 +145,7 @@ async def login_account(
     return record
 
 
-@router.get("/api/search", response_model=List[AccountOut])
+@router.get("/api/search_accounts", response_model=List[AccountOut])
 async def search_accounts(
     search_term: str,
     response: Response,
