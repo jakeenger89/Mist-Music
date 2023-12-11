@@ -130,7 +130,7 @@ return (
         <div className="profile-image-container">
           <img src={userData.profile_picture_url || profile_picture_url} alt="Profile" className="profile-pic" />
         </div>
-        <h1>{userData.username}'s Profile</h1>
+        <h1 className="username">{userData.username}'s Profile</h1>
         <Link to={`/user-liked-songs/${account_id}`}>
           <h4>Liked Songs</h4>
         </Link>

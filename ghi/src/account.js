@@ -109,17 +109,10 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           if (userSongsResponse.ok) {
             const userSongsData = await userSongsResponse.json();
             setAccountSongs(userSongsData.songs);
-          if (account_id) {
-            setAccountId(account_id);
-            const response = await fetch(`http://localhost:8000/api/account/${account_id}`);
-            const data = await response.json();
-
-            setCurrentUser(data);
-            fetchTopRecentUploads();
-            fetchRandomLikedSongs(account_id); // Pass account_id to the function
           } else {
-            console.error('Failed to fetch user data');
+            console.error('Failed to fetch user songs');
           }
+
           fetchTopRecentUploads();
           fetchRandomLikedSongs(account_id);
         } else {
@@ -127,7 +120,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
         }
       } else {
         console.error('Authentication token not found');
-      }}
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -261,8 +254,8 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
             </div>
           ))}
           </div>
-          <div className="top-liked">
-          <h4 style={{color: "white"}}>Random Liked Songs</h4>
+          <div classname="top-liked">
+          <h4>Random Liked Songs</h4>
           {topRandomLikedSongs.map((song) => (
             <div className="song-player" key={song.song_id}>
               <p>
@@ -279,10 +272,10 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
               </div>
             </div>
           ))}
-          </div>
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
