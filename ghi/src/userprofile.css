@@ -1,35 +1,54 @@
-.container {
-    position: relative;
+.UserProfile {
+  text-align: center;
+}
+
+.containerz {
+  position: relative;
+  min-height: 100vh;
+}
+
+.profile {
+  background-color: rgba(39, 46, 46, 0.417);
 }
 
 .banner-image {
-    z-index: 0;
-    position: relative;
+  width: 100%;
+  height: 250px;
 }
 
-
-.followbtn {
-    margin-left: 1200px;
-    position: absolute;
-    margin-top: -110px
-}
-
-.username {
-    margin-top: 5px
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .profile-pic {
-    border-radius: 50%;
-    position: absolute;
-    height: 200px;
-    width: 200px;
-    bottom: 35%;
-    left: 2%;
-    border: 5px solid black
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  position: absolute;
+  margin-bottom: 615px;
+  bottom: 10%;
+  left: 20px;
+  border: 5px solid black;
 }
 
-.user-links {
-    position: absolute;
-    margin-left: 750px;
-    margin-top: -50px;
+.UserProfile div {
+  margin-top: 20px;
+}
+
+.follow-button {
+  margin-top: 60px;
+  position: absolute;
+  top: 27%;
+  right: 20px;
+  transform: translateY(-50%);
+}
+
+.follow-button button {
+  margin-right: 10px;
+}
+
+.follow-button p {
+  display: inline;
 }
