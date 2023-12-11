@@ -28,6 +28,7 @@ import FollowedUsersList from "./FollowedUsersList";
 import EditAccount from "./edit";
 import HomePage from "./homePage/homePage";
 import HomePageAuth from "./homePage/homePageAuth";
+import ThankYouPage from "./merchandise/purchaseTrue";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -53,7 +54,7 @@ const basename = process.env.PUBLIC_URL.replace(domain, '');
           <Route
             index
             path="/"
-            element={isAuthenticated ? <HomePageAuth /> : <HomePage />}
+            element={isAuthenticated ? <Account /> : <AccountForm />}
           />
           <Route path="account/:account_id" element={<Account />} />
           <Route
@@ -126,6 +127,7 @@ const basename = process.env.PUBLIC_URL.replace(domain, '');
           <Route index path="merch" element={<MerchList />} />
           <Route index path="allsongs" element={<AllSongs />} />
           <Route index path="merch/:item_id" element={<OrderForm />} />
+          <Route index path="merch/thankyou" element={<ThankYouPage />} />
           <Route index path="allalbums" element={<AllAlbums />} />
 
           <Route

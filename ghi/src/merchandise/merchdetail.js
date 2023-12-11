@@ -49,7 +49,7 @@ useEffect(() => {
 
     useEffect(() => {
         const fetchData = async() => {
-            const url = `${process.env.REACT_APP_API_HOST}/api/merch/${item_id}`;
+            const url = `http://localhost:8000/api/merch/${item_id}`;
             try {
                 const response = await fetch(url, {
                     headers: {
@@ -69,7 +69,7 @@ useEffect(() => {
 
     useEffect(() => {
         const getCurrency = async () => {
-            const currencyURL = `${process.env.REACT_APP_API_HOST}/api/currency/${currentUser}`;
+            const currencyURL = `http://localhost:8000/api/currency/${currentUser}`;
             try {
                     const response = await fetch(currencyURL, {
                     headers: {
@@ -93,7 +93,7 @@ useEffect(() => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = `${process.env.REACT_APP_API_HOST}/api/merch/${item_id}`;
+            const url = `http://localhost:8000/api/merch/${item_id}`;
             console.log(url)
             try {
                 const response = await fetch(url, {
@@ -118,7 +118,7 @@ useEffect(() => {
 
 
     const deductCurrency = async (account_id, currency) => {
-        const url = `${process.env.REACT_APP_API_HOST}/api/currency/${account_id}`;
+        const url = `http://localhost:8000/api/currency/${account_id}`;
         const fetchOptions = {
             method: 'PUT',
             body: JSON.stringify({ currency }),
@@ -142,7 +142,7 @@ useEffect(() => {
     }
 
     const deductQuantity = async (item_id, quantity) => {
-        const url = `${process.env.REACT_APP_API_HOST}/api/merch/quantity/${item_id}`;
+        const url = `http://localhost:8000/api/merch/quantity/${item_id}`;
         const fetchOptions = {
             method: 'PUT',
             body: JSON.stringify({ quantity }),
@@ -183,7 +183,7 @@ useEffect(() => {
                 };
 
 
-        const orderURL = `${process.env.REACT_APP_API_HOST}/api/customer`
+        const orderURL = `http://localhost:8000/api/customer`
         const fetchOptions = {
             method: "POST",
             body: JSON.stringify(data),
@@ -205,7 +205,7 @@ useEffect(() => {
             setCity('')
             setZipcode('')
             setState('')
-            window.location.reload()
+            window.location.href= '/merch/thankyou'
         } else {
             console.error('Failed to submit order');
         }
@@ -253,14 +253,14 @@ useEffect(() => {
 
 
     return (
-        <div>
+        <div className="container mx-auto mt-8 flex justify-between">
         {isAuthenticated && (
             <div>
-                <h3>Your Currency: {userCurrency}</h3>
+                <h3 className="whiteText" >Your Currency: {userCurrency}</h3>
             </div>
         )}
-            <div>
-                <img src= {item.image_url} style={{ width: '12rem' }} alt="item" />
+            <div className="flex-none max-w-md">
+                <img src= {item.image_url} className="w-48 mb-4" style={{ width: '24rem' }} alt="item" />
                 <ul>
                     <li>
                         <p>{item.name}</p>
@@ -268,9 +268,7 @@ useEffect(() => {
                     <li>
                         <p>${item.price}</p>
                     </li>
-                    <li>
-                        <p>{item.size}</p>
-                    </li>
+
                     <li>
                         <p>{item.description}</p>
                     </li>
@@ -281,11 +279,10 @@ useEffect(() => {
             </div>
     {quantityStatus !== "Sorry, we're sold out!" && (
         <>
+        <div className="flex-none max-w-md">
         {isAuthenticated ? (
-            <div className="row">
-                <div className="offset-3 col-6">
                     <div className="shadow p-4 mt-4">
-                        <h1>Checkout</h1>
+                        <h1 className="text-2x1 font-bold mb-4">Checkout</h1>
                         <form onSubmit={handleSubmit} id="checkout-form">
                         <div className="form-floating mb-3">
                                 <input value={email} onChange={handleEmailChange} placeholder="Email" required type="email" name="Email" id="Email" className="form-control" />
@@ -315,16 +312,16 @@ useEffect(() => {
                                 <input value={state} onChange={handleStateChange} placeholder="State" required type="text" name="State" id="State" className="form-control" />
                                 <label htmlFor="State">State</label>
                         </div>
-                            <button className="btn btn-primary">Checkout</button>
+                            <button className="btn btn-primary" disabled={userCurrency < item.price}>Checkout</button>
                         </form>
-                    </div>
-                </div>
             </div>
             ) : (
-            <p>Log in to checkout!</p>
+            <p className="text-white-500">Log in to checkout!</p>
             )}
+            </div>
         </>
         )}
+
     </div>
     )
 }

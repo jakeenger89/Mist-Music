@@ -11,3 +11,12 @@ body {
 p {
     color: white
 }
+
+.whiteText {
+    color: white;
+}
+
+.checkoutTrue {
+    color: white;
+    margin-top: 50px;
+}
