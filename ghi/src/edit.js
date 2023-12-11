@@ -51,7 +51,7 @@ const EditAccount = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/api/account/${account_id}` , {
+            const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/account/${account_id}` , {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
