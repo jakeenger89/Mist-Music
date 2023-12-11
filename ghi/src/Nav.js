@@ -58,6 +58,15 @@ function Nav({ isAuthenticated, onLogout }) {
             Login
           </NavLink>
         )}
+          <NavLink className={"navbar-brand"} to="/search_user">
+          Search Users
+        </NavLink>
+          <NavLink className={"navbar-brand"} to="/search_song">
+          Search Songs
+        </NavLink>
+        <NavLink className={"navbar-brand"} to="/search_album">
+          Search Albums
+        </NavLink>
         <NavLink className={"navbar-brand"} to="/aboutus">
           About Us
         </NavLink>

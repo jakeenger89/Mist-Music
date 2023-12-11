@@ -8,8 +8,6 @@
     overflow: hidden;
 }
 
-
-
 .profile-image {
     width: 200px;
     height: 200px;
@@ -125,5 +123,59 @@ h2 {
 }
 
 .profile {
-    background-color: rgba(39, 46, 46, 0.417)
+    background-color: rgba(39, 46, 46, 0.417);
+    margin-top: 30px;
+    margin-left: 980px;
+    font-size: 22px;
+    width: 290px;
+    list-style: none;
+    border-left: 2px solid white
+}
+
+.full-width-line {
+    width: 141%;
+    border: 0;
+    height: 2px;
+    background-color: white;
+    margin: 0;
+}
+
+.welcome-link {
+    margin-right: 100px;
+    width: 150%;
+}
+
+.name-text {
+    position: absolute;
+    width: 15%;
+    bottom: 130px;
+    color: white;
+    margin-left: 220px;
+    font-size: 35px;
+    text-shadow: 1px 1px 0 black, -1px 1px black;
+}
+
+.top-recent {
+    margin-top: 0;
+    margin-bottom: 20px; /* Add margin-bottom to create space for the title */
+    border-right: 2px solid white;
+    width: 300px;
+    height: 300px;
+}
+
+.top-liked {
+    margin-top: 50px; /* Add margin-top to create space for the title */
+    border-right: 2px solid white;
+    width: 300px;
+    height: 300px;
+}
+
+.dropdown-open .suggestion-item {
+  color: white;
+  /* Add any other styling you want for the suggestion items when the dropdown is open */
+}
+
+.suggestion-item {
+  color: white;
+  /* Add any other styling you want for the suggestion items */
 }

@@ -292,7 +292,6 @@ class AccountQueries:
     def search_accounts(
         self, search_term: str
     ) -> List[AccountOutWithPassword]:
-
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:

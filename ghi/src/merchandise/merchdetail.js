@@ -195,6 +195,7 @@ useEffect(() => {
     try {
         const response = await fetch(orderURL, fetchOptions)
         if(response.ok) {
+            // const newOrder = await response.json();
             await deductQuantity(item_id, 1);
             await deductCurrency(currentUser, totalPrice);
             setEmail('')

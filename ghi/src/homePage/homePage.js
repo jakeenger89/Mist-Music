@@ -7,7 +7,7 @@ const HomePage = () => {
 
 
         const fetchRandomMerch = async () => {
-            const url = `${process.env.REACT_APP_API_HOST}/api/merch/random`
+            const url = `http://localhost:8000/api/merch/random`
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {

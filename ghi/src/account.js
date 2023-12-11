@@ -109,10 +109,17 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
           if (userSongsResponse.ok) {
             const userSongsData = await userSongsResponse.json();
             setAccountSongs(userSongsData.songs);
-          } else {
-            console.error('Failed to fetch user songs');
-          }
+          if (account_id) {
+            setAccountId(account_id);
+            const response = await fetch(`http://localhost:8000/api/account/${account_id}`);
+            const data = await response.json();
 
+            setCurrentUser(data);
+            fetchTopRecentUploads();
+            fetchRandomLikedSongs(account_id); // Pass account_id to the function
+          } else {
+            console.error('Failed to fetch user data');
+          }
           fetchTopRecentUploads();
           fetchRandomLikedSongs(account_id);
         } else {
@@ -120,7 +127,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
         }
       } else {
         console.error('Authentication token not found');
-      }
+      }}
     } catch (error) {
       console.error('Error fetching data:', error);
     }
