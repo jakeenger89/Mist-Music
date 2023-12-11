@@ -9,9 +9,10 @@
 
 
 .followbtn {
+    position: fixed;
     margin-left: 1200px;
     position: absolute;
-    margin-top: -110px
+    top: 255px
 }
 
 .username {
@@ -20,11 +21,11 @@
 
 .profile-pic {
     border-radius: 50%;
-    position: absolute;
+    position: fixed;
     height: 200px;
     width: 200px;
-    bottom: 35%;
-    left: 2%;
+    bottom: 68%;
+    left: 18%;
     border: 5px solid black
 }
 

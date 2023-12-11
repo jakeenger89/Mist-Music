@@ -14,6 +14,7 @@ from queries.accounts import (
     DuplicateAccountError,
     AccountUpdateIn,
     AccountOutWithPassword,
+    AccountUpdateOut
 )
 from jwtdown_fastapi.authentication import Token
 from routers.authenticator import authenticator
@@ -86,7 +87,7 @@ async def create_account(
         )
 
 
-@router.put("/api/account/{account_id}", response_model=AccountOut)
+@router.put("/api/account/{account_id}", response_model=AccountUpdateOut)
 def update_account(
     account_id: int,
     account_update: AccountUpdateIn,

@@ -34,7 +34,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
     try {
       const authToken = localStorage.getItem('yourAuthToken');
 
-      const response = await fetch('http://localhost:8000/api/random-recent-uploads', {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/random-recent-uploads`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
         return;
       }
 
-      const response = await fetch(`http://localhost:8000/liked-songs/random/${account_id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/liked-songs/random/${account_id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ useEffect(() => {
         if (account_id) {
           setAccountId(account_id);
 
-          const userDataResponse = await fetch(`http://localhost:8000/api/account/${account_id}`);
+          const userDataResponse = await fetch(`${process.env.REACT_APP_API_HOST}/account/${account_id}`);
           if (userDataResponse.ok) {
             const userData = await userDataResponse.json();
             setCurrentUser(userData);
@@ -105,7 +105,7 @@ useEffect(() => {
             console.error('Failed to fetch user data');
           }
 
-          const userSongsResponse = await fetch(`http://localhost:8000/user-songs/${account_id}`);
+          const userSongsResponse = await fetch(`${process.env.REACT_APP_API_HOST}/user-songs/${account_id}`);
           if (userSongsResponse.ok) {
             const userSongsData = await userSongsResponse.json();
             setAccountSongs(userSongsData.songs);
@@ -131,7 +131,7 @@ useEffect(() => {
 
   const handleSearchUser = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/account?username=${searchUsername}`);
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/account?username=${searchUsername}`);
       if (response.ok) {
         const userData = await response.json();
         setSearchedUserData(userData);
@@ -149,7 +149,7 @@ useEffect(() => {
     setSearchUsername(term);
 
     try {
-      const response = await fetch('http://localhost:8000/api/accounts');
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/accounts`);
       if (response.ok) {
         const userData = await response.json();
         const allUsernames = userData.map((user) => user.username);
