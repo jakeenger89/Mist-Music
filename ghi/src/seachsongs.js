@@ -16,7 +16,7 @@ const handleLike = async (songId) => {
     }
 
     // Make a POST request to like the song
-    const response = await fetch(`http://localhost:8000/songs/${songId}/like`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}/songs/${songId}/like`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -34,7 +34,7 @@ const Account = ({ isAuthenticated, setIsAuthenticated }) => {
     try {
       const authToken = localStorage.getItem('yourAuthToken');
 
-      const response = await fetch('${process.env.REACT_APP_API_HOST}/api/random-recent-uploads', {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/random-recent-uploads`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ useEffect(() => {
     setSearchUsername(term);
 
     try {
-      const response = await fetch('${process.env.REACT_APP_API_HOST}/api/accounts');
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/accounts`);
       if (response.ok) {
         const userData = await response.json();
         const allUsernames = userData.map((user) => user.username);

@@ -37,7 +37,15 @@ class AccountUpdateIn(BaseModel):
     last_name: Optional[str] = None
     profile_picture_url: Optional[str] = None
     banner_url: Optional[str] = None
-    signup_date: Optional[datetime] = None
+
+
+class AccountUpdateOut(BaseModel):
+    account_id: int
+    username: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    profile_picture_url: Optional[str] = None
+    banner_url: Optional[str] = None
 
 
 class Follow(BaseModel):
@@ -224,7 +232,7 @@ class AccountQueries:
 
     def update_account(
         self, account_id: int, info: AccountUpdateIn
-    ) -> AccountOut:
+    ) -> AccountUpdateOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 try:
@@ -232,12 +240,12 @@ class AccountQueries:
                         """
                         UPDATE account
                         SET username = %s, first_name = %s, last_name = %s,
-                            profile_picture_url = %s, banner_url = %s,
-                            signup_date = %s
+                            profile_picture_url = %s, banner_url = %s
+
                         WHERE account_id = %s
-                        RETURNING account_id, username, email, password,
-                            first_name, last_name, profile_picture_url,
-                            banner_url, signup_date
+                        RETURNING account_id, username, email,
+                        first_name, last_name, profile_picture_url,
+                            banner_url
                         """,
                         [
                             info.username,
@@ -245,25 +253,18 @@ class AccountQueries:
                             info.last_name,
                             info.profile_picture_url,
                             info.banner_url,
-                            info.signup_date,
                             account_id
                         ],
                     )
                     record = db.fetchone()
                     if record:
-                        updated_account = AccountOut(
+                        updated_account = AccountUpdateOut(
                             account_id=record[0],
                             username=record[1],
-                            email=record[2],
-                            password=record[
-                                3
-                            ],  # You can exclude this if you don't
-                            # want to return the password
-                            first_name=record[4],
-                            last_name=record[5],
-                            profile_picture_url=record[6],
-                            banner_url=record[7],
-                            signup_date=record[8]
+                            first_name=record[2],
+                            last_name=record[3],
+                            profile_picture_url=record[4],
+                            banner_url=record[5]
                         )
                         return updated_account
                     else:

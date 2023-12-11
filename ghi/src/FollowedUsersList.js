@@ -17,7 +17,7 @@ const FollowedUsersList = () => {
 
         const authToken = localStorage.getItem('yourAuthToken');
 
-        const response = await fetch(`http://localhost:8000/followed-accounts/${account_id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_HOST}/followed-accounts/${account_id}`, {
           headers: {
             'Authorization': `Bearer ${authToken}`,
           },
@@ -31,7 +31,7 @@ const FollowedUsersList = () => {
           if (Array.isArray(followingIds)) {
             // Fetch account details for each following_id
             const accountsPromises = followingIds.map(async (followingId) => {
-              const accountResponse = await fetch(`http://localhost:8000/api/account/${followingId}`, {
+              const accountResponse = await fetch(`${process.env.REACT_APP_API_HOST}/api/account/${followingId}`, {
                 headers: {
                   'Authorization': `Bearer ${authToken}`,
                 },
@@ -80,7 +80,7 @@ const FollowedUsersList = () => {
         following_id: parseInt(followingId, 10),
       };
 
-      const response = await fetch(`http://localhost:8000/accounts/${account_id}/unfollow`, {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/accounts/${account_id}/unfollow`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

@@ -1,3 +1,7 @@
+## December 11
+
+This week was spent mostly on styling our front end component of the project. i was tackling the album forms and pages. later in the week we started deciding more on a theme for the site and started applying it to give our site a more cohesive look. we also deployed the site, front end and back end we had a few blockers with that but marcus was able to figure out how to get the front end up.
+
 ## December 04
 
 spent this week on front end componets for our projects. setting up album pages for viewing and creatign albums on the website. ran into a big blocker this week with docker and my frontend. after pulling from main my ghi container stoped working and i could not get into my front end anymore. after alot of help from Rousheen and foguring out it was a out of date version of docker i was able to solve that issue.
