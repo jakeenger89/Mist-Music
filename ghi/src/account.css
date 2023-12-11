@@ -24,16 +24,6 @@
     border: 5px solid black;
 }
 
-.profile-pic {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    position: fixed;
-    bottom: 925px; /* Adjust this value to move it up */
-    left: 225x;
-    border: 5px solid black;
-}
-
 .edit-profile-button {
     position: absolute;
     bottom: 100px;
