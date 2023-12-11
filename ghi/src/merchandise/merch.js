@@ -24,7 +24,7 @@ function MerchList() {
     return (
 
         <div>
-        <h5>Merchandise</h5>
+        <h2 style={{ paddingTop: '30px' }}>Merchandise</h2>
         <div className="d-flex flex-wrap">
           {merchs && merchs.map(merch => (
             <div key={merch.item_id} className="col-lg-4 col-md-6">
