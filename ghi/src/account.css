@@ -10,7 +10,7 @@
 }
 
 .profile {
-    background-color: #2D3748;
+    background-color: #21252c;
 }
 
 
@@ -22,16 +22,6 @@
     bottom: 10%;
     left: 20px;
     border: 5px solid black;
-}
-
-.profile-pic {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  position: fixed;
-  bottom: 925px; /* Adjust this value to move it up */
-  left: 225x;
-  border: 5px solid black;
 }
 
 .edit-profile-button {
@@ -63,9 +53,7 @@
 
 .search-container {
     display: absolute;
-    flex-direction: column;
-    align-items: flex-end;
-    margin-left: 1000px;
+    margin-left: 950px;
     width: 278px;
     border: 2px solid white;
 }
@@ -79,12 +67,13 @@ h2 {
 
 .song-list {
     color: white;
-    margin-top: 30px;
-    margin-left: 980px;
+    margin-top: 250px;
+    margin-left: 1050px;
     font-size: 22px;
     width: 290px;
     list-style: none;
-    border-left: 2px solid white
+    border-left: 2px solid white;
+    position: absolute
 }
 
 .full-width-line {
@@ -113,26 +102,26 @@ h2 {
 .top-recent {
     margin-top: 0;
     margin-bottom: 20px; /* Add margin-bottom to create space for the title */
-    border-right: 2px solid white;
-    width: 300px;
-    height: 300px;
+    width: 1000px;
+    height: 150px;
+    display: flex;
     text-align: center;
 }
 
 .top-liked {
     margin-top: 50px; /* Add margin-top to create space for the title */
-    border-right: 2px solid white;
-    width: 300px;
-    height: 300px;
+    width: 1000px;
+    height: 150px;
+    display: flex;
     text-align: center;
 }
 
 .dropdown-open .suggestion-item {
-  color: white;
+    color: white;
   /* Add any other styling you want for the suggestion items when the dropdown is open */
 }
 
 .suggestion-item {
-  color: white;
+    color: white;
   /* Add any other styling you want for the suggestion items */
 }

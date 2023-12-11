@@ -11,7 +11,7 @@ const SearchSongsPage = () => {
     };
 
     return (
-        <div className="container mt-5">
+        <div className="searchBar-container mt-4">
         <h1>Search Songs</h1>
         <input
             type="text"

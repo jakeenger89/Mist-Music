@@ -21,17 +21,31 @@ function Nav({ isAuthenticated, onLogout }) {
         <NavLink className="navbar-brand" to="/merch">
           Merchandise
         </NavLink>
-        {isAuthenticated && (
-          <NavLink className="navbar-brand" to="/createalbumform">
-          Create Album
-        </NavLink>
-        )}
-        <NavLink className={"navbar-brand"} to="/allsongs">
-          Search Songs
-        </NavLink>
         <NavLink className="navbar-brand" to="/allalbums">
           All Albums
         </NavLink>
+        <NavLink className={"navbar-brand"} to="/allsongs">
+          All Songs
+        </NavLink>
+        <NavLink className={"navbar-brand"} to="/search_album">
+          Search Albums
+        </NavLink>
+          <NavLink className={"navbar-brand"} to="/search_song">
+          Search Songs
+        </NavLink>
+        <NavLink className={"navbar-brand"} to="/search_user">
+          Search Users
+        </NavLink>
+        {isAuthenticated && (
+          <NavLink className="navbar-brand" to="/createalbumform">
+          Upload Album
+        </NavLink>
+        )}
+        {!isAuthenticated && (
+          <NavLink className="navbar-brand" to="/signupform">
+            Sign Up
+          </NavLink>
+        )}
         {isAuthenticated && (
           <NavLink className="navbar-brand" to="/createsongform">
             Upload Song
@@ -43,24 +57,10 @@ function Nav({ isAuthenticated, onLogout }) {
           </NavLink>
         )}
         {!isAuthenticated && (
-          <NavLink className="navbar-brand" to="/signupform">
-            Sign Up Form
-          </NavLink>
-        )}
-        {!isAuthenticated && (
           <NavLink className="navbar-brand" to="/loginform">
             Login
           </NavLink>
         )}
-          <NavLink className={"navbar-brand"} to="/search_user">
-          Search Users
-        </NavLink>
-          <NavLink className={"navbar-brand"} to="/search_song">
-          Search Songs
-        </NavLink>
-        <NavLink className={"navbar-brand"} to="/search_album">
-          Search Albums
-        </NavLink>
         <NavLink className={"navbar-brand"} to="/aboutus">
           About Us
         </NavLink>
