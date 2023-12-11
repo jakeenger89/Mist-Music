@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import "./account.css";
+import "./userprofile.css";
 
 const UserProfile = () => {
   const { account_id } = useParams();
@@ -131,9 +131,11 @@ return (
           <img src={userData.profile_picture_url || profile_picture_url} alt="Profile" className="profile-pic" />
         </div>
         <h1 className="username">{userData.username}'s Profile</h1>
-        <Link to={`/user-liked-songs/${account_id}`}>
-          <h4>Liked Songs</h4>
-        </Link>
+        <div className='user-links'>
+          <Link className="profile-link" to={`/user-liked-songs/${account_id}`}>
+            <h4>Liked Songs</h4>
+          </Link>
+        </div>
         <ul>
           {likedSongs.map((song) => (
             <li key={song.song_id}>
@@ -141,7 +143,6 @@ return (
             </li>
           ))}
         </ul>
-
         <h4>Posted Songs</h4>
         <ul>
           {postedSongs.map((song) => (
@@ -150,6 +151,7 @@ return (
             </li>
           ))}
         </ul>
+        <div className='followbtn'>
         {!isFollowing && (
           <button onClick={handleFollow} disabled={followedOnce}>
             Follow
@@ -158,6 +160,7 @@ return (
         {isFollowing && (
           <p>Following</p>
         )}
+        </div>
       </div>
     )}
   </div>
