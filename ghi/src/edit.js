@@ -15,6 +15,7 @@ const EditAccount = () => {
     const [last_name, setLastName] = useState("")
     const [profile_picture_url, setProfilePicture] = useState("")
     const [banner_url, setBannerPic] = useState("")
+    const [updateSuccess, setUpdateSuccess] = useState(false)
 
     const authToken = localStorage.getItem('yourAuthToken')
     const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
@@ -62,7 +63,11 @@ const EditAccount = () => {
                 throw new Error('HTTP ERROR')
             }
             const data = await response.json()
-            console.log('success', data)
+            setUpdateSuccess(true)
+            const timer = setTimeout(() => {
+                setUpdateSuccess(false);
+            }, 5000)
+            return () => clearTimeout(timer)
             } catch (error) {
                 console.log('Error posting')
         }
@@ -72,7 +77,7 @@ return (
     <MDBContainer fluid className="h-100" style={{ height: '100vh' }}>
             <MDBRow className="d-flex justify-content-center align-items-center h-100">
                 <MDBCol md="10" lg="6" className="d-flex flex-column align-items-center">
-                    <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4"style={{ color: 'white'}}>Edit Account</p>
+                    <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4"style={{ color: 'white'}}>Edit Profile</p>
                     <div className="d-flex flex-row align-items-center mb-4">
                         <MDBIcon fas icon="user me-3" size="lg" />
                         <MDBInput type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username"/>
@@ -96,6 +101,7 @@ return (
                     <MDBBtn className="mb-4" size="lg" onClick={handleSubmit} style={{ backgroundColor: 'aqua', color: 'black' }}>
                         Save
                     </MDBBtn>
+                    {updateSuccess && <div style={{ color: 'green' }}>Update Successful!</div>}
                 </MDBCol>
             </MDBRow>
     </MDBContainer>

@@ -32,6 +32,7 @@ class AccountOutWithPassword(AccountOut):
 
 
 class AccountUpdateIn(BaseModel):
+    username: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     profile_picture_url: Optional[str] = None
@@ -100,6 +101,8 @@ class AccountQueries:
                             account_id,
                             username,
                             email,
+                            first_name,
+                            last_name,
                             profile_picture_url,
                             banner_url,
                             password
@@ -115,10 +118,12 @@ class AccountQueries:
                             account_id=record[0],
                             username=record[1],
                             email=record[2],
-                            profile_picture_url=record[3],
-                            banner_url=record[4],
-                            password=record[5],
-                            hashed_password=record[5],
+                            first_name=record[3],
+                            last_name=record[4],
+                            profile_picture_url=record[5],
+                            banner_url=record[6],
+                            password=record[7],
+                            hashed_password=record[7],
                         )
                         return account_out
                     else:
@@ -126,6 +131,8 @@ class AccountQueries:
                             account_id="",
                             username="",
                             email="",
+                            first_name="",
+                            last_name="",
                             profile_picture_url="",
                             banner_url="",
                             password="",
@@ -137,6 +144,8 @@ class AccountQueries:
                 account_id="",
                 username="",
                 email="",
+                first_name="",
+                last_name="",
                 profile_picture_url="",
                 banner_url="",
                 password="",
@@ -222,7 +231,7 @@ class AccountQueries:
                     db.execute(
                         """
                         UPDATE account
-                        SET first_name = %s, last_name = %s,
+                        SET username = %s, first_name = %s, last_name = %s,
                             profile_picture_url = %s, banner_url = %s,
                             signup_date = %s
                         WHERE account_id = %s
@@ -231,6 +240,7 @@ class AccountQueries:
                             banner_url, signup_date
                         """,
                         [
+                            info.username,
                             info.first_name,
                             info.last_name,
                             info.profile_picture_url,
