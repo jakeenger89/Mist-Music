@@ -1,22 +1,12 @@
 import React, { useState } from "react";
 import "./CreateAlbum.css";
-import {
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBCard,
-  MDBCardBody,
-  MDBInput,
-  MDBBtn,
-  MDBIcon,
-} from "mdb-react-ui-kit";
 
 const CreateAlbumForm = ({ isAuthenticated, onSubmit }) => {
   const [name, setName] = useState("");
   const [artist, setArtist] = useState("");
   const [genre, setGenre] = useState("");
   const [releaseDate, setReleaseDate] = useState("");
-  const [coverImageUrl, setCoverImageUrl] = useState(""); // Changed from "imageUrl" to "coverImageUrl"
+  const [coverImageUrl, setCoverImageUrl] = useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -33,7 +23,7 @@ const CreateAlbumForm = ({ isAuthenticated, onSubmit }) => {
       case "releaseDate":
         setReleaseDate(value);
         break;
-      case "coverImageUrl": // Changed from "imageUrl" to "coverImageUrl"
+      case "coverImageUrl":
         setCoverImageUrl(value);
         break;
       default:
@@ -44,24 +34,18 @@ const CreateAlbumForm = ({ isAuthenticated, onSubmit }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check if the user is authenticated
     if (!isAuthenticated) {
-      // Redirect to the login page or handle unauthenticated user appropriately
       console.error("User is not authenticated");
       return;
     }
 
-    // Retrieve the auth token from localStorage
     const authToken = localStorage.getItem("yourAuthToken");
 
-    // Check if authToken is missing
     if (!authToken) {
       console.error("Authorization token is missing");
-      // Handle the missing token appropriately (redirect to login, etc.)
       return;
     }
 
-    // Prepare the data to be sent in the request
     const formattedReleaseDate = new Date(releaseDate)
       .toISOString()
       .split("T")[0];
@@ -70,11 +54,10 @@ const CreateAlbumForm = ({ isAuthenticated, onSubmit }) => {
       artist,
       genre,
       release_date: formattedReleaseDate,
-      cover_image_url: coverImageUrl, // Changed from "image_url" to "cover_image_url"
+      cover_image_url: coverImageUrl,
     };
 
     try {
-      // Use authToken in the headers for authentication
       const response = await fetch("http://localhost:8000/api/albums", {
         method: "POST",
         headers: {
@@ -86,16 +69,13 @@ const CreateAlbumForm = ({ isAuthenticated, onSubmit }) => {
 
       if (response.ok) {
         console.log("Album created successfully");
-        // Reset form values after successful submission
         setName("");
         setArtist("");
         setGenre("");
         setReleaseDate("");
-        setCoverImageUrl(""); // Changed from "imageUrl" to "coverImageUrl"
-        // Call the provided onSubmit callback with the data
+        setCoverImageUrl("");
         onSubmit(data);
       } else {
-        // Log the details of the error
         const errorDetails = await response.json();
         console.error(
           "Failed to create album",
@@ -104,7 +84,6 @@ const CreateAlbumForm = ({ isAuthenticated, onSubmit }) => {
           errorDetails
         );
 
-        // Handle specific validation errors if needed
         if (errorDetails && errorDetails.detail) {
           errorDetails.detail.forEach((detail) => {
             console.error("Validation error:", detail);
@@ -117,94 +96,104 @@ const CreateAlbumForm = ({ isAuthenticated, onSubmit }) => {
   };
 
   return (
-    <MDBContainer className="CreateAlbum-container">
-      <MDBCard className="text-black m-5" style={{ borderRadius: "25px" }}>
-        <MDBCardBody>
-          <MDBRow>
-            <MDBCol md="12">
-              <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
-                Add New Album
-              </p>
-            </MDBCol>
-          </MDBRow>
-
-          <MDBRow>
-            <MDBCol md="6">
-              <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="compact-disc me-3" size="lg" />
-                <MDBInput
-                  label="Album Name"
-                  id="albumName"
-                  type="text"
-                  className="w-100"
-                  value={name}
-                  onChange={handleChange}
-                  name="name"
-                />
+    <div className="CreateAlbum-container">
+      <div className="col-2" style={{ marginTop: "25px" }}>
+        {/* You can add an image here if needed */}
+      </div>
+      <div className="col-10">
+        <div className="shadow p-4 mt-4 mx-auto">
+          <h1>Add New Album</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="row mb-3">
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={name}
+                    onChange={(e) => handleChange(e)}
+                    placeholder="Album Name"
+                    required
+                    type="text"
+                    name="name"
+                    className="form-control"
+                  />
+                  <label htmlFor="name">Album Name</label>
+                </div>
               </div>
 
-              <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="user me-3" size="lg" />
-                <MDBInput
-                  label="Artist"
-                  id="artist"
-                  type="text"
-                  className="w-100"
-                  value={artist}
-                  onChange={handleChange}
-                  name="artist"
-                />
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={artist}
+                    onChange={(e) => handleChange(e)}
+                    placeholder="Artist"
+                    required
+                    type="text"
+                    name="artist"
+                    className="form-control"
+                  />
+                  <label htmlFor="artist">Artist</label>
+                </div>
+              </div>
+            </div>
+
+            <div className="row mb-3">
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={genre}
+                    onChange={(e) => handleChange(e)}
+                    placeholder="Genre"
+                    required
+                    type="text"
+                    name="genre"
+                    className="form-control"
+                  />
+                  <label htmlFor="genre">Genre</label>
+                </div>
               </div>
 
-              <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="music me-3" size="lg" />
-                <MDBInput
-                  label="Genre"
-                  id="genre"
-                  type="text"
-                  className="w-100"
-                  value={genre}
-                  onChange={handleChange}
-                  name="genre"
-                />
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={releaseDate}
+                    onChange={(e) => handleChange(e)}
+                    required
+                    type="date"
+                    name="releaseDate"
+                    className="form-control"
+                  />
+                  <label htmlFor="releaseDate">Release Date</label>
+                </div>
               </div>
-            </MDBCol>
+            </div>
 
-            <MDBCol md="6">
-              <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="calendar me-3" size="lg" />
-                <MDBInput
-                  label="Release Date"
-                  id="releaseDate"
-                  type="date"
-                  className="w-100"
-                  value={releaseDate}
-                  onChange={handleChange}
-                  name="releaseDate"
-                />
+            <div className="row mb-3">
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={coverImageUrl}
+                    onChange={(e) => handleChange(e)}
+                    placeholder="Cover Image URL"
+                    type="text"
+                    name="coverImageUrl"
+                    className="form-control"
+                  />
+                  <label htmlFor="coverImageUrl">Cover Image URL</label>
+                </div>
               </div>
+            </div>
 
-              <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="image me-3" size="lg" />
-                <MDBInput
-                  label="Cover Image URL"
-                  id="coverImageUrl" // Changed from "imageUrl" to "coverImageUrl"
-                  type="text"
-                  className="w-100"
-                  value={coverImageUrl} // Changed from "imageUrl" to "coverImageUrl"
-                  onChange={handleChange}
-                  name="coverImageUrl" // Changed from "imageUrl" to "coverImageUrl"
-                />
+            <div className="row">
+              <div className="col-12">
+                <button type="submit" className="btn btn-primary">
+                  Create Album
+                </button>
               </div>
-            </MDBCol>
-          </MDBRow>
-
-          <MDBBtn className="mb-4" size="lg" onClick={handleSubmit}>
-            Create Album
-          </MDBBtn>
-        </MDBCardBody>
-      </MDBCard>
-    </MDBContainer>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 };
 
