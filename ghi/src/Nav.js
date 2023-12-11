@@ -27,14 +27,6 @@ function Nav({ isAuthenticated, onLogout }) {
         <NavLink className="navbar-brand" to="/merch">
           Merchandise
         </NavLink>
-        {isAuthenticated && (
-          <NavLink className="navbar-brand" to="/createalbumform">
-          Create Album
-        </NavLink>
-        )}
-        <NavLink className={"navbar-brand"} to="/allsongs">
-          Search Songs
-        </NavLink>
         <NavLink className="navbar-brand" to="/allalbums">
           All Albums
         </NavLink>
