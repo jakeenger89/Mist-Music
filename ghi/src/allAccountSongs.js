@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import './allaccount.css'
+import React, { useEffect, useState, useCallback } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import "./allaccount.css";
 
 const AllAccountSongs = () => {
   const [accountSongs, setAccountSongs] = useState([]);
@@ -10,22 +10,24 @@ const AllAccountSongs = () => {
   const fetchData = useCallback(async () => {
     try {
       if (!account_id) {
-        console.error('Account ID is undefined');
+        console.error("Account ID is undefined");
         return;
       }
 
       const accountIdInt = parseInt(account_id, 10);
 
       if (isNaN(accountIdInt)) {
-        console.error('Invalid account_id:', account_id);
+        console.error("Invalid account_id:", account_id);
         return;
       }
 
-      const response = await fetch(`${process.env.REACT_APP_API_HOST}/user-songs/${accountIdInt}`);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_HOST}/user-songs/${accountIdInt}`
+      );
       const data = await response.json();
       setAccountSongs(data.songs);
     } catch (error) {
-      console.error('Error fetching user songs:', error);
+      console.error("Error fetching user songs:", error);
     }
   }, [account_id]);
 
@@ -34,53 +36,60 @@ const AllAccountSongs = () => {
   }, [fetchData]);
 
   const handleUpdate = (songId) => {
-    console.log('Updating song with ID:', songId);
-    console.log('Navigating to update page with account ID:', account_id);
+    console.log("Updating song with ID:", songId);
+    console.log("Navigating to update page with account ID:", account_id);
     navigate(`/update-song/${songId}`, { state: { account_id } });
   };
 
-const handleDelete = async (songId) => {
-  try {
-    const authToken = localStorage.getItem('yourAuthToken');
-    console.log('Auth Token:', authToken);
+  const handleDelete = async (songId) => {
+    try {
+      const authToken = localStorage.getItem("yourAuthToken");
+      console.log("Auth Token:", authToken);
 
-    if (!authToken) {
-      console.error('Authentication token not found');
-      return;
+      if (!authToken) {
+        console.error("Authentication token not found");
+        return;
+      }
+
+      // Ask for confirmation before deleting
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this song?"
+      );
+
+      if (!confirmDelete) {
+        console.log("Deletion canceled by user");
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.REACT_APP_API_HOST}/api/songs/${songId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log("Song deleted successfully");
+        // Optionally, update state or perform additional actions
+        fetchData();
+      } else {
+        const data = await response.json();
+        console.error("Failed to delete song", response.status, data);
+      }
+    } catch (error) {
+      console.error("Error deleting song:", error);
     }
-
-    // Ask for confirmation before deleting
-    const confirmDelete = window.confirm('Are you sure you want to delete this song?');
-
-    if (!confirmDelete) {
-      console.log('Deletion canceled by user');
-      return;
-    }
-
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${songId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
-      },
-    });
-
-    if (response.ok) {
-      console.log('Song deleted successfully');
-      // Optionally, update state or perform additional actions
-      fetchData();
-    } else {
-      const data = await response.json();
-      console.error('Failed to delete song', response.status, data);
-    }
-  } catch (error) {
-    console.error('Error deleting song:', error);
-  }
-};
+  };
 
   return (
     <div className="AllSongs-container">
-      <h1 className="AllSongs-heading text-3xl font-bold mt-4">Uploaded Songs</h1>
+      <h1 className="AllSongs-heading text-3xl font-bold mt-4">
+        Uploaded Songs
+      </h1>
       <table className="table">
         <thead>
           <tr>
@@ -108,12 +117,18 @@ const handleDelete = async (songId) => {
               <td className="border-b">{song.bpm}</td>
               <td className="border-b">
                 {/* Add buttons for update and delete */}
-                <button className="btn-update" onClick={() => handleUpdate(song.song_id)}>
+                <button
+                  className="btn-update"
+                  onClick={() => handleUpdate(song.song_id)}
+                >
                   Update
                 </button>
               </td>
               <td className="border-b">
-                <button className="btn-delete" onClick={() => handleDelete(song.song_id)}>
+                <button
+                  className="btn-delete"
+                  onClick={() => handleDelete(song.song_id)}
+                >
                   Delete
                 </button>
               </td>

@@ -14,7 +14,9 @@ import {
 // Function to fetch all albums from the server
 const fetchAllAlbums = async () => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/albums`);
+    const response = await fetch(
+      `${process.env.REACT_APP_API_HOST}/api/albums`
+    );
     if (response.ok) {
       const albums = await response.json();
       return albums;

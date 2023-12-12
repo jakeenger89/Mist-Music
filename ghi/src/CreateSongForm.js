@@ -1,37 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import "./CreateSongForm.css";
 
 const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
-  const [name, setName] = useState('');
-  const [artist, setArtist] = useState('');
-  const [album, setAlbum] = useState('');
-  const [genre, setGenre] = useState('');
-  const [releaseDate, setReleaseDate] = useState('');
-  const [bpm, setBpm] = useState('');
-  const [url, setUrl] = useState('');
-  const [lyrics, setLyrics] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [name, setName] = useState("");
+  const [artist, setArtist] = useState("");
+  const [album, setAlbum] = useState("");
+  const [genre, setGenre] = useState("");
+  const [releaseDate, setReleaseDate] = useState("");
+  const [bpm, setBpm] = useState("");
+  const [url, setUrl] = useState("");
+  const [lyrics, setLyrics] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [albums, setAlbums] = useState([]);
-  const [randomImage, setRandomImage] = useState('');
+  const [randomImage, setRandomImage] = useState("");
 
   useEffect(() => {
     const fetchAlbums = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/albums`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_API_HOST}/api/albums`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (response.ok) {
           const albumData = await response.json();
           setAlbums(albumData);
         } else {
-          console.error('Failed to fetch albums');
+          console.error("Failed to fetch albums");
         }
       } catch (error) {
-        console.error('Error fetching albums:', error);
+        console.error("Error fetching albums:", error);
       }
     };
 
@@ -39,14 +42,19 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   }, []);
   useEffect(() => {
     // Choose a random image URL from the imported images
-    const imageNames = ['girldancing', 'girlmusicnote', 'girlpiano', 'girlsinging'];
+    const imageNames = [
+      "girldancing",
+      "girlmusicnote",
+      "girlpiano",
+      "girlsinging",
+    ];
     const randomIndex = Math.floor(Math.random() * imageNames.length);
     const randomImageName = imageNames[randomIndex];
 
     // Dynamically import the image based on the selected name
     import(`./images/${randomImageName}.webp`)
       .then((image) => setRandomImage(image.default))
-      .catch((error) => console.error('Error importing image:', error));
+      .catch((error) => console.error("Error importing image:", error));
   }, []);
 
   const genreOptions = [
@@ -63,20 +71,20 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
     event.preventDefault();
 
     if (!isAuthenticated) {
-      console.error('User is not authenticated');
+      console.error("User is not authenticated");
       return;
     }
 
-    const authToken = localStorage.getItem('yourAuthToken');
-    console.log('Auth Token:', authToken);
+    const authToken = localStorage.getItem("yourAuthToken");
+    console.log("Auth Token:", authToken);
 
     if (!authToken) {
-      console.error('Authorization token is missing');
+      console.error("Authorization token is missing");
       return;
     }
 
-    const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
-    console.log('Decoded Token:', decodedToken);
+    const decodedToken = JSON.parse(atob(authToken.split(".")[1]));
+    console.log("Decoded Token:", decodedToken);
     const account_id = decodedToken.account.account_id;
     console.log(account_id);
 
@@ -92,41 +100,44 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
       lyrics,
       image_url: imageUrl,
     };
-    console.log('Data to be sent:', data);
+    console.log("Data to be sent:", data);
 
-    if (!data.hasOwnProperty('length')) {
+    if (!data.hasOwnProperty("length")) {
       data.length = 0;
     }
 
-    if (!data.hasOwnProperty('rating')) {
+    if (!data.hasOwnProperty("rating")) {
       data.rating = 0;
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_HOST}/api/songs`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (response.ok) {
-        console.log('Song created successfully');
-        setName('');
-        setArtist('');
-        setAlbum('');
-        setGenre('');
-        setReleaseDate('');
-        setBpm('');
-        setUrl('');
-        setLyrics('');
-        setImageUrl('');
+        console.log("Song created successfully");
+        setName("");
+        setArtist("");
+        setAlbum("");
+        setGenre("");
+        setReleaseDate("");
+        setBpm("");
+        setUrl("");
+        setLyrics("");
+        setImageUrl("");
       } else {
         const errorDetails = await response.json();
         console.error(
-          'Failed to create song',
+          "Failed to create song",
           response.status,
           response.statusText,
           errorDetails
@@ -134,24 +145,24 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
 
         if (errorDetails && errorDetails.detail) {
           errorDetails.detail.forEach((detail) => {
-            console.error('Validation error:', detail);
+            console.error("Validation error:", detail);
           });
         }
       }
     } catch (error) {
-      console.error('Error creating song:', error);
+      console.error("Error creating song:", error);
     }
   };
 
   return (
     <div className="CreateSongForm-container">
-      <div className="col-2" style={{ marginTop: '25px' }}>
+      <div className="col-2" style={{ marginTop: "25px" }}>
         {randomImage && (
           <img
             src={randomImage}
             className="img-fluid rounded-5"
-            alt=''
-            style={{ width: '100%', height: '100%', borderRadius: '12px' }}
+            alt=""
+            style={{ width: "100%", height: "100%", borderRadius: "12px" }}
           />
         )}
       </div>

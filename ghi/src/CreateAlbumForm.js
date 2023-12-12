@@ -58,14 +58,17 @@ const CreateAlbumForm = ({ isAuthenticated, onSubmit }) => {
     };
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/albums`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_HOST}/api/albums`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (response.ok) {
         console.log("Album created successfully");
