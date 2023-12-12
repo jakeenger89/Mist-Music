@@ -62,7 +62,6 @@ const EditAccount = () => {
             if (!response.ok) {
                 throw new Error('HTTP ERROR')
             }
-            const data = await response.json()
             setUpdateSuccess(true)
             const timer = setTimeout(() => {
                 setUpdateSuccess(false);

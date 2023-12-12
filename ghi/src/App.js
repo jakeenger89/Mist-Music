@@ -26,8 +26,6 @@ import AllAlbums from "./AllAlbums";
 import UserProfile from "./UserProfile";
 import FollowedUsersList from "./FollowedUsersList";
 import EditAccount from "./edit";
-import HomePage from "./homePage/homePage";
-import HomePageAuth from "./homePage/homePageAuth";
 import ThankYouPage from "./merchandise/purchaseTrue";
 import AlbumEdit from "./albumEdit";
 

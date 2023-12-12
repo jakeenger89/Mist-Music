@@ -31,7 +31,7 @@ const SearchAlbumResults = () => {
 
         fetchUserData();
         setResults();
-    }, [searchQuery]);
+    },  [searchQuery, results]);
 
 return (
         <div className="container mt-5">
