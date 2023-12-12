@@ -49,7 +49,7 @@ useEffect(() => {
 
     useEffect(() => {
         const fetchData = async() => {
-            const url = `${process.env.REACT_APP_API_HOST}/api/merch/${item_id}`;
+            const url = `http://localhost:8000/api/merch/${item_id}`;
             try {
                 const response = await fetch(url, {
                     headers: {
@@ -69,7 +69,7 @@ useEffect(() => {
 
     useEffect(() => {
         const getCurrency = async () => {
-            const currencyURL = `${process.env.REACT_APP_API_HOST}/api/currency/${currentUser}`;
+            const currencyURL = `http://localhost:8000/api/currency/${currentUser}`;
             try {
                     const response = await fetch(currencyURL, {
                     headers: {
@@ -93,7 +93,7 @@ useEffect(() => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = `${process.env.REACT_APP_API_HOST}/api/merch/${item_id}`;
+            const url = `http://localhost:8000/api/merch/${item_id}`;
             console.log(url)
             try {
                 const response = await fetch(url, {
@@ -118,7 +118,7 @@ useEffect(() => {
 
 
     const deductCurrency = async (account_id, currency) => {
-        const url = `${process.env.REACT_APP_API_HOST}/api/currency/${account_id}`;
+        const url = `http://localhost:8000/api/currency/${account_id}`;
         const fetchOptions = {
             method: 'PUT',
             body: JSON.stringify({ currency }),
@@ -142,7 +142,7 @@ useEffect(() => {
     }
 
     const deductQuantity = async (item_id, quantity) => {
-        const url = `${process.env.REACT_APP_API_HOST}/api/merch/quantity/${item_id}`;
+        const url = `http://localhost:8000/api/merch/quantity/${item_id}`;
         const fetchOptions = {
             method: 'PUT',
             body: JSON.stringify({ quantity }),
@@ -183,7 +183,7 @@ useEffect(() => {
                 };
 
 
-        const orderURL = `${process.env.REACT_APP_API_HOST}/api/customer`
+        const orderURL = `http://localhost:8000/api/customer`
         const fetchOptions = {
             method: "POST",
             body: JSON.stringify(data),

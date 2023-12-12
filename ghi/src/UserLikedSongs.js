@@ -15,7 +15,7 @@ const UserLikedSongs = () => {
         return;
       }
 
-      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${songId}/unlike`, {
+      const response = await fetch(`http://localhost:8000/api/songs/${songId}/unlike`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ const UserLikedSongs = () => {
           return;
         }
 
-        const response = await fetch(`${process.env.REACT_APP_API_HOST}/liked-songs/${account_id}`, {
+        const response = await fetch(`http://localhost:8000/liked-songs/${account_id}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },

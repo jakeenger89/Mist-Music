@@ -17,7 +17,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   useEffect(() => {
     const fetchAlbums = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/albums`, {
+        const response = await fetch(`http://localhost:8000/api/albums`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs`, {
+      const response = await fetch(`http://localhost:8000/api/songs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

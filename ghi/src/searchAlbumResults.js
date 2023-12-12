@@ -15,7 +15,7 @@ const SearchAlbumResults = () => {
         // Update the results state with the fetched data
         const fetchUserData = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/search_albums?search_term=${searchQuery}`);
+                const response = await fetch(`http://localhost:8000/api/search_albums?search_term=${searchQuery}`);
                 console.log("response", response)
                 if (!response.ok){
                     throw new Error("Network response was not ok")

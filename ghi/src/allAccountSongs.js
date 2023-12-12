@@ -21,7 +21,7 @@ const AllAccountSongs = () => {
         return;
       }
 
-      const response = await fetch(`${process.env.REACT_APP_API_HOST}/user-songs/${accountIdInt}`);
+      const response = await fetch(`http://localhost:8000/user-songs/${accountIdInt}`);
       const data = await response.json();
       setAccountSongs(data.songs);
     } catch (error) {
@@ -57,7 +57,7 @@ const handleDelete = async (songId) => {
       return;
     }
 
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${songId}`, {
+    const response = await fetch(`http://localhost:8000/api/songs/${songId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
