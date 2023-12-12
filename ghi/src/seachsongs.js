@@ -42,7 +42,7 @@ const handleLike = async (songId) => {
   const handleUnlike = async (songId) => {
     try {
       // Make a DELETE request to unlike the song
-      const response = await fetch(`http://localhost:8000/api/songs/${songId}/unlike`, {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${songId}/unlike`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const handleLike = async (songId) => {
 
   const fetchSongs = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/songs`, {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
