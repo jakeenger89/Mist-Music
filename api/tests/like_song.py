@@ -18,7 +18,7 @@ class TestLikeSong(unittest.TestCase):
         mock_cursor.execute.side_effect = Exception("Duplicate entry")
 
         # Act
-        result = song_queries.like_song(song_id=2, account_id=1)
+        result = song_queries.like_song(song_id=10, account_id=1)
 
         print("Result:", result)
 

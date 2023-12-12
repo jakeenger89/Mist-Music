@@ -15,20 +15,20 @@ class TestMerchQueries:
                 "price": 0,
                 "size": "string",
                 "description": "string",
-                "quantity": 0
+                "quantity": 0,
             },
         ]
         return result
 
     def get_one_merch(self, item_id):
         result = {
-                "item_id": 4,
-                "name": "string",
-                "image_url": "string",
-                "price": 0,
-                "size": "string",
-                "description": "string",
-                "quantity": 0
+            "item_id": 4,
+            "name": "string",
+            "image_url": "string",
+            "price": 0,
+            "size": "string",
+            "description": "string",
+            "quantity": 0,
         }
         return result
 
@@ -45,7 +45,7 @@ def test_merch_list():
             "price": 0,
             "size": "string",
             "description": "string",
-            "quantity": 0
+            "quantity": 0,
         }
     ]
 
@@ -60,14 +60,14 @@ def test_get_one_merch():
     response = client.get("/api/merch/4")
 
     expected = {
-            "item_id": 4,
-            "name": "string",
-            "image_url": "string",
-            "price": 0,
-            "size": "string",
-            "description": "string",
-            "quantity": 0
-        }
+        "item_id": 4,
+        "name": "string",
+        "image_url": "string",
+        "price": 0,
+        "size": "string",
+        "description": "string",
+        "quantity": 0,
+    }
 
     app.dependency_overrides = {}
 

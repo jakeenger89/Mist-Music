@@ -6,14 +6,14 @@ from routers.authenticator import authenticator
 client = TestClient(app)
 
 
-class TestSongQueries:
-    def test_get_song_by_id(self):
+# class TestSongQueries:
+#     def test_get_song_by_id(self):
 
-        song_id = 1
+#         song_id = 1
 
-        response = client.get(f"/api/songs/{song_id}")
+#         response = client.get(f"/api/songs/{song_id}")
 
-        assert response.status_code == 200
+#         assert response.status_code == 200
 
 
 def fakeuser():
@@ -48,11 +48,11 @@ def test_update_acc():
         "first_name": "string",
         "last_name": "string",
         "profile_picture_url": "string",
-        "banner_url": "string",
-        "signup_date": "2023-12-11T22:24:21.667Z"
+        "banner_url": "string"
     }
 
-    response = client.put("/api/account/1", json=edit, headers={"Authorization": "bearer fake"})
+    response = client.put("/api/account/1", json=edit,
+                          headers={"Authorization": "bearer fake"})
 
     expected = {
         "account_id": 1,

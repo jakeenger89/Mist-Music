@@ -48,16 +48,3 @@ def test_get_all_accounts():
 
     assert response.status_code == 200
     assert response.json() == expected
-
-    # look into datetime.now
-
-
-
-
-
-
-
-    # assert parser.parse(response.json()[0]["signup_date"]) == parser.parse(expected[0]["signup_date"])
-    #  actual_result = response.json()
-    # for item in actual_result:
-    #     item["signup_date"] = parser.parse(item["signup_date"]).isoformat()

@@ -1,40 +1,41 @@
-from fastapi.testclient import TestClient
 from main import app
+from fastapi.testclient import TestClient
+from queries.albums import AlbumQueries
+from routers.authenticator import authenticator
 
 client = TestClient(app)
 
 
-def get_valid_token(username, password):
-    auth_endpoint = "/token"
-    data = {
-        "username": username,
-        "password": password,
-        "grant_type": "password",
-    }
-
-    response = client.post(auth_endpoint, data=data)
-
-    if response.status_code == 200:
-        token = response.json().get("access_token")
-        return token
-    else:
-        print(f"Authentication failed: {response.status_code}")
-        return None
+def fake_user():
+    return {"account_id": 1, "scope": "dummy_scope"}
 
 
-def test_create_album_with_authentication():
-    account_data = {
-        "username": "24",
-        "email": "24",
-        "password": "24",
-    }
+class TestAlbumQueries:
+    def create_album(self, info):
+        return {
+            "album_id": 1,
+            "name": info.name,
+            "artist": info.artist,
+            "genre": info.genre,
+            "release_date": info.release_date,
+            "cover_image_url": info.cover_image_url,
+        }
 
-    token = get_valid_token(account_data["username"], account_data["password"])
+    def get_all_albums(self):
+        return [
+            {
+                "album_id": 1,
+                "name": "Test Album",
+                "artist": "Test Artist",
+                "genre": "Test Genre",
+                "release_date": "2023-12-14",
+                "cover_image_url": "https://example.com/test-cover.jpg",
+            }
+        ]
 
-    if token:
-        headers = {"Authorization": f"Bearer {token}"}
-
-        album_data = {
+    def get_album(self, album_id):
+        return {
+            "album_id": album_id,
             "name": "Test Album",
             "artist": "Test Artist",
             "genre": "Test Genre",
@@ -42,60 +43,93 @@ def test_create_album_with_authentication():
             "cover_image_url": "https://example.com/test-cover.jpg",
         }
 
-        response = client.post("/api/albums", json=album_data, headers=headers)
+    def delete_album(self, album_id):
+        return True
 
-        assert response.status_code == 200
 
-        created_album = response.json()
+def test_create_album_with_authentication():
+    app.dependency_overrides[AlbumQueries] = TestAlbumQueries
+    app.dependency_overrides[authenticator.get_current_account_data]\
+        = fake_user
 
-        assert created_album["name"] == album_data["name"]
-        assert created_album["artist"] == album_data["artist"]
-        assert created_album["genre"] == album_data["genre"]
-        assert created_album["cover_image_url"] ==\
-            album_data["cover_image_url"]
-    else:
-        assert False, "Authentication failed"
+    headers = {"Authorization": "Bearer test_token"}
+    album_data = {
+        "name": "Test Album",
+        "artist": "Test Artist",
+        "genre": "Test Genre",
+        "release_date": "2023-12-14",
+        "cover_image_url": "https://example.com/test-cover.jpg",
+    }
+
+    response = client.post("/api/albums", json=album_data, headers=headers)
+
+    expected = {
+        "album_id": 1,
+        "name": "Test Album",
+        "artist": "Test Artist",
+        "genre": "Test Genre",
+        "release_date": "2023-12-14",
+        "cover_image_url": "https://example.com/test-cover.jpg",
+    }
+
+    app.dependency_overrides = {}
+
+    assert response.status_code == 200
+    assert response.json() == expected
 
 
 def test_get_all_albums_unprotected():
+    app.dependency_overrides[AlbumQueries] = TestAlbumQueries
     response = client.get("/api/albums")
 
+    expected = [
+        {
+            "album_id": 1,
+            "name": "Test Album",
+            "artist": "Test Artist",
+            "genre": "Test Genre",
+            "release_date": "2023-12-14",
+            "cover_image_url": "https://example.com/test-cover.jpg",
+        }
+    ]
+
+    app.dependency_overrides = {}
+
     assert response.status_code == 200
-
-    all_albums = response.json()
-
-    assert isinstance(all_albums, list)
+    assert response.json() == expected
 
 
 def test_get_album_by_id_unprotected():
-    response = client.get("/api/albums/2")
+    app.dependency_overrides[AlbumQueries] = TestAlbumQueries
+    response = client.get("/api/albums/1")
+
+    expected = {
+        "album_id": 1,
+        "name": "Test Album",
+        "artist": "Test Artist",
+        "genre": "Test Genre",
+        "release_date": "2023-12-14",
+        "cover_image_url": "https://example.com/test-cover.jpg",
+    }
+
+    app.dependency_overrides = {}
 
     assert response.status_code == 200
-
-    album = response.json()
-
-    assert isinstance(album, dict)
+    assert response.json() == expected
 
 
 def test_delete_album_with_authentication():
-    account_data = {
-        "username": "24",
-        "email": "24",
-        "password": "24",
-    }
+    app.dependency_overrides[AlbumQueries] = TestAlbumQueries
+    app.dependency_overrides[authenticator.get_current_account_data]\
+        = fake_user
 
-    token = get_valid_token(account_data["username"], account_data["password"])
+    headers = {"Authorization": "Bearer test_token"}
 
-    if token:
-        headers = {"Authorization": f"Bearer {token}"}
+    response = client.delete("/api/albums/1", headers=headers)
 
-        response = client.delete("/api/albums/1", headers=headers)
+    expected = {"message": "Album deleted successfully"}
 
-        assert response.status_code == 200
+    app.dependency_overrides = {}
 
-        result = response.json()
-
-        assert 'message' in result
-        assert result['message'] == 'Album deleted successfully'
-    else:
-        assert False, "Authentication failed"
+    assert response.status_code == 200
+    assert response.json() == expected
