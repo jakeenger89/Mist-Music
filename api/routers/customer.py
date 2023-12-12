@@ -7,7 +7,7 @@ from queries.customer import (
     OrderIn,
     Error,
     CurrencyChangeIn,
-    CurrencyChangeOut
+    CurrencyChangeOut,
 )
 from typing import List, Optional, Union
 from jwtdown_fastapi.authentication import Token
@@ -22,7 +22,11 @@ def order_list(q: CustomerQuery = Depends()) -> List[CustomerOut]:
 
 
 @router.post("/api/customer", response_model=OrderOut)
-def create_order(order: CustomerIn, q: CustomerQuery = Depends(), token: Token = Depends(authenticator.get_current_account_data)):
+def create_order(
+    order: CustomerIn,
+    q: CustomerQuery = Depends(),
+    token: Token = Depends(authenticator.get_current_account_data),
+):
     if not token:
         raise HTTPException(status_code=401, detail="User not authenticated")
     return q.create_order(order)

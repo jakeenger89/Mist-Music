@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./AllAlbums.css";
 import {
   MDBContainer,
@@ -7,6 +8,7 @@ import {
   MDBCard,
   MDBCardBody,
   MDBIcon,
+  MDBBtn,
 } from "mdb-react-ui-kit";
 
 // Function to fetch all albums from the server
@@ -45,7 +47,10 @@ const AllAlbums = () => {
 
   return (
     <MDBContainer className="AllSongs-container">
-      <MDBCard className="text-black m-5 AlbumForm" style={{ borderRadius: "25px" }}>
+      <MDBCard
+        className="text-black m-5 AlbumForm"
+        style={{ borderRadius: "25px" }}
+      >
         <MDBCardBody>
           <MDBRow>
             <MDBCol md="12">
@@ -77,6 +82,18 @@ const AllAlbums = () => {
                     className="img-fluid rounded"
                   />
                 </div>
+              </MDBCol>
+
+              {/* Add the edit button and link to the edit page */}
+              <MDBCol md="12" className="text-center">
+                <Link to={`/albums/${album.id}/edit`}>
+                  <MDBBtn
+                    size="sm"
+                    style={{ backgroundColor: "aqua", color: "black" }}
+                  >
+                    Edit
+                  </MDBBtn>
+                </Link>
               </MDBCol>
             </MDBRow>
           ))}

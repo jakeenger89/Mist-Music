@@ -7,7 +7,7 @@ const SearchSongsResults = () => {
     const queryParams = new URLSearchParams(location.search);
     const searchQuery = queryParams.get('search_term') || '';
     console.log("the searchQuery", searchQuery)
-    console.log("the quereParams", queryParams)
+    console.log("the queryParams", queryParams)
     console.log('Full URL:', location.pathname + location.search);
     const [results, setResults] = useState([]);
 
@@ -32,7 +32,7 @@ const SearchSongsResults = () => {
 
         fetchUserData();
         setResults();
-    }, [searchQuery]);
+    }, [searchQuery, results]);
 
 return (
         <div className="container mt-5">

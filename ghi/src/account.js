@@ -3,10 +3,10 @@ import { Link, Routes, Route, useNavigate } from 'react-router-dom';
 import UserLikedSongs from './UserLikedSongs';
 import FollowedUsersList from './FollowedUsersList';
 import './account.css';
-//hi
+
 const Account = ({ isAuthenticated, setIsAuthenticated }) => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const [username] = useState('');
   const [accountSongs, setAccountSongs] = useState([]);
   const [account_id, setAccountId] = useState(null);
   const [searchUsername, setSearchUsername] = useState('');

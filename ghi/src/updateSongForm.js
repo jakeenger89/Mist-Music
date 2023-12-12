@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import './CreateSongForm.css';
 
 const UpdateSongForm = () => {
@@ -11,7 +11,6 @@ const UpdateSongForm = () => {
   const [genre, setGenre] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
   const [bpm, setBpm] = useState('');
-  const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -62,30 +61,7 @@ const handleSubmit = async (event) => {
       return;
     }
 
-    // Other code...
 
-    const releaseDateTimestamp = new Date(releaseDate).getTime() / 1000;
-    const payload = {
-      name,
-      artist,
-      album,
-      genre,
-      release_date: releaseDateTimestamp,
-      bpm: parseInt(bpm),
-      account_id: parseInt(state?.account_id),
-      // Include other fields as needed (length, rating, url, lyrics, image_url, etc.)
-    };
-
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${authToken}`,
-    };
-
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${song_id}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(payload),
-    });
 
     // Other code...
   } catch (error) {

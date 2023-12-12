@@ -7,7 +7,7 @@ function MerchList() {
 
     const getData = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/api/merch/`)
+            const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/merch/`)
             if (response.ok) {
                 const data = await response.json();
                 setMerchs(data)
