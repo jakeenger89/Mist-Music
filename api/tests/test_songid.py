@@ -52,7 +52,8 @@ def test_update_acc():
         "signup_date": "2023-12-11T22:24:21.667Z"
     }
 
-    response = client.put("/api/account/1", json=edit, headers={"Authorization": "bearer fake"})
+    response = client.put("/api/account/1", json=edit,
+                          headers={"Authorization": "bearer fake"})
 
     expected = {
         "account_id": 1,
