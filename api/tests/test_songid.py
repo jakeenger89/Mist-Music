@@ -48,8 +48,7 @@ def test_update_acc():
         "first_name": "string",
         "last_name": "string",
         "profile_picture_url": "string",
-        "banner_url": "string",
-        "signup_date": "2023-12-11T22:24:21.667Z"
+        "banner_url": "string"
     }
 
     response = client.put("/api/account/1", json=edit,
