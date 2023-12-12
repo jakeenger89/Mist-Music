@@ -97,7 +97,7 @@ useEffect(() => {
         if (account_id) {
           setAccountId(account_id);
 
-          const userDataResponse = await fetch(`${process.env.REACT_APP_API_HOST}/account/${account_id}`);
+          const userDataResponse = await fetch(`${process.env.REACT_APP_API_HOST}/api/account/${account_id}`);
           if (userDataResponse.ok) {
             const userData = await userDataResponse.json();
             setCurrentUser(userData);
