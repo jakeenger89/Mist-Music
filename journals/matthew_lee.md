@@ -1,3 +1,10 @@
+## December 11, 2023
+Today we all worked on CSS, making our site look much better,
+
+We had to decide on what to use to design our site. We ended up using vanilla CSS and bootstrap since we couldn't get Tailwind working in time. Although, I managed to set it up, but we're too far into the vanilla CSS now.
+
+I've been trying to implement Stripe API into the project and I'm learning a lot about API's in general.
+
 ## December 04, 2023
 
 Today and all last week, I worked on the merchandise frontend.

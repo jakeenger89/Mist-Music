@@ -13,13 +13,15 @@ const AccountForm = ({ setIsAuthenticated, setUserId }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   async function handleSubmit(event) {
     event.preventDefault();
     const data = { username: email, password };
+    setLoginError('')
 
     try {
-      const response = await fetch("http://localhost:8000/token", {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/token`, {
         method: "POST",
         body: new URLSearchParams(data),
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -49,73 +51,38 @@ const AccountForm = ({ setIsAuthenticated, setUserId }) => {
         setPassword("");
       } else {
         // Handle login failure
-        const errorResponse = await response.json();
-        console.error("Login failed:", errorResponse);
+        setLoginError("Cannot find username & password")
+        const timer = setTimeout(() => {
+                setLoginError('');
+            }, 5000)
+            return () => clearTimeout(timer)
       }
     } catch (error) {
       // Handle fetch error
-      console.error("Fetch error:", error);
+      setLoginError("An error occured while logging in")
     }
   }
 
-  const handleChangeEmail = (event) => {
-    const { value } = event.target;
-    setEmail(value);
-  };
-
-  const handleChangePassword = (event) => {
-    const { value } = event.target;
-    setPassword(value);
-  };
-
   return (
-    <MDBContainer fluid className="h-100">
+    <MDBContainer fluid className="h-100" style={{ height: '100vh'}}>
       <MDBRow className="d-flex justify-content-center align-items-center h-100">
-        <MDBCol
-          md="10"
-          lg="6"
-          className="order-2 order-lg-1 d-flex flex-column align-items-center"
-        >
-          <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Login</p>
-
+        <MDBCol md="10" lg="6" className="d-flex align-items-center justify-content-center">
+          <img src="https://i.imgur.com/oGvU6bt.png" alt="Login" className="img-fluid" style={{ borderRadius: "50px", marginRight: "70px" }}/>
+        </MDBCol>
+        <MDBCol md="10" lg="6" className="d-flex flex-column align-items-center">
+          <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" style={{ color: 'white' }}>Login</p>
+          {loginError && <div className="alert" role="alert" style={{ color: 'red' }} >{loginError}</div>}
           <div className="d-flex flex-row align-items-center mb-4">
             <MDBIcon fas icon="envelope me-3" size="lg" />
-            <MDBInput
-              label="Email"
-              id="form2"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <MDBInput id="form2" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email"/>
           </div>
-
           <div className="d-flex flex-row align-items-center mb-4">
             <MDBIcon fas icon="lock me-3" size="lg" />
-            <MDBInput
-              label="Password"
-              id="form3"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <MDBInput id="form3" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"/>
           </div>
-
-          <MDBBtn className="mb-4" size="lg" onClick={handleSubmit}>
+          <MDBBtn className="mb-4" size="lg" onClick={handleSubmit} style={{ backgroundColor: 'aqua', color: 'black'}}>
             Login
           </MDBBtn>
-        </MDBCol>
-
-        <MDBCol
-          md="10"
-          lg="6"
-          className="order-1 order-lg-2 d-flex align-items-center justify-content-center"
-        >
-          <img
-            src="https://i.imgur.com/oGvU6bt.png"
-            alt="Login"
-            className="img-fluid"
-            style={{ borderRadius: "25px", marginRight: "70px" }}
-          />
         </MDBCol>
       </MDBRow>
     </MDBContainer>

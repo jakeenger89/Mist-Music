@@ -1,0 +1,10 @@
+.CreateAlbum-container {
+  display: flex;
+  flex-direction: row; /* Change to row */
+  align-items: center;
+  padding: 20px;
+  border: 2px solid #1a202c;
+  border-radius: 8px;
+  background-color: #2d3748;
+  color: #a0aec0 !important; /* Add !important to override conflicting styles */
+}

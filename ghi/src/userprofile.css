@@ -1,0 +1,36 @@
+.container {
+    position: relative;
+}
+
+.banner-image {
+    z-index: 0;
+    position: relative;
+}
+
+
+.followbtn {
+    position: fixed;
+    margin-left: 1200px;
+    position: absolute;
+    top: 255px
+}
+
+.username {
+    margin-top: 5px
+}
+
+.profile-pic {
+    border-radius: 50%;
+    position: fixed;
+    height: 200px;
+    width: 200px;
+    bottom: 68%;
+    left: 18%;
+    border: 5px solid black
+}
+
+.user-links {
+    position: absolute;
+    margin-left: 750px;
+    margin-top: -50px;
+}

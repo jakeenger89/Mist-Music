@@ -14,6 +14,7 @@ const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [accountcreated, setAccountCreated] = useState(false)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -23,7 +24,7 @@ const SignUpForm = () => {
       password,
     };
 
-    const MistURL = "http://localhost:8000/api/create_account/";
+    const MistURL = `${process.env.REACT_APP_API_HOST}/api/create_account/`;
     const fetchOptions = {
       method: "post",
       body: JSON.stringify(data),
@@ -39,6 +40,7 @@ const SignUpForm = () => {
       setEmail("");
       setUsername("");
       setPassword("");
+      setAccountCreated(true)
       window.location.reload();
     }
   };
@@ -56,6 +58,11 @@ const SignUpForm = () => {
               <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
                 Sign up
               </p>
+              {accountcreated && (
+                <div className="success-message" style={{ color: 'green' }}>
+                  Account successfully created!
+                </div>
+              )}
               <div className="d-flex flex-row align-items-center mb-4">
                 <MDBIcon fas icon="user me-3" size="lg" />
                 <MDBInput

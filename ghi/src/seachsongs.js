@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "./searchsong.css";
 
 function AllSongs() {
   const [songs, setSongs] = useState([]);
@@ -15,7 +16,7 @@ const handleLike = async (songId) => {
     }
 
     // Make a POST request to like the song
-    const response = await fetch(`http://localhost:8000/songs/${songId}/like`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}/songs/${songId}/like`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,10 +64,9 @@ const handleLike = async (songId) => {
     }
   };
 
-
   const fetchSongs = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/songs', {
+      const response = await fetch(`http://localhost:8000/api/songs`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -112,62 +112,77 @@ const handleLike = async (songId) => {
 
   useEffect(() => {
     fetchSongs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div>
-      <h1>All Songs</h1>
+    <div className="AllSongs-container">
+      <h1 className="AllSongs-heading text-3xl font-bold mt-4">All Songs</h1>
       {/* Search bar */}
       <input
         type="text"
         placeholder="Search by song name"
         value={searchTerm}
         onChange={handleSearchChange}
+        className="p-2 border border-gray-300 rounded mb-4"
       />
-      <table>
+      <table className="table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Artist</th>
-            <th>Album</th>
-            <th>Genre</th>
-            <th>Release Date</th>
-            <th>BPM</th>
-            <th>Rating</th>
-            <th>Likes</th>
+            <th className="border-b">Name</th>
+            <th className="border-b">Artist</th>
+            <th className="border-b">Album</th>
+            <th className="border-b">Genre</th>
+            <th className="border-b">Release Date</th>
+            <th className="border-b">BPM</th>
+            <th className="border-b">Likes</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {filteredSongs.map((song) => (
             <tr key={song.song_id}>
-              <td>
-                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+              <td className="border-b">
+                <Link
+                  to={`/songs/${song.song_id}`}
+                  className="text-blue-500 hover:underline"
+                >
+                  {song.name}
+                </Link>
               </td>
-              <td>{song.artist}</td>
-              <td>{song.album}</td>
-              <td>{song.genre}</td>
-              <td>{song.release_date}</td>
-              <td>{song.bpm}</td>
-              <td>{song.rating}</td>
-              <td>{song.likes_count}</td>
-              <td>
+              <td className="border-b">{song.artist}</td>
+              <td className="border-b">{song.album}</td>
+              <td className="border-b">{song.genre}</td>
+              <td className="border-b">{song.release_date}</td>
+              <td className="border-b">{song.bpm}</td>
+              <td className="border-b">{song.likes_count}</td>
+              <td className="border-b">
                 {account_id && (
                   <>
-                    {/* You might want to add a condition for song.isOwner here */}
-                    <button onClick={() => handleLike(song.song_id)}>Like</button>
-                    <button onClick={() => handleUnlike(song.song_id)}>Unlike</button>
+                    {/* Display both buttons without checking user_has_liked */}
+                    <button
+                      className="btn-like"
+                      onClick={() => handleLike(song.song_id)}
+                    >
+                      Like
+                    </button>
+                    <button
+                      className="btn-unlike"
+                      onClick={() => handleUnlike(song.song_id)}
+                    >
+                      Unlike
+                    </button>
                   </>
                 )}
               </td>
-              <td>
-                {/* Display audio player and download link */}
+              <td className="border-b">
+                {/* Display audio player */}
                 <figure>
-                  <audio controls>
+                  <audio className="audio-player" controls>
                     <source src={song.url} type="audio/mpeg" />
                     Your browser does not support the audio tag.
                   </audio>
-                  <a href={song.url} download>
-                  </a>
                 </figure>
               </td>
             </tr>

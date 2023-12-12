@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import "./userprofile.css";
 
 const UserProfile = () => {
   const { account_id } = useParams();
   const following_id = account_id;
   const [userData, setUserData] = useState(null);
-  const [likedSongs, setLikedSongs] = useState([]);
+  const [likedSongs] = useState([]);
   const [postedSongs, setPostedSongs] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const [loggedInUserId, setLoggedInUserId] = useState(null);
   const [followedOnce, setFollowedOnce] = useState(false);
+  const [profile_picture_url] = useState('https://img.freepik.com/free-photo/user-profile-icon-front-side-with-white-background_187299-40010.jpg?size=626&ext=jpg&ga=GA1.1.733290954.1702167185&semt=ais');
+  const [banner_url] = useState('https://cdn.pixabay.com/photo/2016/02/03/08/32/banner-1176676_1280.jpg')
 
   useEffect(() => {
     const storedToken = localStorage.getItem('yourAuthToken');
@@ -25,17 +28,15 @@ const UserProfile = () => {
     const fetchData = async () => {
       try {
         const [userDataResponse, postedSongsResponse] = await Promise.all([
-          fetch(`http://localhost:8000/api/account/${account_id}`),
-          fetch(`http://localhost:8000/user-songs/${account_id}`),
+          fetch(`${process.env.REACT_APP_API_HOST}/api/account/${account_id}`),
+          fetch(`${process.env.REACT_APP_API_HOST}/user-songs/${account_id}`),
         ]);
-
         if (userDataResponse.ok) {
           const userData = await userDataResponse.json();
           setUserData(userData);
         } else {
           console.error('Failed to fetch user data');
         }
-
         if (postedSongsResponse.ok) {
           const data = await postedSongsResponse.json();
           setPostedSongs(data.songs);
@@ -58,7 +59,7 @@ const UserProfile = () => {
           const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
           const follower_id = decodedToken.account.account_id;
 
-          const response = await fetch(`http://localhost:8000/following-status/${follower_id}/${following_id}`, {
+          const response = await fetch(`${process.env.REACT_APP_API_HOST}/following-status/${follower_id}/${following_id}`, {
             headers: {
               'Authorization': `Bearer ${authToken}`,
             },
@@ -97,7 +98,7 @@ const UserProfile = () => {
         following_id: parseInt(account_id, 10),
       };
 
-      const response = await fetch(`http://localhost:8000/accounts/${account_id}/follow`, {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/accounts/${account_id}/follow`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +106,6 @@ const UserProfile = () => {
         },
         body: JSON.stringify(requestBody),
       });
-
       if (response.ok) {
         setIsFollowing(true);
         setFollowedOnce(true);
@@ -120,44 +120,51 @@ const UserProfile = () => {
     }
   };
 
-  return (
-    <div>
-      {userData && (
-        <div>
-          <h1>{userData.username}'s Profile</h1>
-          <Link to={`/user-liked-songs/${account_id}`}>
-            <h2>Liked Songs</h2>
-          </Link>
-          <ul>
-            {likedSongs.map((song) => (
-              <li key={song.song_id}>
-                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
-              </li>
-            ))}
-          </ul>
-
-          <h2>Posted Songs</h2>
-          <ul>
-            {postedSongs.map((song) => (
-              <li key={song.song_id}>
-                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
-              </li>
-            ))}
-          </ul>
-
-          {!isFollowing && (
-            <button onClick={handleFollow} disabled={followedOnce}>
-              Follow
-            </button>
-          )}
-
-          {isFollowing && (
-            <p>Following</p>
-          )}
+return (
+  <div className="profile">
+    {userData && (
+      <div className="container">
+        <div className="banner-image">
+          <img src={userData.banner_url || banner_url} alt="Banner" />
         </div>
-      )}
-    </div>
-  );
+        <div className="profile-image-container">
+          <img src={userData.profile_picture_url || profile_picture_url} alt="Profile" className="profile-pic" />
+        </div>
+        <h1 className="username">{userData.username}'s Profile</h1>
+        <div className='user-links'>
+          <Link className="profile-link" to={`/user-liked-songs/${account_id}`}>
+            <h4>Liked Songs</h4>
+          </Link>
+        </div>
+        <ul>
+          {likedSongs.map((song) => (
+            <li key={song.song_id}>
+              <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+            </li>
+          ))}
+        </ul>
+        <h4>Posted Songs</h4>
+        <ul>
+          {postedSongs.map((song) => (
+            <li key={song.song_id}>
+              <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+            </li>
+          ))}
+        </ul>
+        <div className='followbtn'>
+        {!isFollowing && (
+          <button onClick={handleFollow} disabled={followedOnce}>
+            Follow
+          </button>
+        )}
+        {isFollowing && (
+          <p>Following</p>
+        )}
+        </div>
+      </div>
+    )}
+  </div>
+);
 };
 
 export default UserProfile;

@@ -10,14 +10,66 @@ function OrderForm() {
     const[zipcode, setZipcode] = useState('')
     const[state, setState] = useState('')
     const[userCurrency, setUserCurrency] = useState(0)
+    const[itemQuantity, setItemQuantity] = useState(0);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [item, setItem] = useState('');
+    const[quantityStatus, setQuantityStatus] = useState('')
+    const { item_id } = useParams();
 
-    const authToken = localStorage.getItem('yourAuthToken');
-    const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
-    const currentUser = decodedToken.account.account_id;
+
+        const authToken = localStorage.getItem('yourAuthToken');
+
+        let currentUser = null;
+
+        if (authToken) {
+            const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
+            currentUser = decodedToken.account.account_id;
+        }
+
+
+useEffect(() => {
+    const calculateQuantityStatus = () => {
+        if (itemQuantity >= 10) {
+        setQuantityStatus(`${itemQuantity} in stock`);
+        } else if (itemQuantity > 0 && itemQuantity < 10) {
+        setQuantityStatus(`Hurry, only ${itemQuantity} left in stock!`);
+        } else {
+        setQuantityStatus("Sorry, we're sold out!");
+        }
+    };
+
+        calculateQuantityStatus();
+    }, [itemQuantity]);
+
+
+    useEffect(() => {
+        setIsAuthenticated(!!authToken);
+    }, [authToken]);
+
+
+    useEffect(() => {
+        const fetchData = async() => {
+            const url = `http://localhost:8000/api/merch/${item_id}`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const data = await response.json();
+                setItemQuantity(data.quantity);
+                console.log("quantity data", data.quantity)
+            } catch(error){
+                console.error('Error during fetch', error)
+            }
+        };
+        fetchData();
+    }, [item_id]);
+
 
     useEffect(() => {
         const getCurrency = async () => {
-            const currencyURL = `http://localhost:8000/api/account/${currentUser}`;
+            const currencyURL = `http://localhost:8000/api/currency/${currentUser}`;
             try {
                     const response = await fetch(currencyURL, {
                     headers: {
@@ -37,11 +89,9 @@ function OrderForm() {
             }
         };
         getCurrency();
-    }, []);
+    }, [authToken, currentUser]);
 
-
-    const [item, setItem] = useState('');
-    const { item_id } = useParams();
+    useEffect(() => {
         const fetchData = async () => {
             const url = `http://localhost:8000/api/merch/${item_id}`;
             console.log(url)
@@ -49,7 +99,6 @@ function OrderForm() {
                 const response = await fetch(url, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`,
                     },
                 });
 
@@ -63,15 +112,16 @@ function OrderForm() {
                 console.error('Error fetching data:', error);
             }
         };
-        useEffect(() => {
-            fetchData();
-        }, [authToken, item_id]);
 
-    const deductCurrency = async (account_id, amount) => {
-        const url = `http://localhost:8000/api/currency/${account_id}?amount=${amount}`;
+            fetchData();
+        }, [item_id]);
+
+
+    const deductCurrency = async (account_id, currency) => {
+        const url = `http://localhost:8000/api/currency/${account_id}`;
         const fetchOptions = {
             method: 'PUT',
-            body: JSON.stringify({ amount }),
+            body: JSON.stringify({ currency }),
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${authToken}`,
@@ -91,9 +141,34 @@ function OrderForm() {
         }
     }
 
+    const deductQuantity = async (item_id, quantity) => {
+        const url = `http://localhost:8000/api/merch/quantity/${item_id}`;
+        const fetchOptions = {
+            method: 'PUT',
+            body: JSON.stringify({ quantity }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`,
+            },
+        };
+        try {
+            const response = await fetch(url, fetchOptions);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Quantity deducted successfully', data); //Remove after deploy
+            } else {
+                console.error('Failed to deduct quantity'); //Remove after deploy
+            }
+        } catch (error) {
+            console.error('Error deducting quantity:', error); //Remove after deploy
+        }
+    }
+
+
     async function handleSubmit(event) {
             event.preventDefault()
-    if (item && item.price) {
+    if (item && item.price && itemQuantity > 0) {
             const totalPrice = item.price;
             if (userCurrency >= totalPrice) {
                 const data = {
@@ -108,7 +183,7 @@ function OrderForm() {
                 };
 
 
-        const orderURL = "http://localhost:8000/api/customer"
+        const orderURL = `http://localhost:8000/api/customer`
         const fetchOptions = {
             method: "POST",
             body: JSON.stringify(data),
@@ -120,6 +195,7 @@ function OrderForm() {
     try {
         const response = await fetch(orderURL, fetchOptions)
         if(response.ok) {
+            await deductQuantity(item_id, 1);
             await deductCurrency(currentUser, totalPrice);
             setEmail('')
             setFirstName('')
@@ -128,7 +204,7 @@ function OrderForm() {
             setCity('')
             setZipcode('')
             setState('')
-            window.location.reload()
+            window.location.href= '/merch/thankyou'
         } else {
             console.error('Failed to submit order');
         }
@@ -176,9 +252,14 @@ function OrderForm() {
 
 
     return (
-        <div>
+        <div className="container mx-auto mt-8 flex justify-between">
+        {isAuthenticated && (
             <div>
-                <img src= {item.image_url} style={{ width: '12rem' }} alt="item" />
+                <h3 className="whiteText" >Your Currency: {userCurrency}</h3>
+            </div>
+        )}
+            <div className="flex-none max-w-md">
+                <img src= {item.image_url} className="w-48 mb-4" style={{ width: '24rem' }} alt="item" />
                 <ul>
                     <li>
                         <p>{item.name}</p>
@@ -186,24 +267,21 @@ function OrderForm() {
                     <li>
                         <p>${item.price}</p>
                     </li>
-                    <li>
-                        <p>{item.size}</p>
-                    </li>
+
                     <li>
                         <p>{item.description}</p>
                     </li>
+                    <li>
+                        <p>{quantityStatus}</p>
+                    </li>
                 </ul>
             </div>
-            <div>
-                <h3>
-                    Your Currency: {userCurrency}
-                </h3>
-            </div>
-
-            <div className="row">
-                <div className="offset-3 col-6">
+    {quantityStatus !== "Sorry, we're sold out!" && (
+        <>
+        <div className="flex-none max-w-md">
+        {isAuthenticated ? (
                     <div className="shadow p-4 mt-4">
-                        <h1>Checkout</h1>
+                        <h1 className="text-2x1 font-bold mb-4">Checkout</h1>
                         <form onSubmit={handleSubmit} id="checkout-form">
                         <div className="form-floating mb-3">
                                 <input value={email} onChange={handleEmailChange} placeholder="Email" required type="email" name="Email" id="Email" className="form-control" />
@@ -233,11 +311,16 @@ function OrderForm() {
                                 <input value={state} onChange={handleStateChange} placeholder="State" required type="text" name="State" id="State" className="form-control" />
                                 <label htmlFor="State">State</label>
                         </div>
-                            <button className="btn btn-primary">Checkout</button>
+                            <button className="btn btn-primary" disabled={userCurrency < item.price}>Checkout</button>
                         </form>
-                    </div>
-                </div>
             </div>
+            ) : (
+            <p className="text-white-500">Log in to checkout!</p>
+            )}
+            </div>
+        </>
+        )}
+
     </div>
     )
 }

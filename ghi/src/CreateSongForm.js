@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "./CreateSongForm.css";
 
 const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   const [name, setName] = useState('');
@@ -8,14 +9,15 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   const [releaseDate, setReleaseDate] = useState('');
   const [bpm, setBpm] = useState('');
   const [url, setUrl] = useState('');
-  const [lyrics, setLyrics] = useState(''); // Added state for lyrics
-  const [imageUrl, setImageUrl] = useState(''); // Added state for imageUrl
+  const [lyrics, setLyrics] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [albums, setAlbums] = useState([]);
+  const [randomImage, setRandomImage] = useState('');
 
   useEffect(() => {
     const fetchAlbums = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/albums', {
+        const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/albums`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -24,7 +26,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
 
         if (response.ok) {
           const albumData = await response.json();
-          setAlbums(albumData.albums);
+          setAlbums(albumData);
         } else {
           console.error('Failed to fetch albums');
         }
@@ -35,36 +37,49 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
 
     fetchAlbums();
   }, []);
+  useEffect(() => {
+    // Choose a random image URL from the imported images
+    const imageNames = ['girldancing', 'girlmusicnote', 'girlpiano', 'girlsinging'];
+    const randomIndex = Math.floor(Math.random() * imageNames.length);
+    const randomImageName = imageNames[randomIndex];
+
+    // Dynamically import the image based on the selected name
+    import(`./images/${randomImageName}.webp`)
+      .then((image) => setRandomImage(image.default))
+      .catch((error) => console.error('Error importing image:', error));
+  }, []);
+
+  const genreOptions = [
+    "Rock",
+    "Pop",
+    "Hip Hop",
+    "Jazz",
+    "Country",
+    "Electronic",
+    "Classical",
+  ];
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check if the user is authenticated
     if (!isAuthenticated) {
-      // Redirect to the login page or handle unauthenticated user appropriately
       console.error('User is not authenticated');
       return;
     }
 
-    // Retrieve the auth token from localStorage
     const authToken = localStorage.getItem('yourAuthToken');
     console.log('Auth Token:', authToken);
 
-    // Check if authToken is missing
     if (!authToken) {
       console.error('Authorization token is missing');
-      // Handle the missing token appropriately (redirect to login, etc.)
       return;
     }
 
-    // Decode the token to get account_id
     const decodedToken = JSON.parse(atob(authToken.split('.')[1]));
     console.log('Decoded Token:', decodedToken);
     const account_id = decodedToken.account.account_id;
     console.log(account_id);
 
-    // Prepare the data to be sent in the request
-    console.log('URL value:', url);
     const data = {
       name,
       artist,
@@ -74,13 +89,11 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
       bpm,
       account_id: decodedToken.account.account_id,
       url,
-      lyrics, // Include lyrics in the data
-      image_url: imageUrl, // Include imageUrl in the data
+      lyrics,
+      image_url: imageUrl,
     };
     console.log('Data to be sent:', data);
 
-    // Optionally, add 'length' and 'rating' to data if they are needed with default values
-    // You can adjust the default values as needed
     if (!data.hasOwnProperty('length')) {
       data.length = 0;
     }
@@ -90,8 +103,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
     }
 
     try {
-      // Use authToken in the headers for authentication
-      const response = await fetch('http://localhost:8000/api/songs', {
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +114,6 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
 
       if (response.ok) {
         console.log('Song created successfully');
-        // Reset form values after successful submission
         setName('');
         setArtist('');
         setAlbum('');
@@ -110,10 +121,9 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
         setReleaseDate('');
         setBpm('');
         setUrl('');
-        setLyrics(''); // Reset lyrics state
-        setImageUrl(''); // Reset imageUrl state
+        setLyrics('');
+        setImageUrl('');
       } else {
-        // Log the details of the error
         const errorDetails = await response.json();
         console.error(
           'Failed to create song',
@@ -122,7 +132,6 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
           errorDetails
         );
 
-        // Handle specific validation errors if needed
         if (errorDetails && errorDetails.detail) {
           errorDetails.detail.forEach((detail) => {
             console.error('Validation error:', detail);
@@ -135,131 +144,182 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
   };
 
   return (
-    <div className="row">
-      <div className="offset-3 col-6">
-        <div className="shadow p-4 mt-4">
-          <h1>Create Song</h1>
+    <div className="CreateSongForm-container">
+      <div className="col-2" style={{ marginTop: '25px' }}>
+        {randomImage && (
+          <img
+            src={randomImage}
+            className="img-fluid rounded-5"
+            alt=''
+            style={{ width: '100%', height: '100%', borderRadius: '12px' }}
+          />
+        )}
+      </div>
+      <div className="col-10">
+        <div className="shadow p-4 mt-4 mx-auto">
+          <h1>Uplaod Song</h1>
           <form onSubmit={handleSubmit}>
-            <div className="form-floating mb-3">
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Song Name"
-                required
-                type="text"
-                name="name"
-                className="form-control"
-              />
-              <label htmlFor="name">Song Name</label>
+            <div className="row mb-3">
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Song Name"
+                    required
+                    type="text"
+                    name="name"
+                    className="form-control"
+                  />
+                  <label htmlFor="name">Song Name</label>
+                </div>
+              </div>
+
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={artist}
+                    onChange={(e) => setArtist(e.target.value)}
+                    placeholder="Artist"
+                    required
+                    type="text"
+                    name="artist"
+                    className="form-control"
+                  />
+                  <label htmlFor="artist">Artist</label>
+                </div>
+              </div>
             </div>
 
-            <div className="form-floating mb-3">
-              <input
-                value={artist}
-                onChange={(e) => setArtist(e.target.value)}
-                placeholder="Artist"
-                required
-                type="text"
-                name="artist"
-                className="form-control"
-              />
-              <label htmlFor="artist">Artist</label>
+            <div className="row mb-3">
+              <div className="col-6">
+                <div className="form-floating">
+                  <select
+                    value={album}
+                    onChange={(e) => setAlbum(e.target.value)}
+                    className="form-select"
+                  >
+                    <option value="" disabled>
+                      Select Album (Optional)
+                    </option>
+                    {albums &&
+                      albums.map((album) => (
+                        <option key={album.album_id} value={album.name}>
+                          {album.name}
+                        </option>
+                      ))}
+                  </select>
+                  <label htmlFor="album">Album</label>
+                </div>
+              </div>
+
+              <div className="col-6">
+                <div className="form-floating">
+                  <select
+                    value={genre}
+                    onChange={(e) => setGenre(e.target.value)}
+                    className="form-select"
+                  >
+                    <option value="" disabled>
+                      Select Genre
+                    </option>
+                    {genreOptions.map((genreOption) => (
+                      <option key={genreOption} value={genreOption}>
+                        {genreOption}
+                      </option>
+                    ))}
+                  </select>
+                  <label htmlFor="genre">Genre</label>
+                </div>
+              </div>
             </div>
 
-            <div className="form-floating mb-3">
-              <select
-                value={album}
-                onChange={(e) => setAlbum(e.target.value)}
-                className="form-select"
-              >
-                <option value="" disabled>
-                  Select Album (Optional)
-                </option>
-                {albums.map((album) => (
-                  <option key={album.album_id} value={album.name}>
-                    {album.name}
-                  </option>
-                ))}
-              </select>
-              <label htmlFor="album">Album</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                value={genre}
-                onChange={(e) => setGenre(e.target.value)}
-                placeholder="Genre"
-                required
-                type="text"
-                name="genre"
-                className="form-control"
-              />
-              <label htmlFor="genre">Genre</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                value={releaseDate}
-                onChange={(e) => setReleaseDate(e.target.value)}
-                required
-                type="date"
-                name="releaseDate"
-                className="form-control"
-              />
-              <label htmlFor="releaseDate">Release Date</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                value={bpm}
-                onChange={(e) => setBpm(e.target.value)}
-                required
-                pattern="\d*"
-                title="BPM must be a number"
-                type="text"
-                name="bpm"
-                className="form-control"
-              />
-              <label htmlFor="bpm">BPM</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="URL (Optional)"
-                type="text"
-                name="url"
-                className="form-control"
-              />
-              <label className="url">Song URL</label>
+            <div className="row mb-3">
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={releaseDate}
+                    onChange={(e) => setReleaseDate(e.target.value)}
+                    required
+                    type="date"
+                    name="releaseDate"
+                    className="form-control"
+                  />
+                  <label htmlFor="releaseDate">Release Date</label>
+                </div>
+              </div>
+
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={bpm}
+                    onChange={(e) => setBpm(e.target.value)}
+                    required
+                    pattern="\d*"
+                    title="BPM must be a number"
+                    type="text"
+                    name="bpm"
+                    className="form-control"
+                  />
+                  <label htmlFor="bpm">BPM</label>
+                </div>
+              </div>
             </div>
 
-            {/* New input fields for lyrics and imageUrl */}
-            <div className="form-floating mb-3">
-              <textarea
-                value={lyrics}
-                onChange={(e) => setLyrics(e.target.value)}
-                placeholder="Lyrics (Optional)"
-                type="text"
-                name="lyrics"
-                className="form-control"
-                rows ="50"
-              />
-              <label htmlFor="lyrics">Lyrics (Optional)</label>
+            <div className="row mb-3">
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="URL (Optional)"
+                    type="text"
+                    name="url"
+                    className="form-control"
+                  />
+                  <label className="url">Song URL</label>
+                </div>
+              </div>
+
+              <div className="col-6">
+                <div className="form-floating">
+                  <input
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    placeholder="Image URL (Optional)"
+                    type="text"
+                    name="imageUrl"
+                    className="form-control"
+                  />
+                  <label htmlFor="imageUrl">Image URL (Optional)</label>
+                </div>
+              </div>
             </div>
 
-            <div className="form-floating mb-3">
-              <input
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="Image URL (Optional)"
-                type="text"
-                name="imageUrl"
-                className="form-control"
-              />
-              <label htmlFor="imageUrl">Image URL (Optional)</label>
+            <div className="row mb-3">
+              <div className="col-12">
+                <div className="form-floating">
+                  <textarea
+                    value={lyrics}
+                    onChange={(e) => setLyrics(e.target.value)}
+                    placeholder="Lyrics (Optional)"
+                    type="text"
+                    name="lyrics"
+                    className="form-control"
+                    rows="5"
+                  />
+                  <label htmlFor="lyrics">Lyrics (Optional)</label>
+                </div>
+              </div>
             </div>
 
-            <button type="submit" className="btn btn-primary">
-              Create Song
-            </button>
+            <div className="row">
+              <div className="col-12">
+                <button type="submit" className="btn btn-primary">
+                  Create Song
+                </button>
+              </div>
+            </div>
           </form>
         </div>
       </div>

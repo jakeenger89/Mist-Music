@@ -1,3 +1,9 @@
+# December 11, 2023
+
+* Finishing up the project
+
+Throughout this week I have been focused on completing frontend functionality, error responses, and css. As a group, we have talked about we wanted the project to roughly look and it was fulfilling being able to meet that goal. fixed the PUT request in the database so that it now takes in username as a parameter for the profile page. I also edited the edit form so that when a user presses save without any textboxs filled, it will allow the database to keep the most recent user changes instead of changing the data to a blank string. I learned a lot about how the frotend code functions withing the system and css tricks during this time
+
 # December 4, 2023
 
 * Working with the database

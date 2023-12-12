@@ -14,13 +14,12 @@ from queries.accounts import (
     DuplicateAccountError,
     AccountUpdateIn,
     AccountOutWithPassword,
-    CurrencyChangeOut,
-    IDError,
+    AccountUpdateOut
 )
 from jwtdown_fastapi.authentication import Token
 from routers.authenticator import authenticator
 from pydantic import BaseModel
-from typing import List, Union
+from typing import List
 
 router = APIRouter()
 
@@ -84,12 +83,11 @@ async def create_account(
     except DuplicateAccountError:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return HttpError(
-            detail="Cannot create an account with\
-                          those credentials"
+            detail="Cannot create an account with those credentials"
         )
 
 
-@router.put("/api/account/{account_id}", response_model=AccountOut)
+@router.put("/api/account/{account_id}", response_model=AccountUpdateOut)
 def update_account(
     account_id: int,
     account_update: AccountUpdateIn,
@@ -148,22 +146,7 @@ async def login_account(
     return record
 
 
-@router.put(
-    "/api/currency/{account_id}",
-    response_model=Union[CurrencyChangeOut, IDError],
-)
-def update_currency(
-    account_id: int,
-    amount: int,
-    q: AccountQueries = Depends(),
-    token: Token = Depends(authenticator.get_current_account_data),
-) -> Union[CurrencyChangeOut, IDError]:
-    if not token:
-        raise HTTPException(status_code=401, detail="User not authenticated")
-    return q.update_currency(account_id, amount)
-
-
-@router.get("/api/search", response_model=List[AccountOut])
+@router.get("/api/search_accounts", response_model=List[AccountOut])
 async def search_accounts(
     search_term: str,
     response: Response,

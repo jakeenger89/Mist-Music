@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "./SongPage.css";
 
 function SongPage() {
@@ -11,19 +11,16 @@ function SongPage() {
   useEffect(() => {
     const fetchSong = async () => {
       try {
-        console.log("Fetching song with song_id:", song_id);
-        const response = await fetch(`http://localhost:8000/api/songs/${song_id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${song_id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
         });
 
-        console.log('Response:', response);
 
         if (response.ok) {
           const songData = await response.json();
-          console.log('Song Data:', songData);
           setSong(songData);
         } else {
           console.error('Failed to fetch song');
@@ -52,7 +49,7 @@ function SongPage() {
 
   return (
     <div className="SongPage-container">
-      <h1 className="SongPage-name">{song.name}</h1>
+      <h1 className="SongPage-name mt-4">{song.name}</h1>
 
       <div className="SongPage-info-container">
         <div className="SongPage-info-left">
@@ -61,13 +58,12 @@ function SongPage() {
           <p>Genre: {song.genre}</p>
           <p>Release Date: {song.release_date}</p>
           <p>BPM: {song.bpm}</p>
-          <p>Rating: {song.rating}</p>
         </div>
 
         {/* Display the image if available */}
         {song.image_url && (
           <div className="SongPage-info-right">
-            <img src={song.image_url} alt="Song Image" style={{ maxWidth: '300px', maxHeight: '300px' }} />
+            <img src={song.image_url} alt={song.name} style={{ maxWidth: '300px', maxHeight: '300px' }} />
           </div>
         )}
       </div>
@@ -78,12 +74,12 @@ function SongPage() {
           <source src={song.url} type="audio/mpeg" />
           Your browser does not support the audio tag.
         </audio>
-        <a href={song.url} download></a>
+        <Link to={song.url} download className="visually-hidden">Download</Link>
       </div>
 
       {/* Display the lyrics if available */}
       <div className="SongPage-lyrics-container">
-        <h2 onClick={toggleLyrics}>Lyrics</h2>
+        <h3 onClick={toggleLyrics}>Lyrics</h3>
         {showLyrics && <p>{song.lyrics}</p>}
       </div>
     </div>

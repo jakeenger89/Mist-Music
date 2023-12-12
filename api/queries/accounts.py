@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, List, Union
+from typing import Optional, List
 from datetime import datetime
 from queries.pool import pool
 from fastapi import HTTPException
@@ -19,7 +19,6 @@ class AccountOut(BaseModel):
     account_id: int
     email: str
     username: str
-    currency: Optional[int] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     profile_picture_url: Optional[str] = None
@@ -33,25 +32,20 @@ class AccountOutWithPassword(AccountOut):
 
 
 class AccountUpdateIn(BaseModel):
+    username: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     profile_picture_url: Optional[str] = None
     banner_url: Optional[str] = None
-    signup_date: Optional[datetime] = None
-    currency: Optional[int] = None
 
 
-class CurrencyChangeIn(BaseModel):
-    currency: int
-
-
-class CurrencyChangeOut(BaseModel):
+class AccountUpdateOut(BaseModel):
     account_id: int
-    currency: int
-
-
-class IDError(BaseModel):
-    message: str
+    username: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    profile_picture_url: Optional[str] = None
+    banner_url: Optional[str] = None
 
 
 class Follow(BaseModel):
@@ -60,37 +54,16 @@ class Follow(BaseModel):
 
 
 class AccountQueries:
-    def update_currency(
-        self, account_id: int, amount: int
-    ) -> Union[CurrencyChangeOut, IDError]:
-        try:
-            with pool.connection() as conn:
-                with conn.cursor() as db:
-                    db.execute(
-                        """
-                        UPDATE account
-                        SET currency = currency - %s
-                        WHERE account_id = %s
-                        """,
-                        [amount, account_id],
-                    )
-                    return CurrencyChangeOut(
-                        account_id=account_id, currency=-amount
-                    )
-        except Exception as e:
-            print(e)
-            return {"message": "Could not update currency"}
-
     def login_account(self, email: str) -> AccountOutWithPassword:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
                     db.execute(
                         """
-                        SELECT account_id,
+                        SELECT
+                            account_id,
                             username,
                             email,
-                            currency,
                             password
                         FROM account
                         WHERE email = %s
@@ -104,9 +77,8 @@ class AccountQueries:
                             account_id=record[0],
                             username=record[1],
                             email=record[2],
-                            currency=record[3],
-                            password=record[4],
-                            hashed_password=record[4],
+                            password=record[3],
+                            hashed_password=record[3],
                         )
                         return account_out
                     else:
@@ -114,7 +86,6 @@ class AccountQueries:
                             account_id="",
                             username="",
                             email="",
-                            currency="",
                             password="",
                             hashed_password="",
                         )
@@ -124,7 +95,6 @@ class AccountQueries:
                 account_id="",
                 username="",
                 email="",
-                currency="",
                 password="",
                 hashed_password="",
             )
@@ -139,7 +109,10 @@ class AccountQueries:
                             account_id,
                             username,
                             email,
-                            currency,
+                            first_name,
+                            last_name,
+                            profile_picture_url,
+                            banner_url,
                             password
                         FROM account
                         WHERE account_id = %s
@@ -153,9 +126,12 @@ class AccountQueries:
                             account_id=record[0],
                             username=record[1],
                             email=record[2],
-                            currency=record[3],
-                            password=record[4],
-                            hashed_password=record[4],
+                            first_name=record[3],
+                            last_name=record[4],
+                            profile_picture_url=record[5],
+                            banner_url=record[6],
+                            password=record[7],
+                            hashed_password=record[7],
                         )
                         return account_out
                     else:
@@ -163,7 +139,10 @@ class AccountQueries:
                             account_id="",
                             username="",
                             email="",
-                            currency="",
+                            first_name="",
+                            last_name="",
+                            profile_picture_url="",
+                            banner_url="",
                             password="",
                             hashed_password="",
                         )
@@ -173,7 +152,10 @@ class AccountQueries:
                 account_id="",
                 username="",
                 email="",
-                currency="",
+                first_name="",
+                last_name="",
+                profile_picture_url="",
+                banner_url="",
                 password="",
                 hashed_password="",
             )
@@ -188,7 +170,6 @@ class AccountQueries:
                             account_id,
                             email,
                             username,
-                            currency,
                             first_name,
                             last_name,
                             profile_picture_url,
@@ -205,12 +186,11 @@ class AccountQueries:
                             account_id=int(record[0]),
                             email=record[1],
                             username=record[2],
-                            currency=record[3],
-                            first_name=record[4],
-                            last_name=record[5],
-                            profile_picture_url=record[6],
-                            banner_url=record[7],
-                            signup_date=record[8],
+                            first_name=record[3],
+                            last_name=record[4],
+                            profile_picture_url=record[5],
+                            banner_url=record[6],
+                            signup_date=record[7],
                         )
                         result.append(account_out)
                     return result
@@ -252,47 +232,39 @@ class AccountQueries:
 
     def update_account(
         self, account_id: int, info: AccountUpdateIn
-    ) -> AccountOut:
+    ) -> AccountUpdateOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 try:
                     db.execute(
                         """
                         UPDATE account
-                        SET first_name = %s, last_name = %s,
-                            profile_picture_url = %s, banner_url = %s,
-                            signup_date = %s, currency = %s
+                        SET username = %s, first_name = %s, last_name = %s,
+                            profile_picture_url = %s, banner_url = %s
+
                         WHERE account_id = %s
-                        RETURNING account_id, username, email, password,
-                            first_name, last_name, profile_picture_url,
-                            banner_url, signup_date, currency
+                        RETURNING account_id, username, email,
+                        first_name, last_name, profile_picture_url,
+                            banner_url
                         """,
                         [
+                            info.username,
                             info.first_name,
                             info.last_name,
                             info.profile_picture_url,
                             info.banner_url,
-                            info.signup_date,
-                            info.currency,
-                            account_id,
+                            account_id
                         ],
                     )
                     record = db.fetchone()
                     if record:
-                        updated_account = AccountOut(
+                        updated_account = AccountUpdateOut(
                             account_id=record[0],
                             username=record[1],
-                            email=record[2],
-                            password=record[
-                                3
-                            ],  # You can exclude this if you don't
-                            # want to return the password
-                            first_name=record[4],
-                            last_name=record[5],
-                            profile_picture_url=record[6],
-                            banner_url=record[7],
-                            signup_date=record[8],
-                            currency=record[9],
+                            first_name=record[2],
+                            last_name=record[3],
+                            profile_picture_url=record[4],
+                            banner_url=record[5]
                         )
                         return updated_account
                     else:
@@ -321,7 +293,6 @@ class AccountQueries:
     def search_accounts(
         self, search_term: str
     ) -> List[AccountOutWithPassword]:
-
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
@@ -362,7 +333,6 @@ class AccountQueries:
                         SELECT account_id,
                             username,
                             email,
-                            currency,
                             password
                         FROM account
                         WHERE username = %s
@@ -376,9 +346,8 @@ class AccountQueries:
                             account_id=record[0],
                             username=record[1],
                             email=record[2],
-                            currency=record[3],
-                            password=record[4],
-                            hashed_password=record[4],
+                            password=record[3],
+                            hashed_password=record[3],
                         )
                         return account_out
                     else:
@@ -386,7 +355,6 @@ class AccountQueries:
                             account_id="",
                             username="",
                             email="",
-                            currency="",
                             password="",
                             hashed_password="",
                         )
@@ -396,7 +364,6 @@ class AccountQueries:
                 account_id="",
                 username="",
                 email="",
-                currency="",
                 password="",
                 hashed_password="",
             )
@@ -494,3 +461,42 @@ class AccountQueries:
                     # Handle errors (e.g., duplicate follows)
                     print(e)
                     return False
+
+    def get_recent_uploads_for_followed_acc(self, account_id):
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        SELECT s.song_id, s.name, s.artist, s.album, s.genre,
+                            s.release_date, s.length, s.bpm, s.rating, s.url
+                        FROM songs s
+                        JOIN following f ON s.account_id = f.following_id
+                        WHERE f.follower_id = %s
+                        ORDER BY s.release_date DESC
+                        LIMIT 5
+                        """,
+                        [account_id],
+                    )
+                    records = db.fetchall()
+
+                    recent_uploads = [
+                        {
+                            "song_id": record[0],
+                            "name": record[1],
+                            "artist": record[2],
+                            "album": record[3],
+                            "genre": record[4],
+                            "release_date": record[5],
+                            "length": record[6],
+                            "bpm": record[7],
+                            "rating": record[8],
+                            "url": record[9],
+                            # Add other fields as needed
+                        }
+                        for record in records
+                    ]
+                    return recent_uploads
+        except Exception as e:
+            print(f"Error in get_recent_uploads_for_followed_accounts: {e}")
+            return []

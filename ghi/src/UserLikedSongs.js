@@ -1,9 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import "./searchsong.css";
 
 const UserLikedSongs = () => {
   const { account_id, username } = useParams();
   const [likedSongs, setLikedSongs] = useState([]);
+
+  const handleUnlike = async (songId) => {
+    try {
+      const authToken = localStorage.getItem('yourAuthToken');
+
+      if (!authToken) {
+        console.error('Authentication token not found');
+        return;
+      }
+
+      const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/songs/${songId}/unlike`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({ account_id: account_id, song_id: songId }), // Correctly include actual values
+      });
+
+      if (response.ok) {
+        console.log('Successfully unliked the song:', songId);
+        // Filter out the unliked song from the state
+        setLikedSongs((prevLikedSongs) => prevLikedSongs.filter(song => song.song_id !== songId));
+      } else {
+        const errorResponse = await response.json();
+        console.error('Failed to unlike the song:', errorResponse);
+      }
+    } catch (error) {
+      console.error('Error unliking the song:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,7 +53,7 @@ const UserLikedSongs = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:8000/liked-songs/${account_id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_HOST}/liked-songs/${account_id}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -33,6 +65,7 @@ const UserLikedSongs = () => {
         }
 
         const data = await response.json();
+        console.log('Liked songs data:', data.songs);
         setLikedSongs(data.songs || []);
       } catch (error) {
         console.error('Error fetching liked songs:', error);
@@ -43,9 +76,9 @@ const UserLikedSongs = () => {
   }, [account_id, username]);
 
   return (
-    <div>
-      <h2>Liked Songs</h2>
-      <table>
+    <div className="AllSongs-container">
+      <h3 className="AllSongs-header">Liked Songs</h3>
+      <table className="table">
         <thead>
           <tr>
             <th>Song Name</th>
@@ -54,31 +87,33 @@ const UserLikedSongs = () => {
             <th>Genre</th>
             <th>Release Date</th>
             <th>BPM</th>
-            <th>Rating</th>
-            <th>Player</th>
+            <th>Unlike</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {likedSongs.map((song) => (
             <tr key={song.song_id}>
-              <td>{song.name}</td>
+              <td>
+                <Link to={`/songs/${song.song_id}`}>{song.name}</Link>
+              </td>
               <td>{song.artist}</td>
               <td>{song.album}</td>
               <td>{song.genre}</td>
               <td>{song.release_date}</td>
               <td>{song.bpm}</td>
-              <td>{song.rating}</td>
               <td>
-                {/* Display audio player and download link */}
-                  <figure>
-                    <figcaption>Listen to the song:</figcaption>
-                    <audio controls>
-                      <source src={song.url} type="audio/mpeg" />
-                      Your browser does not support the audio tag.
-                    </audio>
-                    <a href={song.url} download>
-                    </a>
-                  </figure>
+                <button className="btn-unlike" onClick={() => handleUnlike(song.song_id)}>
+                  Unlike
+                </button>
+              </td>
+              <td>
+                <figure>
+                  <audio controls>
+                    <source src={song.url} type="audio/mpeg" />
+                    Your browser does not support the audio tag.
+                  </audio>
+                </figure>
               </td>
             </tr>
           ))}
