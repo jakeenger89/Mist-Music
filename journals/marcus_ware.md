@@ -13,3 +13,8 @@ This week I was working on fixing up the endpoints for Get All Users and Getting
 ## November 29-December 4th, 2023 Journal Entry 3:
 
 During this week, I went through setting up the CI and CD delopyment for our project. I had a few blockers but I was able to get help through Rosheen's office hour. The Login form on the front end is also complete as well as a user, someone can click the sign up form button and it will create their account. I was also able to make a about us page that is barebones and I was able to proplerly link it to the navbar as well. I will have to add profile pictures of each of us to that page and some other details like our own linkIn pages to finish off that page. Next, I will be working on a few more front end pages like the home page and the account details page. Frontend is still my weakest skill as a programmer so I am looking forward to being able to practice with these pages.
+
+
+## December 5th - December 11th, 2023 Journal Entry 4:
+
+During this last week, I went through setting up several search endpoints. I was able to implement a search endpoint that allows us to search accounts by username, songs by song name, and album by album name. From there, I was able to implement several search pages and search results pages that utilizes the search endpoints that I've created. Now if a user (or non user) goes to our website to search an account, song, or albumb, they can search and it will return the expected results that also link you to the right area of our website. This week was quite challenging as I've never implemented a search endpoint before and because I am not that great in using react yet. So this week was overall great time for me to learn and practice.
