@@ -54,7 +54,7 @@ const CoinList = ({ onCoinSelect }) => {
           <div key={item.id} className="col-lg-4 col-md-6">
             <div className="card" style={{ width: "24rem" }}>
               <form
-                action="http://localhost:8000/create-checkout-session"
+                action="https://mist-music.gitlab.io/mist-music/create-checkout-session"
                 method="POST"
               >
                 <input
