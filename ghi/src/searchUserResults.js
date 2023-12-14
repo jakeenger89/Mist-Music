@@ -38,19 +38,25 @@ const SearchUserResults = () => {
         setResults();
     }, [searchQuery]);
 
-return (
-        <div className="searchBar-container mt-4">
-            <h1>Search Results</h1>
-            <p>Showing results for: {searchQuery}</p>
-            <ul>
-                {results && results.map((result) => (
-                    <li className="searchResults-container">
-                        <Link to={`/user-profile/${result.account_id}`}>{result.username}</Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+  return (
+    <div className="searchBar-container mt-4">
+      <h1>Search Results</h1>
+      <p>Showing results for: {searchQuery}</p>
+      {results && results.length > 0 ? (
+        <ul>
+          {results.map((result) => (
+            <li className="searchResults-container" key={result.account_id}>
+              <Link to={`/user-profile/${result.account_id}`}>
+                {result.username}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No results found for "{searchQuery}".</p>
+      )}
+    </div>
+  );
 };
 
-export default SearchUserResults;
+export default SearchUserResults

@@ -54,7 +54,7 @@ const CoinList = ({ onCoinSelect }) => {
           <div key={item.id} className="col-lg-4 col-md-6">
             <div className="card" style={{ width: "24rem" }}>
               <form
-                action="https://aug-2023-6-et-mistmusicapi.mod3projects.com/create-checkout-session"
+                action="http://localhost:8000/create-checkout-session"
                 method="POST"
               >
                 <input

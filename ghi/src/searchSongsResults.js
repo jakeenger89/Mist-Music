@@ -34,19 +34,22 @@ const SearchSongsResults = () => {
         setResults();
     }, [searchQuery]);
 
-return (
-        <div className="container mt-5">
-            <h1>Search Results</h1>
-            <p>Showing results for: {searchQuery}</p>
-            <ul>
-                {results && results.map((result) => (
-                    <li className="searchResults-container">
-                        <Link to={`/songs/${result.song_id}`}>{result.name}</Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+  return (
+    <div className="container mt-4">
+      <h1>Search Results</h1>
+      <p>Showing results for: {searchQuery}</p>
+      {results && results.length > 0 ? (
+        <ul>
+          {results.map((result) => (
+            <li className="searchResults-container" key={result.song_id}>
+              <Link to={`/songs/${result.song_id}`}>{result.name}</Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No results found.</p>
+      )}
+    </div>
+  );
 };
-
 export default SearchSongsResults;

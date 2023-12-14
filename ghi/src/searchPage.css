@@ -7,6 +7,9 @@
     border-radius: 8px;
     background-color: #2d3748;
     color: #a0aec0 !important;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .searchBar-container {
@@ -30,4 +33,22 @@
     border-radius: 8px;
     background-color: #2d3748;
     color: #a0aec0 !important;
+}
+.searchResults-container a {
+    color: #63b3ed;
+    text-decoration: none;
+}
+
+.searchResults-container a:hover {
+    text-decoration: underline;
+}
+
+.searchResults-container, .searchBar-container, .search-container {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.searchBar-container, .search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

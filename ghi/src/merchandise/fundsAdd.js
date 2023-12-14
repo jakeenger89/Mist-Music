@@ -36,7 +36,7 @@ function CoinSuccess() {
     };
 
     if (currentUser) {
-      deductCurrency(currentUser, -50);
+      deductCurrency(currentUser, -25);
     }
   }, [currentUser, authToken]);
 

@@ -33,20 +33,23 @@ const SearchAlbumResults = () => {
 
     fetchUserData();
     setResults();
-  }, [searchQuery, results]);
+  }, [searchQuery]);
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-4">
       <h1>Search Results</h1>
       <p>Showing results for: {searchQuery}</p>
-      <ul>
-        {results &&
-          results.map((result) => (
+      {results && results.length > 0 ? (
+        <ul>
+          {results.map((result) => (
             <li className="searchResults-container" key={result.album_id}>
               {result.name}
             </li>
           ))}
-      </ul>
+        </ul>
+      ) : (
+        <p>No results found for "{searchQuery}".</p>
+      )}
     </div>
   );
 };
