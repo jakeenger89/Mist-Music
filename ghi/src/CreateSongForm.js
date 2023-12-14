@@ -157,7 +157,7 @@ const CreateSongForm = ({ isAuthenticated, setAuthenticated }) => {
       </div>
       <div className="col-10">
         <div className="shadow p-4 mt-4 mx-auto">
-          <h1>Uplaod Song</h1>
+          <h1>Upload Song</h1>
           <form onSubmit={handleSubmit}>
             <div className="row mb-3">
               <div className="col-6">

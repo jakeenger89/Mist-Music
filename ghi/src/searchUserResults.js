@@ -36,7 +36,7 @@ const SearchUserResults = () => {
 
         fetchUserData();
         setResults();
-    }, [searchQuery, results]);
+    }, [searchQuery]);
 
 return (
         <div className="searchBar-container mt-4">

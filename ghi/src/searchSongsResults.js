@@ -32,7 +32,7 @@ const SearchSongsResults = () => {
 
         fetchUserData();
         setResults();
-    }, [searchQuery, results]);
+    }, [searchQuery]);
 
 return (
         <div className="container mt-5">

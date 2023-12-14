@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 
 const SearchAlbumResults = () => {
     const location = useLocation();
@@ -31,7 +33,7 @@ const SearchAlbumResults = () => {
 
         fetchUserData();
         setResults();
-    },  [searchQuery, results]);
+    },  [searchQuery]);
 
 return (
         <div className="container mt-5">

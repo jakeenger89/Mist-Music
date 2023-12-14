@@ -61,7 +61,28 @@ const handleSubmit = async (event) => {
       return;
     }
 
+    const releaseDateTimestamp = new Date(releaseDate).getTime() / 1000;
+    const payload = {
+      name,
+      artist,
+      album,
+      genre,
+      release_date: releaseDateTimestamp,
+      bpm: parseInt(bpm),
+      account_id: parseInt(state?.account_id),
+      // Include other fields as needed (length, rating, url, lyrics, image_url, etc.)
+    };
 
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`,
+    };
+    // eslint-disable-next-line no-unused-vars
+    const response = await fetch(`http://localhost:8000/api/songs/${song_id}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(payload),
+    });
 
     // Other code...
   } catch (error) {
