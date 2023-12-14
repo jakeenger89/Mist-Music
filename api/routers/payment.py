@@ -7,7 +7,7 @@ import stripe
 router = APIRouter()
 
 
-stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 
 @router.post("/create-checkout-session")
