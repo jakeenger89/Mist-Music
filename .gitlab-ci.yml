@@ -27,7 +27,6 @@ api-unit-tests-job:
   variables:
     DATABASE_URL: "does-not-matter"
     SIGNING_KEY: "does-not-matter"
-    STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
 
 # Build API Image:
 build-api-image:
