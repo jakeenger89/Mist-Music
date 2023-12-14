@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
 import "./searchsong.css";
 
 const UserLikedSongs = () => {
@@ -8,10 +8,10 @@ const UserLikedSongs = () => {
 
   const handleUnlike = async (songId) => {
     try {
-      const authToken = localStorage.getItem('yourAuthToken');
+      const authToken = localStorage.getItem("yourAuthToken");
 
       if (!authToken) {
-        console.error('Authentication token not found');
+        console.error("Authentication token not found");
         return;
       }
 
@@ -25,31 +25,33 @@ const UserLikedSongs = () => {
       });
 
       if (response.ok) {
-        console.log('Successfully unliked the song:', songId);
+        console.log("Successfully unliked the song:", songId);
         // Filter out the unliked song from the state
-        setLikedSongs((prevLikedSongs) => prevLikedSongs.filter(song => song.song_id !== songId));
+        setLikedSongs((prevLikedSongs) =>
+          prevLikedSongs.filter((song) => song.song_id !== songId)
+        );
       } else {
         const errorResponse = await response.json();
-        console.error('Failed to unlike the song:', errorResponse);
+        console.error("Failed to unlike the song:", errorResponse);
       }
     } catch (error) {
-      console.error('Error unliking the song:', error);
+      console.error("Error unliking the song:", error);
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const authToken = localStorage.getItem('yourAuthToken');
+        const authToken = localStorage.getItem("yourAuthToken");
 
         if (!authToken) {
-          console.error('Authentication token not found');
+          console.error("Authentication token not found");
           return;
         }
 
         // Check if account_id is undefined
         if (!account_id) {
-          console.error('Account ID is undefined');
+          console.error("Account ID is undefined");
           return;
         }
 
@@ -60,15 +62,15 @@ const UserLikedSongs = () => {
         });
 
         if (response.status === 401) {
-          console.error('Unauthorized: Please check your authentication token');
+          console.error("Unauthorized: Please check your authentication token");
           return;
         }
 
         const data = await response.json();
-        console.log('Liked songs data:', data.songs);
+        console.log("Liked songs data:", data.songs);
         setLikedSongs(data.songs || []);
       } catch (error) {
-        console.error('Error fetching liked songs:', error);
+        console.error("Error fetching liked songs:", error);
       }
     };
 
@@ -103,7 +105,10 @@ const UserLikedSongs = () => {
               <td>{song.release_date}</td>
               <td>{song.bpm}</td>
               <td>
-                <button className="btn-unlike" onClick={() => handleUnlike(song.song_id)}>
+                <button
+                  className="btn-unlike"
+                  onClick={() => handleUnlike(song.song_id)}
+                >
                   Unlike
                 </button>
               </td>

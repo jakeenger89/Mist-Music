@@ -14,7 +14,7 @@ const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [accountcreated, setAccountCreated] = useState(false)
+  const [accountcreated, setAccountCreated] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -40,7 +40,7 @@ const SignUpForm = () => {
       setEmail("");
       setUsername("");
       setPassword("");
-      setAccountCreated(true)
+      setAccountCreated(true);
       window.location.reload();
     }
   };
@@ -59,7 +59,7 @@ const SignUpForm = () => {
                 Sign up
               </p>
               {accountcreated && (
-                <div className="success-message" style={{ color: 'green' }}>
+                <div className="success-message" style={{ color: "green" }}>
                   Account successfully created!
                 </div>
               )}

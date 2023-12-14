@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 
 
 const SearchAlbumResults = () => {
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const searchQuery = queryParams.get('search_term') || '';
-    console.log("the searchQuery", searchQuery)
-    console.log("the quereParams", queryParams)
-    console.log('Full URL:', location.pathname + location.search);
-    const [results, setResults] = useState([]);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const searchQuery = queryParams.get("search_term") || "";
+  console.log("the searchQuery", searchQuery);
+  console.log("the quereParams", queryParams);
+  console.log("Full URL:", location.pathname + location.search);
+  const [results, setResults] = useState([]);
 
     useEffect(() => {
         // Fetch search results based on the searchQuery
@@ -35,17 +35,20 @@ const SearchAlbumResults = () => {
         setResults();
     },  [searchQuery]);
 
-return (
-        <div className="container mt-5">
-            <h1>Search Results</h1>
-            <p>Showing results for: {searchQuery}</p>
-            <ul>
-                {results && results.map((result) => (
-                    <li className="searchResults-container" key={result.album_id}>{result.name}</li>
-                ))}
-            </ul>
-        </div>
-    );
+  return (
+    <div className="container mt-5">
+      <h1>Search Results</h1>
+      <p>Showing results for: {searchQuery}</p>
+      <ul>
+        {results &&
+          results.map((result) => (
+            <li className="searchResults-container" key={result.album_id}>
+              {result.name}
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
 };
 
 export default SearchAlbumResults;

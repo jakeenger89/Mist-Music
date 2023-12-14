@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import './following.css';
-
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import "./following.css";
 
 const FollowedUsersList = () => {
   const { account_id } = useParams();
@@ -11,11 +10,11 @@ const FollowedUsersList = () => {
     const fetchFollowedAccounts = async () => {
       try {
         if (!account_id) {
-          console.error('No account_id provided');
+          console.error("No account_id provided");
           return;
         }
 
-        const authToken = localStorage.getItem('yourAuthToken');
+        const authToken = localStorage.getItem("yourAuthToken");
 
         const response = await fetch(`http://localhost:8000/followed-accounts/${account_id}`, {
           headers: {
@@ -39,7 +38,9 @@ const FollowedUsersList = () => {
               if (accountResponse.ok) {
                 return accountResponse.json();
               } else {
-                console.error(`Failed to fetch account details for account_id ${followingId}`);
+                console.error(
+                  `Failed to fetch account details for account_id ${followingId}`
+                );
                 return null;
               }
             });
@@ -48,15 +49,17 @@ const FollowedUsersList = () => {
             const accounts = await Promise.all(accountsPromises);
 
             // Filter out null values (failed requests) and set the state
-            setFollowedAccounts(accounts.filter(account => account !== null));
+            setFollowedAccounts(accounts.filter((account) => account !== null));
           } else {
-            console.error('Invalid data structure: expected an array for followed_accounts');
+            console.error(
+              "Invalid data structure: expected an array for followed_accounts"
+            );
           }
         } else {
-          console.error('Failed to fetch followed accounts');
+          console.error("Failed to fetch followed accounts");
         }
       } catch (error) {
-        console.error('Error fetching followed accounts:', error);
+        console.error("Error fetching followed accounts:", error);
       }
     };
 
@@ -65,14 +68,14 @@ const FollowedUsersList = () => {
 
   const handleUnfollow = async (followingId) => {
     try {
-      const token = localStorage.getItem('yourAuthToken');
+      const token = localStorage.getItem("yourAuthToken");
 
       if (!token) {
-        console.error('Authorization token is missing');
+        console.error("Authorization token is missing");
         return;
       }
 
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
       const follower_id = decodedToken.account.account_id;
 
       const requestBody = {
@@ -91,23 +94,27 @@ const FollowedUsersList = () => {
 
       if (response.ok) {
         // Remove the unfollowed account from the state
-        setFollowedAccounts(prevAccounts => prevAccounts.filter(account => account.account_id !== followingId));
+        setFollowedAccounts((prevAccounts) =>
+          prevAccounts.filter((account) => account.account_id !== followingId)
+        );
       } else {
-        console.error('Failed to unfollow user');
+        console.error("Failed to unfollow user");
       }
     } catch (error) {
-      console.error('Error unfollowing user:', error);
+      console.error("Error unfollowing user:", error);
     }
   };
 
   return (
     <div className="AllSongs-container">
-      <h3 style={{ color: 'white'}}>Following</h3>
+      <h3 style={{ color: "white" }}>Following</h3>
       {followedAccounts.length > 0 ? (
         <table className="table">
           <thead>
             <tr>
-              <th className="border-b" style={{ color: 'white'}}>Username(s)</th>
+              <th className="border-b" style={{ color: "white" }}>
+                Username(s)
+              </th>
               <th className="border-b"></th>
             </tr>
           </thead>
@@ -115,12 +122,18 @@ const FollowedUsersList = () => {
             {followedAccounts.map((account) => (
               <tr key={account.account_id}>
                 <td className="border-b">
-                  <Link to={`/user-profile/${account.account_id}`} className="text-blue-500 hover:underline">
+                  <Link
+                    to={`/user-profile/${account.account_id}`}
+                    className="text-blue-500 hover:underline"
+                  >
                     {account.username}
                   </Link>
                 </td>
                 <td className="border-b">
-                  <button className="btn-unfollow" onClick={() => handleUnfollow(account.account_id)}>
+                  <button
+                    className="btn-unfollow"
+                    onClick={() => handleUnfollow(account.account_id)}
+                  >
                     Unfollow
                   </button>
                 </td>

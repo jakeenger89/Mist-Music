@@ -10,13 +10,17 @@ function Nav({ isAuthenticated, onLogout }) {
       onLogout();
     }
     navigate("/loginform");
-    window.location.reload()
+    window.location.reload();
   };
   return (
     <nav className="nav">
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/">
-          <img src="https://i.imgur.com/oGvU6bt.png" alt="Logo" className="navbar-logo"/>
+          <img
+            src="https://i.imgur.com/oGvU6bt.png"
+            alt="Logo"
+            className="navbar-logo"
+          />
         </NavLink>
         <NavLink className="navbar-brand" to="/merch">
           Merchandise
@@ -30,7 +34,7 @@ function Nav({ isAuthenticated, onLogout }) {
         <NavLink className={"navbar-brand"} to="/search_album">
           Search Albums
         </NavLink>
-          <NavLink className={"navbar-brand"} to="/search_song">
+        <NavLink className={"navbar-brand"} to="/search_song">
           Search Songs
         </NavLink>
         <NavLink className={"navbar-brand"} to="/search_user">
@@ -38,8 +42,8 @@ function Nav({ isAuthenticated, onLogout }) {
         </NavLink>
         {isAuthenticated && (
           <NavLink className="navbar-brand" to="/createalbumform">
-          Upload Album
-        </NavLink>
+            Upload Album
+          </NavLink>
         )}
         {!isAuthenticated && (
           <NavLink className="navbar-brand" to="/signupform">
@@ -66,8 +70,8 @@ function Nav({ isAuthenticated, onLogout }) {
         </NavLink>
         {isAuthenticated && (
           <button className="navbar-brand logout-button" onClick={handleLogout}>
-          Logout
-        </button>
+            Logout
+          </button>
         )}
       </div>
     </nav>

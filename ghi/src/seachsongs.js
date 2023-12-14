@@ -6,14 +6,14 @@ function AllSongs() {
   const [songs, setSongs] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);
   const [account_id, setAccountId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
-const handleLike = async (songId) => {
-  try {
-    if (!account_id) {
-      console.error('User not authenticated');
-      return;
-    }
+  const handleLike = async (songId) => {
+    try {
+      if (!account_id) {
+        console.error("User not authenticated");
+        return;
+      }
 
     // Make a POST request to like the song
     const response = await fetch(`http://localhost:8000/songs/${songId}/like`, {
@@ -28,50 +28,56 @@ const handleLike = async (songId) => {
       }),
     });
 
-    if (response.ok) {
-      // Refresh the songs after liking
-      fetchSongs();
-    } else {
-      console.error('Failed to like the song');
+      if (response.ok) {
+        // Refresh the songs after liking
+        fetchSongs();
+      } else {
+        console.error("Failed to like the song");
+      }
+    } catch (error) {
+      console.error("Error liking the song:", error);
     }
-  } catch (error) {
-    console.error('Error liking the song:', error);
-  }
-};
+  };
 
   const handleUnlike = async (songId) => {
     try {
       // Make a DELETE request to unlike the song
-      const response = await fetch(`http://localhost:8000/api/songs/${songId}/unlike`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          account_id: account_id,
-          song_id: songId,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_HOST}/api/songs/${songId}/unlike`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            account_id: account_id,
+            song_id: songId,
+          }),
+        }
+      );
 
       if (response.ok) {
         // Refresh the songs after unliking
         fetchSongs();
       } else {
-        console.error('Failed to unlike the song');
+        console.error("Failed to unlike the song");
       }
     } catch (error) {
-      console.error('Error unliking the song:', error);
+      console.error("Error unliking the song:", error);
     }
   };
 
   const fetchSongs = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/songs`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_HOST}/api/songs`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const songData = await response.json();
@@ -79,17 +85,16 @@ const handleLike = async (songId) => {
         // Filter songs based on the search term
         filterSongs(songData.songs, searchTerm);
       } else {
-        console.error('Failed to fetch songs');
+        console.error("Failed to fetch songs");
       }
     } catch (error) {
-      console.error('Error fetching songs:', error);
+      console.error("Error fetching songs:", error);
     }
   };
 
   const filterSongs = (allSongs, term) => {
-    const filtered = allSongs.filter(
-      (song) =>
-        song.name.toLowerCase().includes(term.toLowerCase())
+    const filtered = allSongs.filter((song) =>
+      song.name.toLowerCase().includes(term.toLowerCase())
     );
     setFilteredSongs(filtered);
   };
@@ -102,10 +107,12 @@ const handleLike = async (songId) => {
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('yourAuthToken');
+    const storedToken = localStorage.getItem("yourAuthToken");
     if (storedToken) {
-      const decodedToken = JSON.parse(atob(storedToken.split('.')[1]));
-      const { account: { account_id } } = decodedToken;
+      const decodedToken = JSON.parse(atob(storedToken.split(".")[1]));
+      const {
+        account: { account_id },
+      } = decodedToken;
       setAccountId(account_id);
     }
   }, []);

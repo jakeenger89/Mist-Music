@@ -1,25 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import './CreateSongForm.css';
+import React, { useEffect, useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
+import "./CreateSongForm.css";
 
 const UpdateSongForm = () => {
   const { song_id } = useParams();
   const { state } = useLocation();
-  const [name, setName] = useState('');
-  const [artist, setArtist] = useState('');
-  const [album, setAlbum] = useState('');
-  const [genre, setGenre] = useState('');
-  const [releaseDate, setReleaseDate] = useState('');
-  const [bpm, setBpm] = useState('');
+  const [name, setName] = useState("");
+  const [artist, setArtist] = useState("");
+  const [album, setAlbum] = useState("");
+  const [genre, setGenre] = useState("");
+  const [releaseDate, setReleaseDate] = useState("");
+  const [bpm, setBpm] = useState("");
 
   useEffect(() => {
-
     const fetchSongData = async () => {
       try {
-        const authToken = localStorage.getItem('yourAuthToken');
+        const authToken = localStorage.getItem("yourAuthToken");
 
         if (!authToken) {
-          console.error('UpdateSongForm - Authorization token is missing');
+          console.error("UpdateSongForm - Authorization token is missing");
           return;
         }
 
@@ -40,25 +39,35 @@ const UpdateSongForm = () => {
           setReleaseDate(songData.release_date);
           setBpm(songData.bpm);
         } else {
-          console.error('UpdateSongForm - Failed to fetch song data for update');
+          console.error(
+            "UpdateSongForm - Failed to fetch song data for update"
+          );
         }
       } catch (error) {
-        console.error('UpdateSongForm - Error fetching song data for update:', error);
+        console.error(
+          "UpdateSongForm - Error fetching song data for update:",
+          error
+        );
       }
     };
 
     fetchSongData();
   }, [state, song_id]);
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  try {
-    const authToken = localStorage.getItem('yourAuthToken');
+    try {
+      const authToken = localStorage.getItem("yourAuthToken");
 
-    if (!authToken) {
-      console.error('UpdateSongForm - Authorization token is missing');
-      return;
+      if (!authToken) {
+        console.error("UpdateSongForm - Authorization token is missing");
+        return;
+      }
+
+      // Other code...
+    } catch (error) {
+      console.error("UpdateSongForm - Error updating song:", error);
     }
 
     const releaseDateTimestamp = new Date(releaseDate).getTime() / 1000;

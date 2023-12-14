@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import './account.css';
-import './searchPage.css'
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import "./account.css";
+import "./searchPage.css";
 const SearchUserResults = () => {
-    const location = useLocation();
-    // grabs the location of the requested url.
-    const queryParams = new URLSearchParams(location.search);
-    // properly pulls the search_term query in the url.
-    const searchQuery = queryParams.get('search_term') || '';
-    console.log("the searchQuery", searchQuery)
-    console.log("the quereParams", queryParams)
-    // check to see if I am getting the correct URL when I am inputting a search.
-    console.log('Full URL:', location.pathname + location.search);
-    const [results, setResults] = useState([]);
+  const location = useLocation();
+  // grabs the location of the requested url.
+  const queryParams = new URLSearchParams(location.search);
+  // properly pulls the search_term query in the url.
+  const searchQuery = queryParams.get("search_term") || "";
+  console.log("the searchQuery", searchQuery);
+  console.log("the quereParams", queryParams);
+  // check to see if I am getting the correct URL when I am inputting a search.
+  console.log("Full URL:", location.pathname + location.search);
+  const [results, setResults] = useState([]);
 
     useEffect(() => {
         // Fetch search results based on the searchQuery
@@ -38,19 +38,22 @@ const SearchUserResults = () => {
         setResults();
     }, [searchQuery]);
 
-return (
-        <div className="searchBar-container mt-4">
-            <h1>Search Results</h1>
-            <p>Showing results for: {searchQuery}</p>
-            <ul>
-                {results && results.map((result) => (
-                    <li className="searchResults-container">
-                        <Link to={`/user-profile/${result.account_id}`}>{result.username}</Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+  return (
+    <div className="searchBar-container mt-4">
+      <h1>Search Results</h1>
+      <p>Showing results for: {searchQuery}</p>
+      <ul>
+        {results &&
+          results.map((result) => (
+            <li className="searchResults-container">
+              <Link to={`/user-profile/${result.account_id}`}>
+                {result.username}
+              </Link>
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
 };
 
 export default SearchUserResults;
