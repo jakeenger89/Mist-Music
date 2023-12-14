@@ -10,7 +10,7 @@ router = APIRouter()
 stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
 
 
-@router.post("/create-checkout-session/")
+@router.post("/create-checkout-session")
 async def create_checkout_session():
     try:
         checkout_session = stripe.checkout.Session.create(
