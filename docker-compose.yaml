@@ -4,21 +4,22 @@ volumes:
 
 services:
   postgres:
-      image: postgres:14.5-bullseye
-      volumes:
-          - postgres-data:/var/lib/postgresql/data
-      environment:
-          POSTGRES_PASSWORD: mistmusic
-          POSTGRES_USER: mistmusic
-          POSTGRES_DB: mistdb
-      ports:
-          - 15432:5432
+    image: postgres:14.5-bullseye
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mistmusic
+      POSTGRES_USER: mistmusic
+      POSTGRES_DB: mistdb
+    ports:
+      - 15432:5432
 
   fastapi:
     environment:
       DATABASE_URL: postgresql://mistmusic:mistmusic@postgres/mistdb
       CORS_HOST: http://localhost:3000
       SIGNING_KEY: 4c9af740f86e0e2f32be8c786a8a14584b565c07f93c1cd622600479c05f85f9
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
     build:
       context: api
       dockerfile: Dockerfile.dev
