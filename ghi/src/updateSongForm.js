@@ -57,22 +57,45 @@ const UpdateSongForm = () => {
     fetchSongData();
   }, [state, song_id]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+const handleSubmit = async (event) => {
+  event.preventDefault();
 
-    try {
-      const authToken = localStorage.getItem("yourAuthToken");
+  try {
+    const authToken = localStorage.getItem('yourAuthToken');
 
-      if (!authToken) {
-        console.error("UpdateSongForm - Authorization token is missing");
-        return;
-      }
-
-      // Other code...
-    } catch (error) {
-      console.error("UpdateSongForm - Error updating song:", error);
+    if (!authToken) {
+      console.error('UpdateSongForm - Authorization token is missing');
+      return;
     }
-  };
+
+    const releaseDateTimestamp = new Date(releaseDate).getTime() / 1000;
+    const payload = {
+      name,
+      artist,
+      album,
+      genre,
+      release_date: releaseDateTimestamp,
+      bpm: parseInt(bpm),
+      account_id: parseInt(state?.account_id),
+      // Include other fields as needed (length, rating, url, lyrics, image_url, etc.)
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`,
+    };
+
+    const response = await fetch(`http://localhost:8000/api/songs/${song_id}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(payload),
+    });
+
+    // Other code...
+  } catch (error) {
+    console.error('UpdateSongForm - Error updating song:', error);
+  }
+};
 
   return (
     <div className="CreateSongForm-container">
