@@ -44,7 +44,7 @@ function MerchList() {
                 </Link>
                 <div className="card-body">
                   <h5 className="card-title">{`${merch.name}`}</h5>
-                  <h5 className="card-title">{`$${merch.price}`}</h5>
+                  <h5 className="card-title">{`${merch.price} Mist Coins`}</h5>
                 </div>
               </div>
             </div>

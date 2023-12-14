@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
-from routers import songs, merch, accounts, albums, customer
+from routers import songs, merch, accounts, albums, customer, payment
 from routers.authenticator import authenticator
+
 
 app = FastAPI()
 app.include_router(authenticator.router)
@@ -39,3 +40,4 @@ app.include_router(songs.router, prefix="", tags=["songs"])
 app.include_router(merch.router, tags=["merch"])
 app.include_router(albums.router, tags=["albums"])
 app.include_router(customer.router, tags=["customers"])
+app.include_router(payment.router, tags=["payment"])

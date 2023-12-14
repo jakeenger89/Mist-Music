@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function OrderForm() {
   const [email, setEmail] = useState("");
@@ -243,7 +244,12 @@ function OrderForm() {
     <div className="container mx-auto mt-8 flex justify-between">
       {isAuthenticated && (
         <div>
-          <h3 className="whiteText">Your Currency: {userCurrency}</h3>
+          <h3 className="whiteText">Your Coins: {userCurrency}</h3>
+          <p>
+            <Link className="profile-link" to={"/coins"}>
+              Add Coins
+            </Link>
+          </p>
         </div>
       )}
       <div className="flex-none max-w-md">
@@ -258,7 +264,7 @@ function OrderForm() {
             <p>{item.name}</p>
           </li>
           <li>
-            <p>${item.price}</p>
+            <p>{item.price} Mist Coins</p>
           </li>
 
           <li>

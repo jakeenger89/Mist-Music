@@ -28,6 +28,8 @@ import FollowedUsersList from "./FollowedUsersList";
 import EditAccount from "./edit";
 import ThankYouPage from "./merchandise/purchaseTrue";
 import AlbumEdit from "./albumEdit";
+import CoinList from "./merchandise/coinlist";
+import CoinSuccess from "./merchandise/fundsAdd";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -102,6 +104,9 @@ function App() {
           <Route index path="allsongs" element={<AllSongs />} />
           <Route index path="merch/:item_id" element={<OrderForm />} />
           <Route index path="merch/thankyou" element={<ThankYouPage />} />
+          <Route index path="coins" element={<CoinList />} />
+          <Route index path="coins/success" element={<CoinSuccess />} />
+
           <Route index path="allalbums" element={<AllAlbums />} />
           <Route
             path="albums/:albumId/edit"
